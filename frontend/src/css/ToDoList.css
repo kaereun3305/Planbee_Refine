@@ -1,0 +1,38 @@
+.todolist_container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.todolist {
+  width: 618px;
+  height: 750px;
+  background-color: #fefcfc;
+}
+.todo_progress {
+  width: 122px;
+  height: 750px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.todo_gauge {
+  height: 600px;
+  width: 100%;
+  background-color: #fefcfc;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.todo_save_btn {
+  height: 100px;
+  width: 100%;
+  border-radius: 40px;
+  background-color: #fefcfc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

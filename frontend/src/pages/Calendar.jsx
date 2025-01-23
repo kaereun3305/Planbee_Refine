@@ -3,7 +3,7 @@ import Sidebar from "../components/SideBar";
 import Banner from "../components/Banner";
 import "../css/Main.css";
 
-const Callendar = () => {
+const Calendar = () => {
   return (
     <div className="main_container">
       <Banner />
@@ -15,4 +15,4 @@ const Callendar = () => {
   );
 };
 
-export default Callendar;
+export default Calendar;

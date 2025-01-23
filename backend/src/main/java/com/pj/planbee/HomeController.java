@@ -35,5 +35,7 @@ public class HomeController {
 		
 		return "home";
 	}
-	
+	public String index() {
+		return "index";
+	}
 }

@@ -1,24 +1,43 @@
 package com.pj.planbee.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
 @RestController
+@CrossOrigin
 public class TodoListController {
-	@Autowired TodoListService ts;
+	//@Autowired TodoListService ts;
 
 	@GetMapping(value="todolist", produces="application/json; charset=utf-8")
-	public Map<String, String> getList(){ //전체 투두리스트 가져오는 기능, 일단 써둠
-		Map<String, String> list = new HashMap<String, String>();
+	public List<TodoListDTO> getList(){ //전체 투두리스트 가져오는 기능, 일단 써둠
+		List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+		
+		//임시데이터 생성
+		for(int i = list.size(); i<3; i++) {
+			 TodoListDTO dto = new TodoListDTO(); 
+			 dto.setID("팥붕"+i);
+			 dto.setToDoDate("20250124");
+			 dto.setToDoID(i+1);
+			 dto.setTodoMemo("팥붕어빵먹기, 슈붕어빵 먹기");
+			 dto.setToDoProgress(0.5);
+			 list.add(dto);
+		}
+		System.out.println("list: "+ list.get(0).getID());
+		
 		
 		return list;
 	}

@@ -1,0 +1,41 @@
+.archive_container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.archive_search {
+  display: flex;
+  flex-direction: row;
+  height: 5%;
+  width: 100%;
+}
+.archive_search_calendar {
+  width: 300px;
+  height: 24px;
+  align-items: center;
+  margin-left: 12%;
+  background-color: green;
+}
+.archive_search_btn {
+  height: 24px;
+}
+.archive_content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 95%;
+  width: 100%;
+}
+.archive_btn_left {
+  background-color: burlywood;
+}
+.archive_page_left,
+.archive_page_right {
+  height: 90%;
+  width: 35%;
+  background-color: antiquewhite;
+  margin: 10px 50px 10px 50px;
+  border-radius: 20px;
+}

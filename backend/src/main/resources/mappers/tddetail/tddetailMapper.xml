@@ -1,0 +1,28 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.pj.planbee.mapper.TDdetailMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
+	<resultMap type="com.pj.planbee.dto.TDdetailDTO" id="tddetail">
+		<result property="ToDoDetailID" column="tododetail_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<result property="TodoDate" column="tododetail_date" />
+		<result property="TDDetail" column="tododetail" />
+		<result property="ToDoStatement" column="tododetail_state" />
+		<result property="ToDoDeadLine" column="tododetail_time"/>
+		<result property="ToDoID" column="todo_id" />
+		
+	</resultMap>
+	 <select id="getList" resultMap ="tddetail">
+    	select * from ToDoListDetail order by tododetail_date asc 
+    	<!-- 입력날짜 빠른 순으로 정렬 -->
+    	
+    </select>
+    
+    <select id="getTodo" resultMap ="tddetail">
+    	select * from ToDoListDetail order by tododetail_date asc where todo_id=#{ToDoId}
+    	<!-- 입력날짜 빠른 순으로 정렬 -->
+    	
+    </select>
+    
+</mapper>

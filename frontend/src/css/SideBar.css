@@ -1,5 +1,24 @@
 .sidebar_container {
   height: 100%;
-  width: 370px;
+  width: 300px;
   background-color: #f4cc3a;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0;
+  margin: 0;
+}
+.sidebar_menu {
+  background-color: #fefcfc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #2c2c2c;
+  width: 220px;
+  height: 100px;
+  margin: 10px 0 10px 0;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  font-size: 24px;
 }

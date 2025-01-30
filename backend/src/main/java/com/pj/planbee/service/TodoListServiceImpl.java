@@ -7,37 +7,45 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TodoListDTO;
+import com.pj.planbee.mapper.TDdetailMapper;
 import com.pj.planbee.mapper.TodoListMapper;
-import com.pj.planbee.tddetail.mapper.TDdetailMapper;
 
 
 @Service
 public class TodoListServiceImpl implements TodoListService {
 @Autowired TDdetailMapper tdMap;
 
+@Override
+public List<TDdetailDTO> getList() { //전체 투두리스트 가져오는 기능, 테스트용
+	List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
+	list = tdMap.getList();
+	System.out.println("service 실행: "+ list);
+	return list;
+}
 
 @Override
-public List<TodoListDTO> getList() {
-	List<TodoListDTO> list = new ArrayList<TodoListDTO>();
-	try {
-		list = tdMap.getList();
-	} catch (Exception e) {
-		e.printStackTrace();
-		
-	}
+public List<TDdetailDTO> getTodo(int todoId) { //하루의 투두리스트를 가져오는 기능, todolist고유 아이디로 가져옴
+	List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
+	list = tdMap.getTodo(todoId);
 	return list;
 }
+
 @Override
-public List<TodoListDTO> getTodo(int todoId) {//하루의 투두리스트를 가져오는 기능
-	List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+public int todoWrite(TDdetailDTO dto) {
+	int result =0;
 	try {
-		list = tdMap.getTodo(todoId);
+		result = tdMap.todoWrite(dto);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
-	return list;
+	return result;
 }
+
+
+
+
 
 
 }

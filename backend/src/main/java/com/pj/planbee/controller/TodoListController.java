@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
@@ -24,27 +25,27 @@ public class TodoListController {
 	
 
 	@GetMapping(value="todolist", produces="application/json; charset=utf-8")
-	public List<TodoListDTO> getList(){
-		List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+	public List<TDdetailDTO> getList(){
+		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getList();
 		return list; //전체 투두리스트 
 
 	}
 	
 	@GetMapping(value="todolist/{todoId}", produces="application/json; charset=utf-8")
-	public List<TodoListDTO> getTodo(@PathVariable int todoId){ //하루의 투두리스트를 가져오는 기능
-		List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+	public List<TDdetailDTO> getTodo(@PathVariable int todoId){ //하루의 투두리스트를 가져오는 기능
+		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getTodo(todoId);
 		return list;
 	}
 	
 	
-//	@PostMapping(value="todolist/write{}", produces="application/json; charset=utf-8")
-//	public int todoWrite() { //투두리스트 작성하는 기능
-//		
-//		return ts.todoWrite();
-//	}
-//	
+	@PostMapping(value="todolist/write", produces="application/json; charset=utf-8")
+	public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능
+		
+		return ts.todoWrite(dto);
+	}
+	
 //	@PutMapping(value="todolist/update{todoNo}", produces="application/json; charset=utf-8")
 //	public int todoUpdate() { //투두리스트 완료내역 업데이트 하는 기능
 //		

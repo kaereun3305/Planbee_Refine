@@ -128,6 +128,7 @@
     		<artifactId>spring-jdbc</artifactId>
     		<version>${org.springframework-version}</version>
 		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
 		<dependency>
    		 <groupId>com.oracle.database.jdbc</groupId>
@@ -163,6 +164,16 @@
    		 <groupId>mysql</groupId>
     		<artifactId>mysql-connector-java</artifactId>
     		<version>8.0.33</version>
+		</dependency>
+		<dependency>
+   		 <groupId>org.springframework</groupId>
+    		<artifactId>spring-web</artifactId>
+    		<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework.security</groupId>
+    		<artifactId>spring-security-web</artifactId>
+    		<version>${org.springframework-version}</version>
 		</dependency>
 		
 

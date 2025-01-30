@@ -7,22 +7,24 @@
 	<resultMap type="com.pj.planbee.dto.TDdetailDTO" id="tddetail">
 		<result property="ToDoDetailID" column="tododetail_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
 		<result property="TodoDate" column="tododetail_date" />
-		<result property="TDDetail" column="tododetail" />
+		<result property="ToDo" column="tododetail" />
 		<result property="ToDoStatement" column="tododetail_state" />
 		<result property="ToDoDeadLine" column="tododetail_time"/>
 		<result property="ToDoID" column="todo_id" />
 		
 	</resultMap>
 	 <select id="getList" resultMap ="tddetail">
-    	select * from ToDoListDetail order by tododetail_date asc 
+    	select * from todolistDetail
     	<!-- 입력날짜 빠른 순으로 정렬 -->
-    	
     </select>
     
     <select id="getTodo" resultMap ="tddetail">
-    	select * from ToDoListDetail order by tododetail_date asc where todo_id=#{ToDoId}
-    	<!-- 입력날짜 빠른 순으로 정렬 -->
-    	
+    	select * from todolistDetail where Tododetail_id=#{todoId}
     </select>
+    
+    <insert id="todoWrite"> <!-- 수정필요,
+    자동으로 숫자 올라가는 부분, 날짜자료형 두 가지, 맨마지막 숫자 어떻게 할지 조정이 필요함 -->
+    	insert into todolistDetail tododetail_id, tododetail_date, tododetail, tododetail_state, tododetail_time, todo_id values (#{ToDoDetailID}, sysdate, #{ToDo}, #{ToDoStatement}, #{ToDoDeadLine}, #{ToDoID});
+    </insert>
     
 </mapper>

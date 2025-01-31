@@ -2,42 +2,43 @@ package com.pj.planbee.dto;
 
 public class TodoListDTO {
 	
-	int ToDoID;
-	String ToDoDate, TodoMemo, ID;
-	double ToDoProgress;
+	int tdId;
+	String tdDate, tdMemo;
+	double tdProgress;
+	String userId; //유저아이디는 나중에 만들어지는 것과 맞춰서 만들어야함
+	
+	public int getTdId() {
+		return tdId;
+	}
+	public void setTdId(int tdId) {
+		this.tdId = tdId;
+	}
+	public String getTdDate() {
+		return tdDate;
+	}
+	public void setTdDate(String tdDate) {
+		this.tdDate = tdDate;
+	}
+	public String getTdMemo() {
+		return tdMemo;
+	}
+	public void setTdMemo(String tdMemo) {
+		this.tdMemo = tdMemo;
+	}
+	public double getTdProgress() {
+		return tdProgress;
+	}
+	public void setTdProgress(double tdProgress) {
+		this.tdProgress = tdProgress;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 	
 	
-	public int getToDoID() {
-		return ToDoID;
-	}
-	public void setToDoID(int toDoID) {
-		ToDoID = toDoID;
-	}
-	public String getToDoDate() {
-		return ToDoDate;
-	}
-	public void setToDoDate(String toDoDate) {
-		ToDoDate = toDoDate;
-	}
-	public String getTodoMemo() {
-		return TodoMemo;
-	}
-	public void setTodoMemo(String todoMemo) {
-		TodoMemo = todoMemo;
-	}
-	public String getID() {
-		return ID;
-	}
-	public void setID(String iD) {
-		ID = iD;
-	}
-	public double getToDoProgress() {
-		return ToDoProgress;
-	}
-	public void setToDoProgress(double toDoProgress) {
-		ToDoProgress = toDoProgress;
-	}
-	
-	
+
 
 }

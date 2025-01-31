@@ -19,12 +19,25 @@
     </select>
     
     <select id="getTodo" resultMap ="tddetail">
-    	select * from todolistDetail where Tododetail_id=#{todoId}
+    	select * from todolistDetail where Todo_id=#{todoId}
     </select>
     
     <insert id="todoWrite"> <!-- 수정필요,
     자동으로 숫자 올라가는 부분, 날짜자료형 두 가지, 맨마지막 숫자 어떻게 할지 조정이 필요함 -->
     	insert into todolistDetail tododetail_id, tododetail_date, tododetail, tododetail_state, tododetail_time, todo_id values (#{ToDoDetailID}, sysdate, #{ToDo}, #{ToDoStatement}, #{ToDoDeadLine}, #{ToDoID});
     </insert>
+    
+    <update id="updateState">
+    	update todolistDetail set tododetail_status=#{state} where tododetail_id=#{ToDoDetailID}
+    </update>
+    
+    <update id="todoModify">
+    	update todolistDetail set tododetail=#{ToDo}, tododetail_status=#{ToDoStatement}, tododetail_time=#{ToDoDeadLine} where tododetail_id=#{ToDoDetailID}
+    </update>
+    
+    <delete id="todoDel">
+    	delete from todolistDetail where tododetail_id=#{ToDoDetailID}
+    
+    </delete>
     
 </mapper>

@@ -33,7 +33,7 @@ public List<TDdetailDTO> getTodo(int todoId) { //하루의 투두리스트를 �
 }
 
 @Override
-public int todoWrite(TDdetailDTO dto) {
+public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, 성공시 결과값은 1
 	int result =0;
 	try {
 		result = tdMap.todoWrite(dto);
@@ -42,6 +42,42 @@ public int todoWrite(TDdetailDTO dto) {
 	}
 	return result;
 }
+
+@Override
+public int updateState(int ToDoDetailID, String state) {  //투두리스트 작업상태 업데이트 하는 기능
+	//완료시 True혹은 t, 기본값은 False혹은 f
+	int result =0;
+	try {
+		result = tdMap.updateState(ToDoDetailID, state);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return result;
+}
+
+@Override
+public int todoModify(int ToDoDetailID, TDdetailDTO dto) { //투두리스트 자체 수정기능
+	int result = 0;
+	try {
+		result = tdMap.todoModify(ToDoDetailID, dto);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return result;
+}
+
+@Override
+public int todoDel(int ToDoDetailID) { //투두리스트 한 개 삭제하는 기능
+	int result = 0;
+	try {
+		result = tdMap.todoDel(ToDoDetailID);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return result;
+}
+
+
 
 
 

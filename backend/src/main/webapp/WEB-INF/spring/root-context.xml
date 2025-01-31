@@ -11,6 +11,8 @@
       <property name="jdbcUrl" value="jdbc:mysql://hyesutest.c14y0yi620fv.ap-northeast-2.rds.amazonaws.com:3306/whatever_test?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" />
       <property name="username" value="hyesu" />
       <property name="password" value="hanraVong*" />
+      <property name="leakDetectionThreshold" value="2000"/>
+      <!-- mysql종료시 자꾸 오류발생해서 추가함 -->
    </bean>
    <!-- 히카리 데이터소스 빈 등록 -->
    <bean id="ds" class="com.zaxxer.hikari.HikariDataSource">

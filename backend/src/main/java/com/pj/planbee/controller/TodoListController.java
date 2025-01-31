@@ -41,13 +41,13 @@ public class TodoListController {
 	
 	
 	@PostMapping(value="todolist/write", produces="application/json; charset=utf-8")
-	public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능
+	public int todoWrite(@PathVariable TDdetailDTO dto) { //투두리스트 작성하는 기능
 		
 		return ts.todoWrite(dto);
 	}
 	
 //	@PutMapping(value="todolist/update{todoNo}", produces="application/json; charset=utf-8")
-//	public int todoUpdate() { //투두리스트 완료내역 업데이트 하는 기능
+//	public int todoUpdate(TDdetailDTO) { //투두리스트 완료내역 업데이트 하는 기능
 //		
 //		return ts.todoUpdate(); 
 //	}

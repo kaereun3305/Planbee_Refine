@@ -21,7 +21,7 @@ public class TodoListServiceImpl implements TodoListService {
 public List<TDdetailDTO> getList() { //전체 투두리스트 가져오는 기능, 테스트용
 	List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 	list = tdMap.getList();
-	System.out.println("service 실행: "+ list);
+	//System.out.println("service 실행: "+ list);
 	return list;
 }
 

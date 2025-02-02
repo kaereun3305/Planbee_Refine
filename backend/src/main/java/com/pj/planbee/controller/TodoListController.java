@@ -63,7 +63,7 @@ public class TodoListController {
 	@PutMapping(value="todolist/modify/{ToDoDetailID}", produces="application/json; charset=utf-8")
 	public int todoModify(@PathVariable int ToDoDetailID, @RequestBody TDdetailDTO dto) { //투두리스트 수정하는 기능, 시간지나면 수정불가는 프론트에서 해주시길..
 //DTO로 지정해서 했으나 parameter를 못찾는 문제가 발생함
-		System.out.println("detail내용:" + dto.getTdDetail());
+		//System.out.println("detail내용:" + dto.getTdDetail());
 		return ts.todoModify(ToDoDetailID, dto);
 	}
 	
@@ -73,10 +73,10 @@ public class TodoListController {
 		return ts.todoDel(ToDoDetailID);
 	}
 	
-//	@GetMapping(value="todolist/progress{today}", produces="application/json; charest=utf-8")
-//	public double todoProgress() {
-//		return ts.todoProgress();
-//	}
+	@GetMapping(value="todolist/progress/{todoId}", produces="application/json; charest=utf-8")
+	public double todoProgress(@PathVariable int todoId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
+		return ts.todoProgress(todoId);
+	}
 //	  
 //	@GetMapping(value="todolist/getMemo{date}", produces="application/json; chareset=utf-8")
 //	public Map<String, String> getMemo(){//메모를 가져오는 기능

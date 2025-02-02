@@ -15,5 +15,5 @@ public interface TodoListService {
 	public int updateState(int ToDoDetailID, String state); //완료상황 t/f 업데이트하는 기능
 	public int todoModify(int ToDoDetailID, TDdetailDTO dto); //투두리스트 자체를 수정하는 기능
 	public int todoDel(int ToDoDetailID); //투두리스트 한 개 삭제하는 기능
-	
+	public double todoProgress(int todoId);
 }

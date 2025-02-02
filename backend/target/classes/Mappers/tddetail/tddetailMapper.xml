@@ -45,7 +45,15 @@
     <delete id="todoDel">
     <!-- 투두디테일 삭제하는 기능, 성공 -->
     	delete from todolistDetail where tododetail_id=#{tdDetailId}
-    
     </delete>
+    
+    <!-- 진척도 보기 위해서 완료된 행의 숫자와 전체 행의 숫자를 가져오는 기능 -->
+    <select id="getComplete"> 
+    	select count(*) from todolistDetail where todo_id=#{todoId} and tododetail_status =1 
+    </select>
+    
+    <select id="getTotal">
+    	select count(*) from todolistDetail where todo_id=#{todoId}
+    </select>
     
 </mapper>

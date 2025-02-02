@@ -21,5 +21,8 @@ public interface TDdetailMapper {
 	public int todoModify(@Param("ToDoDetailID") int ToDoDetailID, TDdetailDTO dto);//투두리스트 수정기능 문제있음
 	public int todoDel(@Param("ToDoDetailID") int ToDoDetailID); //투두리스트 한 개 삭제기능
 	
+	//진척도 계산을 위한 기능
+	public double getComplete(@Param("todoId") int todoId); //완성한 것의 개수를 가져오는 기능
+	public double getTotal(int todoId); //하루의 전체 투두리스트 개수를 가져오는 기능
 
 }

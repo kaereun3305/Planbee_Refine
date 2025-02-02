@@ -77,6 +77,21 @@ public int todoDel(int ToDoDetailID) { //투두리스트 한 개 삭제하는 �
 	return result;
 }
 
+@Override
+public double todoProgress(int todoId) {
+	double progress = 0.0;
+	try {
+		double complete = tdMap.getComplete(todoId); //완료한 것만 가져옴
+		double total = tdMap.getTotal(todoId); //전체 리스트를 가져옴
+		progress = complete/total;
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	
+	return progress;
+}
+
 
 
 

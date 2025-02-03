@@ -4,7 +4,7 @@ public class TDdetailDTO {
 	//dto에서 첫글자가 대문자면 getter,setter 지정시 오류가 나서
 	//첫글자 무조건 소문자로 아래와 같이 데이터타입 변경함
 	int tdDetailId, tdId;
-	String tdDetailDate, tdDetail, tdDetailTime;
+	String tdDetail, tdDetailTime;
 	boolean tdDetailState;
 	
 	
@@ -20,12 +20,7 @@ public class TDdetailDTO {
 	public void setTdId(int tdId) {
 		this.tdId = tdId;
 	}
-	public String getTdDetailDate() {
-		return tdDetailDate;
-	}
-	public void setTdDetailDate(String tdDetailDate) {
-		this.tdDetailDate = tdDetailDate;
-	}
+	
 	public String getTdDetail() {
 		return tdDetail;
 	}

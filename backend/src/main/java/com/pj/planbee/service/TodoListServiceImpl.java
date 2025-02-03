@@ -56,10 +56,10 @@ public int updateState(int ToDoDetailID, String state) {  //투두리스트 작�
 }
 
 @Override
-public int todoModify(int ToDoDetailID, TDdetailDTO dto) { //투두리스트 자체 수정기능
+public int todoModify(TDdetailDTO dto) { //투두리스트 자체 수정기능
 	int result = 0;
 	try {
-		result = tdMap.todoModify(ToDoDetailID, dto);
+		result = tdMap.todoModify(dto);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}

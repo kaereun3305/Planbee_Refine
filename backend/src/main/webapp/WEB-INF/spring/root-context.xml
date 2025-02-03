@@ -8,7 +8,7 @@
 	   <!-- 히카리 커넥션풀 빈 등록 -->
    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
       <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-      <property name="jdbcUrl" value="jdbc:mysql://localhost:8080/whatever_test?useSSL=false&amp;useUnicode=true&amp;serverTimezone=Asia/Seoul "/>
+      <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/whatever_test "/>
       <!-- //hyesutest.c14y0yi620fv.ap-northeast-2.rds.amazonaws.com:3306/whatever_test?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" --> 
       <property name="username" value="root" />
       <property name="password" value="1234" />

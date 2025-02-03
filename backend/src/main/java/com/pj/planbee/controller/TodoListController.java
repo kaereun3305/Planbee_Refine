@@ -61,10 +61,9 @@ public class TodoListController {
 		return result; 
 	}
 	@PutMapping(value="todolist/modify/{ToDoDetailID}", produces="application/json; charset=utf-8")
-	public int todoModify(@PathVariable int ToDoDetailID, @RequestBody TDdetailDTO dto) { //투두리스트 수정하는 기능, 시간지나면 수정불가는 프론트에서 해주시길..
-//DTO로 지정해서 했으나 parameter를 못찾는 문제가 발생함
+	public int todoModify(@RequestBody TDdetailDTO dto) { //투두리스트 수정하는 기능, 시간지나면 수정불가는 프론트에서 해주시길..
 		//System.out.println("detail내용:" + dto.getTdDetail());
-		return ts.todoModify(ToDoDetailID, dto);
+		return ts.todoModify(dto);
 	}
 	
 	@DeleteMapping(value="todolist/del/{ToDoDetailID}", produces="application/json; charset=utf-8")

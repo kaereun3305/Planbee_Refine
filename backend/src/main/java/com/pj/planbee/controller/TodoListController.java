@@ -77,14 +77,14 @@ public class TodoListController {
 	public double todoProgress(@PathVariable int todoId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
 		return ts.todoProgress(todoId);
 	}
-//	  
-//	@GetMapping(value="todolist/getMemo{date}", produces="application/json; chareset=utf-8")
-//	public Map<String, String> getMemo(){//메모를 가져오는 기능
-//		Map<String, String> memo = new HashMap<String, String>();
-//		
-//		return memo;
-//	}
-//	
+	  
+	@GetMapping(value="todolist/getMemo/{todoId}", produces="application/json; chareset=utf-8")
+	public String getMemo(@PathVariable int todoId){ //하루의 메모를 가져오는 기능
+		
+		
+		return "memo";
+	}
+	
 //	@PostMapping(value="todolist/memoWrite{}", produces="application/json; charset=utf-8")
 //	public int memoWrite() { //메모를 작성하는 기능
 //		

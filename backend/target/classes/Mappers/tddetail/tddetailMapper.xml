@@ -28,13 +28,13 @@
     <insert id="todoWrite"> 
 <!-- 투두디테일 작성하는 부분, 이 자료형으로는 성공
     자동으로 숫자 올라가는 부분, 날짜자료형 두 가지, 맨마지막 숫자 어떻게 할지 조정이 필요함 -->
-    	insert into todolistDetail (tododetail_date, tododetail, tododetail_status, tododetail_time, todo_id) 
+    	insert into todolistDetail (tododetail_date, tododetail, tododetail_state, tododetail_time, todo_id) 
     	values (sysdate(), #{tdDetail}, #{tdDetailState}, #{tdDetailTime}, #{tdId});
     </insert>
     
     <update id="updateState">
 	<!-- 완료현황만 업데이트 하는 기능, 성공 -->
-    	update todolistDetail set tododetail_status=#{state} where tododetail_id=#{tdDetailId}
+    	update todolistDetail set tododetail_state=#{state} where tododetail_id=#{tdDetailId}
     </update>
     
     <update id="todoModify">
@@ -49,7 +49,7 @@
     
     <!-- 진척도 보기 위해서 완료된 행의 숫자와 전체 행의 숫자를 가져오는 기능 -->
     <select id="getComplete"> 
-    	select count(*) from todolistDetail where todo_id=#{todoId} and tododetail_status =1 
+    	select count(*) from todolistDetail where todo_id=#{todoId} and tododetail_state =1 
     </select>
     
     <select id="getTotal">

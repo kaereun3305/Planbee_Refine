@@ -1,0 +1,21 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.pj.planbee.mapper.TodoListMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
+	<resultMap type="com.pj.planbee.dto.TodoListDTO" id="todolist">
+		<result property="tdDate" column="todo_date" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<result property="tdMemo" column="todo_memo" />
+		<result property="tdProgress" column="todo_progress" />
+		<result property="userId" column="user_id"/>
+		
+	</resultMap>
+	<!-- 메모 가져오는 기능 -->
+	 <select id="getMemo" resultMap ="todolist">
+    	select todo_memo from todolist where todo_id=#{tdId}
+    	
+    </select>
+    
+    
+</mapper>

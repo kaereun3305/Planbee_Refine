@@ -16,6 +16,7 @@ import com.pj.planbee.mapper.TodoListMapper;
 @Service
 public class TodoListServiceImpl implements TodoListService {
 @Autowired TDdetailMapper tdMap;
+@Autowired TodoListMapper tlMap;
 
 @Override
 public List<TDdetailDTO> getList() { //전체 투두리스트 가져오는 기능, 테스트용
@@ -32,8 +33,9 @@ public List<TDdetailDTO> getTodo(int todoId) { //하루의 투두리스트를 �
 	return list;
 }
 
-@Override
+@Override //투두리스트 작성기능에 if 문 사용해서 todolist 값이 없으면 입력하는 기능을 만들어야함! 
 public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, 성공시 결과값은 1
+
 	int result =0;
 	try {
 		result = tdMap.todoWrite(dto);
@@ -90,6 +92,18 @@ public double todoProgress(int todoId) {
 	}
 	
 	return progress;
+}
+
+@Override
+public List<TodoListDTO> getMemo(int todoId) {
+	List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+	try {
+		list = tlMap.getMemo(todoId);
+		//System.out.println("ser:"+ list);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return list;
 }
 
 

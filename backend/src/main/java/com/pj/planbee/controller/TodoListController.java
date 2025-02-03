@@ -78,18 +78,19 @@ public class TodoListController {
 	}
 	  
 	@GetMapping(value="todolist/getMemo/{todoId}", produces="application/json; chareset=utf-8")
-	public String getMemo(@PathVariable int todoId){ //하루의 메모를 가져오는 기능
-		
-		
-		return "memo";
+	public String getMemo(@PathVariable int todoId){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
+		List<TodoListDTO> list= new ArrayList<TodoListDTO>();
+		list = ts.getMemo(todoId);
+		System.out.println("ctrl: "+ list.get(0).getTdMemo());
+		return list.get(0).getTdMemo();
 	}
-	
-//	@PostMapping(value="todolist/memoWrite{}", produces="application/json; charset=utf-8")
-//	public int memoWrite() { //메모를 작성하는 기능
+//	
+//	@PostMapping(value="todolist/memoWrite", produces="application/json; charset=utf-8")
+//	public int memoWrite(@RequestBody TodoListDTO listDto) { //메모를 작성하는 기능
 //		
 //		return 1;
 //	}
-//	
+	
 //	@PutMapping(value="todolist/memoUpdate{}", produces="application/json; charset=utf-8")
 //	public int memoUpdate() { //메모를 수정하는 기능
 //		return 1;

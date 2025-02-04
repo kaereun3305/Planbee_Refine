@@ -84,22 +84,20 @@ public class TodoListController {
 		System.out.println("ctrl: "+ list.get(0).getTdMemo());
 		return list.get(0).getTdMemo();
 	}
-//	
-//	@PostMapping(value="todolist/memoWrite", produces="application/json; charset=utf-8")
-//	public int memoWrite(@RequestBody TodoListDTO listDto) { //메모를 작성하는 기능
-//		
-//		return 1;
-//	}
 	
-//	@PutMapping(value="todolist/memoUpdate{}", produces="application/json; charset=utf-8")
-//	public int memoUpdate() { //메모를 수정하는 기능
-//		return 1;
-//	}
-//	@DeleteMapping(value="todolist/memoDel{}", produces="application/json; charset=utf-8")
-//	public int memoDel() { //메모를 삭제하는 기능
-//		return 1;
-//	}
-//	
+	@PutMapping(value="todolist/memoWrite", produces="application/json; charset=utf-8")
+	public int memoWrite(@RequestBody TodoListDTO listDto) { //메모를 작성하고 수정하는 기능
+		//열을 미리 만들어두려고 하므로 메모의 작성과 수정을 모두 이 것을 사용하면 됨
+		//System.out.println("controller: "+ listDto.getTdMemo());
+		return ts.memoWrite(listDto);
+	}
+	
+
+	@DeleteMapping(value="todolist/memoDel", produces="application/json; charset=utf-8")
+	public int memoDel(@RequestBody TodoListDTO listDto) { //메모를 삭제하는 기능
+		return ts.memoDel(listDto);
+	}
+	
 //	@GetMapping(value="todolist/progress", produces="application/json; charset=utf-8")
 //	public double progress() {
 //		

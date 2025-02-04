@@ -1,5 +1,7 @@
 package com.pj.planbee.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +37,29 @@ public List<TDdetailDTO> getTodo(int todoId) { //하루의 투두리스트를 �
 
 @Override //투두리스트 작성기능에 if 문 사용해서 todolist 값이 없으면 입력하는 기능을 만들어야함! 
 public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, 성공시 결과값은 1
-
-	int result =0;
-	try {
-		result = tdMap.todoWrite(dto);
-	} catch (Exception e) {
-		e.printStackTrace();
+	
+	//오늘 날짜와 일치하는 탭이 있으면 try catch를 실행한다.
+	LocalDateTime today = LocalDateTime.now();
+	DateTimeFormatter form = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
+	List <String> list= tlMap.getDate(); //todolist table에서 모든 날짜를 가져옴
+	
+	for(int i =0; i<list.size(); i++) {
+		if (list.get(i).equals(todayStr)) {
+			String date = list.get(i);
+		}else {
+			String date = null;
+		}
 	}
+	
+		int result =0;
+		try {
+			result = tdMap.todoWrite(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	
 	return result;
 }
 
@@ -104,6 +122,29 @@ public List<TodoListDTO> getMemo(int todoId) {
 		e.printStackTrace();
 	}
 	return list;
+}
+
+@Override
+public int memoWrite(TodoListDTO listDto) {
+	int result = 0;
+	try {
+		result = tlMap.memoWrite(listDto);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return result;
+}
+
+@Override
+public int memoDel(TodoListDTO listDto) {
+	int result =0;
+	
+	try {
+		result = tlMap.memoDel(listDto);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return result;
 }
 
 

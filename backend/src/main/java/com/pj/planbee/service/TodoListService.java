@@ -8,6 +8,9 @@ import com.pj.planbee.dto.TodoListDTO;
 
 public interface TodoListService {
 
+	
+	public void inputRow();//todolist 켰을때 한 열을 만드는 기능
+	
 	//todolist에 대한 기본 기능
 	public List<TDdetailDTO> getList(); //전체의 투두리스트 가져오는 기능 테스트용
 	public List<TDdetailDTO> getTodo(int todoId); //하루의 투두리스트 가져오는 기능

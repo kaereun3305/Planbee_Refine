@@ -31,6 +31,7 @@ public class TodoListController {
 
 	@GetMapping(value="todolist", produces="application/json; charset=utf-8")
 	public List<TDdetailDTO> getList(){
+		ts.inputRow();
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getList();
 		return list; //전체 투두리스트 
@@ -45,7 +46,7 @@ public class TodoListController {
 	}
 	
 	
-	@PostMapping(value="todolist/write", produces="application/json; charset=utf-8")
+	@PostMapping(value="todolist", produces="application/json; charset=utf-8")
 	@ResponseBody
 	public int todoWrite(@RequestBody TDdetailDTO dto) { //투두리스트 작성하는 기능
 		
@@ -54,19 +55,19 @@ public class TodoListController {
 		return ts.todoWrite(dto);
 	}
 	
-	@PutMapping(value="todolist/update/{ToDoDetailID}", produces="application/json; charset=utf-8")
+	@PutMapping(value="todolist/{ToDoDetailID}", produces="application/json; charset=utf-8")
 	public int updateState(@PathVariable int ToDoDetailID, String state) { //투두리스트 완료내역 업데이트 하는 기능
 		int result = ts.updateState(ToDoDetailID, state);
 		//t/f를 업데이트하면 자동으로 하루의 진척도가 업데이트되어야 하지 않을까?
 		return result; 
 	}
-	@PutMapping(value="todolist/modify/{ToDoDetailID}", produces="application/json; charset=utf-8")
+	@PutMapping(value="todolist", produces="application/json; charset=utf-8")
 	public int todoModify(@RequestBody TDdetailDTO dto) { //투두리스트 수정하는 기능, 시간지나면 수정불가는 프론트에서 해주시길..
 		//System.out.println("detail내용:" + dto.getTdDetail());
 		return ts.todoModify(dto);
 	}
 	
-	@DeleteMapping(value="todolist/del/{ToDoDetailID}", produces="application/json; charset=utf-8")
+	@DeleteMapping(value="todolist/{ToDoDetailID}", produces="application/json; charset=utf-8")
 	public int todoDel(@PathVariable int ToDoDetailID) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
 		
 		return ts.todoDel(ToDoDetailID);

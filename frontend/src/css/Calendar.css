@@ -1,0 +1,14 @@
+.calendar_container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+.calendar_boxL {
+  width: 1150px;
+  height: 100%;
+}
+.calendar_box_test {
+  width: 1100px;
+  height: 730px;
+}

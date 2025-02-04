@@ -6,12 +6,13 @@
 }
 .signup_logo {
   width: 100%;
-  font-size: 64px;
-  color: #f4cc3a;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
+}
+.signup_logo img {
+  width: 100px;
+  height: 80px;
 }
 .signup_form {
   display: flex;

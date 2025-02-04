@@ -11,20 +11,34 @@
   background-color: #fefcfc;
 }
 .login_boxL {
-  background-color: #ffd438;
-  width: 66%;
+  width: 1460px;
+  display: flex;
+  flex-direction: row;
+}
+.login_boxL_yellow,
+.login_boxL_black {
+  width: 50%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 64px;
-  font-weight: 700;
-  color: #ffffff;
+}
+.login_boxL_yellow {
+  background-color: #f4cc3a;
+}
+.login_boxL_black {
+  background-color: #121212;
+}
+img {
+  width: 200px;
+  height: 163px;
 }
 .login_boxR {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 34%;
+  height: 100%;
+  width: 460px;
 }
 .login_logo {
   height: 77px;
@@ -32,24 +46,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20%;
-  margin-bottom: 10%;
-  font-size: 64px;
-  font-weight: 700;
-  color: #000000;
+  margin-top: 160px;
+  margin-bottom: 90px;
 }
-.login_input {
-  height: 339px;
-  width: 578px;
+.login_logo img {
+  width: 124px;
+  height: 96px;
+}
+.form {
+  height: 220px;
+  width: 410px;
   border-radius: 20px;
   background-color: #efefef;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 .login_text {
-  width: 542px;
-  height: 73px;
+  width: 385px;
+  height: 51px;
   border-radius: 10px;
   border: none;
   margin: 10px;
@@ -62,18 +78,20 @@
   border: 1px solid #ccc;
 }
 .form_btn {
+  width: 380px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
 .login_btn {
-  width: 226px;
-  height: 70px;
+  width: 160px;
+  height: 50px;
   border-radius: 70px;
   border: none;
   color: #fefcfc;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
+  cursor: pointer;
 }
 .logIn_button .login_btn {
   background-color: #ffd438;

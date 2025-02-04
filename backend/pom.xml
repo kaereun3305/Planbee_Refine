@@ -164,9 +164,28 @@
     		<artifactId>mysql-connector-java</artifactId>
     		<version>8.0.33</version>
 		</dependency>
-		
-		
-		
+		<dependency>
+   		 <groupId>org.springframework</groupId>
+    		<artifactId>spring-web</artifactId>
+    		<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework.security</groupId>
+    		<artifactId>spring-security-web</artifactId>
+    		<version>${org.springframework-version}</version>
+		</dependency>
+
+		<!-- 메일 관련 부분 -->
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-context-support</artifactId>
+    		<version>5.3.30</version> <!-- 사용 중인 Spring 버전에 맞춰 변경 가능 -->
+		</dependency>
+		<dependency>
+   			<groupId>javax.mail</groupId>
+    		<artifactId>mail</artifactId>
+    		<version>1.4.7</version>
+		</dependency>
 		
 		
 		

@@ -22,7 +22,7 @@ import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins="*")
 public class TodoListController {
 	@Autowired TodoListService ts;
 	//앞으로 튀어나간 주석들은 문제점이 있는 경우

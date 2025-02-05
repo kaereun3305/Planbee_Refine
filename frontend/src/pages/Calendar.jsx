@@ -18,7 +18,17 @@ const Calendar = () => {
                 <CalCom />
               </div>
             </div>
-            <div className="calendar_boxR">최대 스트릭</div>
+            <div className="calendar_boxR">
+              <div className="max_streak">
+                <h3>최대 연속 달성일</h3>
+                <div className="max_streak_days"></div>
+              </div>
+              <div className="current_streak">
+                <h3>현재 연속 달성일</h3>
+                <div className="current_streak_days"></div>
+                <div className="current_streak_comment"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -7,18 +7,34 @@
 .archive_search {
   display: flex;
   flex-direction: row;
-  height: 5%;
+  height: 70px;
   width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
 }
 .archive_search_calendar {
-  width: 300px;
-  height: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 30px;
+  width: 572px;
+  height: 54px;
   align-items: center;
-  margin-left: 12%;
-  background-color: green;
+  background-color: #fefcfc;
+  border-radius: 50px;
 }
-.archive_search_btn {
-  height: 24px;
+.archive_search_calendar input {
+  border: none;
+  font-size: 24px;
+}
+.archive_search_calendar input:focus {
+  outline: none;
+}
+.archive_search_calendar button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 .archive_content {
   display: flex;

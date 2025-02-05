@@ -14,8 +14,22 @@ const Archive = () => {
         <div className="main_content">
           <div className="archive_container">
             <div className="archive_search">
-              <div className="archive_search_calendar">달력 검색~</div>
-              <button className="archive_search_btn">검색</button>
+              <div className="archive_search_calendar">
+                <input
+                  type="text"
+                  id="date"
+                  name="archiveDate"
+                  placeholder="Date"
+                />
+                <button>
+                  <Icon
+                    icon="ic:baseline-search"
+                    width="36px"
+                    height="36px"
+                    style={{ color: "#F4CC3A" }}
+                  />
+                </button>
+              </div>
             </div>
             <div className="archive_content">
               <button className="archive_btn_left">

@@ -1,23 +1,21 @@
 .banner_container {
   width: 100%;
-  height: 104px;
+  height: 70px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px 0 20px;
   background-color: #121212;
+  border-bottom-left-radius: 30px;
 }
-.banner_logo {
-  color: #f4cc3a;
-  height: 104px;
-  font-size: 64px;
-  font-weight: bold;
-  align-items: center;
+.banner_logo img {
+  width: 60px;
+  height: 46px;
 }
 .banner_btn {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   flex-direction: row;
   align-items: center;
   width: 450px;
@@ -27,11 +25,12 @@
   color: #fefcfc;
 }
 .banner_logout {
-  width: 215px;
-  height: 63px;
+  width: 180px;
+  height: 52px;
+  cursor: pointer;
   background-color: #f4cc3a;
   border-radius: 40px;
   color: #ffffff;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
 }

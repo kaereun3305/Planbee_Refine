@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ public class TodoListServiceImpl implements TodoListService {
 @Autowired TDdetailMapper tdMap;
 @Autowired TodoListMapper tlMap;
 
-public int inputRow(String tdDate, String sessionId) { //작업 진행중
+public int inputRow(String tdDate, String sessionId) { //작업완료
 	//오늘 날짜와 일치하는 탭이 있으면 try catch를 실행한다.
-	//세션아이디 쓰기 전에 ctrl에서 지정한 sessionId 사용
+	//세션아이디 실제로 사용하기 전에는 ctrl에서 임의지정한 sessionId 사용
 		LocalDateTime today = LocalDateTime.now();
-		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd");
+		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd"); //날짜 변환
 		String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
-		
+		System.out.println("오늘날짜 변환: " + todayStr);
 		int selectedtdId = 0;
 		List <TDstartDTO> dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
 		if(dateId.isEmpty()) { //리스트가 아예 빈 경우
@@ -39,7 +39,7 @@ public int inputRow(String tdDate, String sessionId) { //작업 진행중
 				System.out.println("service :" + dateId.get(i).getTodo_Id());
 				if (dateId.get(i).getTodo_date().equals(todayStr)) { 
 					//리스트 중에 오늘날짜와 같은 열, 세션아이디와 아이디 같은 열을 찾으면 그 고유번호를 반환함
-					selectedtdId = i+1;
+					selectedtdId = i+1; //for문 사용하여 index번화 반환하므로 1 더해줌
 				}
 			}
 		}
@@ -47,13 +47,13 @@ public int inputRow(String tdDate, String sessionId) { //작업 진행중
 		return selectedtdId;
 }
 
-@Override
-public List<TDdetailDTO> getList() { //전체 투두리스트 가져오는 기능, 테스트용
-	List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
-	list = tdMap.getList();
-	//System.out.println("service 실행: "+ list);
-	return list;
-}
+//@Override
+//public List<TDdetailDTO> getList() { //전체 투두리스트 가져오는 기능, 테스트용
+//	List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
+//	list = tdMap.getList();
+//	//System.out.println("service 실행: "+ list);
+//	return list;
+//}
 
 @Override
 public List<TDdetailDTO> getTodo(int tdId) { //하루의 투두리스트를 가져오는 기능, todolist고유 아이디로 가져옴

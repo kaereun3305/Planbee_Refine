@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pj.planbee.dto.TDdetailDTO;
+import com.pj.planbee.dto.TDstartDTO;
 import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.mapper.TDdetailMapper;
 import com.pj.planbee.mapper.TodoListMapper;
@@ -19,26 +21,30 @@ public class TodoListServiceImpl implements TodoListService {
 @Autowired TDdetailMapper tdMap;
 @Autowired TodoListMapper tlMap;
 
-public void inputRow() { //작업 진행중
+public int inputRow(String tdDate, String sessionId) { //작업 진행중
 	//오늘 날짜와 일치하는 탭이 있으면 try catch를 실행한다.
-	String userId= "팥붕"; //세션아이디 쓰기 전에 잠깐 씁니다
+	//세션아이디 쓰기 전에 ctrl에서 지정한 sessionId 사용
 		LocalDateTime today = LocalDateTime.now();
-		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd");
 		String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
-		List <String> list= tlMap.getDate(); //todolist table에서 모든 날짜를 가져옴
-		System.out.println("list: "+ list.size());
-		if(list.size()==0) { //리스트가 아예 없는 경우
-			tlMap.dateWrite(userId);
-		}else {
-			for(int i =0; i<list.size(); i++) {
-				if (list.get(i).equals(todayStr)) { //리스트 중에 todayStr형식으로 된 같은거 찾으면
-					String date = list.get(i);
-					tlMap.dateWrite(userId);
-				}else {
-					
+		
+		int selectedtdId = 0;
+		List <TDstartDTO> dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
+		if(dateId.isEmpty()) { //리스트가 아예 빈 경우
+			tlMap.dateWrite(todayStr, sessionId); //열을 작성함
+			 selectedtdId = tlMap.getLatest(); //가장 최신으로 작성된 열의 고유번호를 가져옴
+		}else { //그 외의 경우에는 
+			for(int i =0; i<dateId.size(); i++) { //dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
+				System.out.println("service - dateID값: "+ dateId.get(i).getTodo_date());
+				System.out.println("service :" + dateId.get(i).getTodo_Id());
+				if (dateId.get(i).getTodo_date().equals(todayStr)) { 
+					//리스트 중에 오늘날짜와 같은 열, 세션아이디와 아이디 같은 열을 찾으면 그 고유번호를 반환함
+					selectedtdId = i+1;
 				}
 			}
 		}
+		System.out.println(selectedtdId);
+		return selectedtdId;
 }
 
 @Override
@@ -50,9 +56,9 @@ public List<TDdetailDTO> getList() { //전체 투두리스트 가져오는 기�
 }
 
 @Override
-public List<TDdetailDTO> getTodo(int todoId) { //하루의 투두리스트를 가져오는 기능, todolist고유 아이디로 가져옴
+public List<TDdetailDTO> getTodo(int tdId) { //하루의 투두리스트를 가져오는 기능, todolist고유 아이디로 가져옴
 	List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
-	list = tdMap.getTodo(todoId);
+	list = tdMap.getTodo(tdId); 
 	return list;
 }
 

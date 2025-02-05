@@ -18,9 +18,13 @@
     	
     </select>
     
+    <select id="getLatest">
+    	select last_insert_id()
+    </select>
+    
     <!-- TodoId에 따라 하나를 가져오는 기능, 성공 -->
     <select id="getTodo" resultMap ="tddetail">
-    	select * from todolist_Detail where Todo_id=#{tdId} order by tododetail_date asc
+    	select * from todolist_Detail where todo_id=#{tdId}
     	<!-- 입력날짜 빠른 순으로 정렬 -->
     </select>
     

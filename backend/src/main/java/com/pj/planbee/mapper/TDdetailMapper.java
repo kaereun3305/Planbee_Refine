@@ -14,7 +14,7 @@ import com.pj.planbee.dto.TodoListDTO;
 public interface TDdetailMapper {
 	
 	public List<TDdetailDTO> getList(); //전체보는 테스트기능
-	public List<TDdetailDTO> getTodo(int todoId);//하루의 투두리스트 보는기능
+	public List<TDdetailDTO> getTodo(int tdId);//하루의 투두리스트 보는기능
 	public int todoWrite(TDdetailDTO dto); //투두리스트 작성기능
 	public int updateState(@Param("ToDoDetailID") int ToDoDetailID, @Param("state") String state); //투두리스트 완료상황 업데이트기능
 	//그냥 id,state로 적으면 인식을 못해서 @Param("")를 추가함

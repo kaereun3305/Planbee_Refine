@@ -31,15 +31,15 @@ public class TodoListController {
 
 	@GetMapping(value="todolist", produces="application/json; charset=utf-8")
 	public List<TDdetailDTO> getList(){
-		ts.inputRow();
+		//ts.inputRow();
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getList();
-		return list; //전체 투두리스트 
+		return list; //전체 투두리스트 : 작업중인 api 일단 전체 가져오는 test기능으로 사용가능
 
 	}
 	
 	@GetMapping(value="todolist/{todoId}", produces="application/json; charset=utf-8")
-	public List<TDdetailDTO> getTodo(@PathVariable int todoId){ //하루의 투두리스트를 가져오는 기능
+	public List<TDdetailDTO> getTodo(@PathVariable int todoId){ //하루의 투두리스트를 가져오는 기능, 고유아이디는 점진적으로 쌓임, 추후 고유아이디 날짜로 수정
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getTodo(todoId);
 		return list;
@@ -58,7 +58,7 @@ public class TodoListController {
 	@PutMapping(value="todolist/{ToDoDetailID}", produces="application/json; charset=utf-8")
 	public int updateState(@PathVariable int ToDoDetailID, String state) { //투두리스트 완료내역 업데이트 하는 기능
 		int result = ts.updateState(ToDoDetailID, state);
-		//t/f를 업데이트하면 자동으로 하루의 진척도가 업데이트되어야 하지 않을까?
+		//t/f를 업데이트하면 자동으로 하루의 진척도가 업데이트되어야 하지 않을까? 체크박스임
 		return result; 
 	}
 	@PutMapping(value="todolist", produces="application/json; charset=utf-8")
@@ -74,7 +74,7 @@ public class TodoListController {
 	}
 	
 	@GetMapping(value="todolist/progress/{todoId}", produces="application/json; charest=utf-8")
-	public double todoProgress(@PathVariable int todoId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
+	public double todoProgress(@PathVariable int todoId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산, 진척도 랜더링 직후 뜨도록 수정 예정 노터치
 		return ts.todoProgress(todoId);
 	}
 	  

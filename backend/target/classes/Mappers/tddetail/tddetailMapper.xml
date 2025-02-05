@@ -14,7 +14,7 @@
 	</resultMap>
 	<!-- 전체 가져오는 테스트 기능, 성공 -->
 	 <select id="getList" resultMap ="tddetail">
-    	select * from todolist_Detail
+    	select * from ToDoList_Detail
     	
     </select>
     

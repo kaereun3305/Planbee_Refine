@@ -9,23 +9,65 @@
 .todolist {
   width: 618px;
   height: 750px;
+}
+.todolist_index {
+  height: 70px;
+  font-size: 36px;
+  padding-left: 30px;
+  margin-top: 10px;
+  font-weight: 550;
+}
+.todolist_content {
+  width: 618px;
+  height: 640px;
   background-color: #fefcfc;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.todolist_checkbox {
+  height: 350px;
+  width: 500px;
+}
+.todolist_memo {
+  height: 200px;
+  width: 580px;
+  border-radius: 30px;
+  background-color: #efefef;
+  padding: 20px;
 }
 .todo_progress {
   width: 122px;
   height: 750px;
   display: flex;
+  align-items: center;
   flex-direction: column;
-  justify-content: space-around;
 }
-.todo_gauge {
-  height: 600px;
+.todo_percent {
+  height: 70px;
+  font-size: 32px;
+  margin-top: 10px;
+  padding-top: 20px;
+  color: #2c2c2c;
+}
+.todo_bar {
+  height: 640px;
   width: 100%;
   background-color: #fefcfc;
   border-radius: 30px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+  justify-content: end;
   align-items: center;
+}
+.todo_bar_ex {
+  width: 80%;
+  height: 50%;
+  border-radius: 20px;
+  background-color: #f4cc3a;
 }
 .todo_save_btn {
   height: 100px;

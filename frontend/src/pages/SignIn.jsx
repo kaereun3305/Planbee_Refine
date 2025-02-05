@@ -31,13 +31,13 @@ const SignIn = () => {
             className="login_text"
             name="username"
             type="text"
-            placeholder="아이디"
+            placeholder="username"
           />
           <input
             className="login_text"
             name="password"
             type="password"
-            placeholder="비밀번호"
+            placeholder="password"
           />
 
           <div className="form_btn">

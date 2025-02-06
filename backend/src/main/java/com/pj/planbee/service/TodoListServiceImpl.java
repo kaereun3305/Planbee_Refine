@@ -30,14 +30,15 @@ public int inputRow(String tdDate, String sessionId) { //작업완료
 		System.out.println("오늘날짜 변환: " + todayStr);
 		int selectedtdId = 0;
 		List <TDstartDTO> dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
-		if(dateId.isEmpty()) { //리스트가 아예 빈 경우
+		System.out.println("service: "+ dateId.size());
+		if(dateId.size()==0) { //리스트가 아예 빈 경우
 			tlMap.dateWrite(todayStr, sessionId); //열을 작성함
 			 selectedtdId = tlMap.getLatest(); //가장 최신으로 작성된 열의 고유번호를 가져옴
 		}else { //그 외의 경우에는 
 			for(int i =0; i<dateId.size(); i++) { //dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
 				System.out.println("service - dateID값: "+ dateId.get(i).getTodo_date());
 				System.out.println("service :" + dateId.get(i).getTodo_Id());
-				if (dateId.get(i).getTodo_date().equals(todayStr)) { 
+				if (dateId.get(i).getTodo_date().equals(tdDate)) { 
 					//리스트 중에 오늘날짜와 같은 열, 세션아이디와 아이디 같은 열을 찾으면 그 고유번호를 반환함
 					selectedtdId = i+1; //for문 사용하여 index번화 반환하므로 1 더해줌
 				}

@@ -43,7 +43,7 @@ public class TodoListController {
 	}
 	
 	@GetMapping(value="/{tdDate}", produces="application/json; charset=utf-8")
-	public List<TDdetailDTO> getTodo(@PathVariable("tdDate") String tdDate, HttpSession se){ //하루의 투두리스트를 가져오는 기능
+	public List<TDdetailDTO> getTodo(@PathVariable String tdDate, HttpSession se){ //하루의 투두리스트를 가져오는 기능
 		//sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
@@ -108,12 +108,12 @@ public class TodoListController {
 		return ts.memoDel(listDto);
 	}
 	
-//	@GetMapping(value="todolist/progress", produces="application/json; charset=utf-8")
-//	public double progress() {
-//		
-//		return 0.5;
-//	}
-//	
+	@GetMapping(value="todolist/progress", produces="application/json; charset=utf-8")
+	public double progress() {
+		
+		return 0.5;
+	}
+	
 	
 	
 	

@@ -22,8 +22,8 @@ public interface TodoListService {
 	
 	
 	//todolist의 memo에 대한 기능들
-	public List<TodoListDTO> getMemo(int todoId); //하루의 메모 가져오는 기능, 하나 밖에 없으므로 string으로 받아옴
+	public List<TodoListDTO> getMemo(int tdId); //하루의 메모 가져오는 기능, 하나 밖에 없으므로 string으로 받아옴
 	public int memoWrite(TodoListDTO listDto);//메모를 작성하고 수정하는 기능
-	public int memoDel(TodoListDTO listDto); //메모를 삭제하는 기능
+	public int memoDel(int tdId); //메모를 삭제하는 기능
 
 }

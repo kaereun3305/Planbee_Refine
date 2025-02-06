@@ -172,11 +172,11 @@ public int memoWrite(TodoListDTO listDto) {
 }
 
 @Override
-public int memoDel(TodoListDTO listDto) {
+public int memoDel(int tdId) {
 	int result =0;
 	
 	try {
-		result = tlMap.memoDel(listDto);
+		result = tlMap.memoDel(tdId);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}

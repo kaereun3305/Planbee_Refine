@@ -14,10 +14,10 @@ public interface TodoListMapper {
 		public int dateWrite(@Param("tdDate") String tdDate, @Param("sessionId") String userId); //날짜가 없는 경우 열에 입력하는 기능
 		public int getLatest(); //가장 최신의 tdId를 가져오는 기능
 		//memo관련 기능
-		public List<TodoListDTO> getMemo(int todoId);
+		public List<TodoListDTO> getMemo(int tdId);
 		public int memoWrite(TodoListDTO listDto);
 		public int memoUpdate();
-		public int memoDel(TodoListDTO listDto);
+		public int memoDel(int tdId);
 		
 		
 		//진척도 업데이트 하는 기능

@@ -67,8 +67,13 @@ public class TodoListController {
 	}
 	
 	@PutMapping(value="/{ToDoDetailID}", produces="application/json; charset=utf-8")
-	public int updateState(@PathVariable int ToDoDetailID, String state) { //투두리스트 완료내역 업데이트 하는 기능
+	public int updateState(@PathVariable int ToDoDetailID, String state, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
 		int result = ts.updateState(ToDoDetailID, state);
+		
+		String sessionId = (String) se.getAttribute("sessionId");
+		//int tdId = ts.tdIdSearch(tdDate,sessionId);
+//업데이트 하면 자동으로 현재 진척도를 가져오도록 수정할것
+//현재 프론트에서 요청을 위해 입력하는 값이 무엇인지 확인이 필요함
 		return result; 
 	}
 	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
@@ -84,14 +89,17 @@ public class TodoListController {
 	}
 	
 	@GetMapping(value="/progress/{tdId}", produces="application/json; charest=utf-8")
-	public double todoCheckbox(@PathVariable int tdId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
+	public double getProgress(@PathVariable int tdId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
 		return ts.todoProgress(tdId); //진척도 업데이트시 자동으로 진척도 결과값 반환
 	}
 	  
-	@GetMapping(value="/getMemo/{todoId}", produces="application/json; chareset=utf-8")
-	public String getMemo(@PathVariable int todoId){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
+	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; chareset=utf-8")
+	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
+		String sessionId = (String) se.getAttribute("sessionId");
+		int tdId = ts.tdIdSearch(tdDate, sessionId);
+		
 		List<TodoListDTO> list= new ArrayList<TodoListDTO>();
-		list = ts.getMemo(todoId);
+		list = ts.getMemo(tdId);
 		System.out.println("ctrl: "+ list.get(0).getTdMemo());
 		return list.get(0).getTdMemo();
 	}
@@ -104,9 +112,11 @@ public class TodoListController {
 	}
 	
 
-	@DeleteMapping(value="/memoDel", produces="application/json; charset=utf-8")
-	public int memoDel(@RequestBody TodoListDTO listDto) { //메모를 삭제하는 기능
-		return ts.memoDel(listDto);
+	@DeleteMapping(value="/memoDel/{tdDate}", produces="application/json; charset=utf-8")
+	public int memoDel(@PathVariable String tdDate, HttpSession se) { //메모를 삭제하는 기능
+		String sessionId = (String) se.getAttribute("sessionId");
+		int tdId = ts.tdIdSearch(tdDate, sessionId); //td고유Id로 변환
+		return ts.memoDel(tdId);
 	}
 	
 	@GetMapping(value="/progress/{tdDate}", produces="application/json; charset=utf-8")

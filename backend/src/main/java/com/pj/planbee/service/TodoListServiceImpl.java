@@ -127,7 +127,9 @@ public int todoDel(int ToDoDetailID) { //투두리스트 한 개 삭제하는 �
 public double todoProgress(int tdId) {
 	double progress = 0.0;
 	if(getTodo(tdId).size()==0){
-	//todoId로 가져온 값이 표에서 하나도 없으면, 표에 입력을 하는 메소드를 추가한다
+	//todoId로 가져온 값이 표에서 하나도 없으면, 그냥 0을 반환한다.
+		progress = 0.0;
+		System.out.println("ser.progress:tdlist_detail 표에 값이 없음");
 		
 	}else {
 		//else인 경우에 아래 tc를 실행한다

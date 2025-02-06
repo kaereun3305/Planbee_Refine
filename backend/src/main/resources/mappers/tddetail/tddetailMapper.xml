@@ -32,7 +32,7 @@
 <!-- 투두디테일 작성하는 부분, 이 자료형으로는 성공
     자동으로 숫자 올라가는 부분, 날짜자료형 두 가지, 맨마지막 숫자 어떻게 할지 조정이 필요함 -->
     	insert into todolist_Detail (tododetail, tododetail_state, tododetail_time, todo_id) 
-    	values (#{tdDetail}, #{tdDetailState}, #{tdDetailTime}, #{tdId});
+    	values (#{tdDetail}, false, #{tdDetailTime}, #{tdId});
     </insert>
     
     <update id="updateState">

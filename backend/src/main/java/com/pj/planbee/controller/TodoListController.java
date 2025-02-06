@@ -1,6 +1,7 @@
 package com.pj.planbee.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 
@@ -47,7 +48,7 @@ public class TodoListController {
 		//sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
-		int todoId = ts.inputRow(tdDate, sessionId); //테이블에 열이 있는지 먼저 확인 후 없으면 추가
+		int todoId = ts.inputRow(tdDate, sessionId); //오늘과 내일의 열이 없으면 입력하고, 있으면 오늘의 tdId 반환해주는 메소드
 		//추가한 후 todoId 고유번호를 반환하도록 설정
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getTodo(todoId);
@@ -57,17 +58,17 @@ public class TodoListController {
 	
 	@PostMapping(value="/write", produces="application/json; charset=utf-8")
 	@ResponseBody
-	public int todoWrite(@RequestBody TDdetailDTO dto) { //투두리스트 작성하는 기능
+	public int todoWrite(@RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 작성하는 기능
+		//tdId는 sessionId 이용
 		
 //		System.out.println("ctrl,todo:"+ dto.getTdDetail());
 //		System.out.println(dto.getTdId());
-		return ts.todoWrite(dto);
+		return ts.todoWrite(dto); //이후 세션아이디 넣어야함
 	}
 	
 	@PutMapping(value="/{ToDoDetailID}", produces="application/json; charset=utf-8")
 	public int updateState(@PathVariable int ToDoDetailID, String state) { //투두리스트 완료내역 업데이트 하는 기능
 		int result = ts.updateState(ToDoDetailID, state);
-		//t/f를 업데이트하면 자동으로 하루의 진척도가 업데이트되어야 하지 않을까?
 		return result; 
 	}
 	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
@@ -76,15 +77,15 @@ public class TodoListController {
 		return ts.todoModify(dto);
 	}
 	
-	@DeleteMapping(value="delete/{ToDoDetailID}", produces="application/json; charset=utf-8")
+	@DeleteMapping(value="delete/{tdDate}", produces="application/json; charset=utf-8")
 	public int todoDel(@PathVariable int ToDoDetailID) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
 		
 		return ts.todoDel(ToDoDetailID);
 	}
 	
-	@GetMapping(value="/progress/{todoId}", produces="application/json; charest=utf-8")
-	public double todoProgress(@PathVariable int todoId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
-		return ts.todoProgress(todoId);
+	@GetMapping(value="/progress/{tdId}", produces="application/json; charest=utf-8")
+	public double todoCheckbox(@PathVariable int tdId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
+		return ts.todoProgress(tdId); //진척도 업데이트시 자동으로 진척도 결과값 반환
 	}
 	  
 	@GetMapping(value="/getMemo/{todoId}", produces="application/json; chareset=utf-8")
@@ -108,10 +109,13 @@ public class TodoListController {
 		return ts.memoDel(listDto);
 	}
 	
-	@GetMapping(value="todolist/progress", produces="application/json; charset=utf-8")
-	public double progress() {
-		
-		return 0.5;
+	@GetMapping(value="/progress/{tdDate}", produces="application/json; charset=utf-8")
+	public double getProgress(@PathVariable String tdDate, HttpSession se) { //진척도 랜더링하는 기능
+		//250206과 같은 날짜값을 String으로 입력하고 세션아이디 값을 받아서 td고유Id로 변환
+		String sessionId = (String) se.getAttribute("sessionId");
+		int tdId = ts.tdIdSearch(tdDate,sessionId);
+		//tdId에 대한 진척도를 가져옴
+		return ts.todoProgress(tdId);
 	}
 	
 	

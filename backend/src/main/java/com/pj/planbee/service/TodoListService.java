@@ -11,8 +11,9 @@ public interface TodoListService {
 	public HashMap<String, String> checkToday();//날짜 확인하여 오늘, 내일 날짜값을 String 변환
 	public int inputRow(String tdDate, String sessionId);//todolist 켰을때 열이 있는지 확인하고 한 열을 만드는 기능
 	public int tdIdSearch(String tdDate, String sessionId); //날짜, id에 해당하는 tdId 고유값 찾는 메소드
+	
 	//todolist에 대한 기본 기능
-		//public List<TDdetailDTO> getList(); //전체의 투두리스트 가져오는 기능 테스트용
+	//public List<TDdetailDTO> getList(); //전체의 투두리스트 가져오는 기능 테스트용
 	public List<TDdetailDTO> getTodo(int tdId); //하루의 투두리스트 가져오는 기능
 	public int todoWrite(TDdetailDTO dto); //투두리스트 입력하는 기능
 	public int updateState(int ToDoDetailID, String state); //완료상황 t/f 업데이트하는 기능

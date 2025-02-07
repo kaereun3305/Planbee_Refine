@@ -126,6 +126,7 @@ public int todoDel(int ToDoDetailID) { //투두리스트 한 개 삭제하는 �
 
 @Override
 public double todoProgress(int tdId) {
+	
 	double progress = 0.0;
 	if(getTodo(tdId).size()==0){
 	//todoId로 가져온 값이 표에서 하나도 없으면, 그냥 0을 반환한다.

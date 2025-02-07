@@ -45,6 +45,7 @@ public class TodoListController {
 	
 	@GetMapping(value="/{tdDate}", produces="application/json; charset=utf-8")
 	public List<TDdetailDTO> getTodo(@PathVariable String tdDate, HttpSession se){ //하루의 투두리스트를 가져오는 기능
+		//input값: yyMMdd 형식의 날짜 데이터
 		//sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
@@ -56,24 +57,28 @@ public class TodoListController {
 	}
 	
 	
-	@PostMapping(value="/write", produces="application/json; charset=utf-8")
+	@PostMapping(value="/write/{tdDate}", produces="application/json; charset=utf-8")
 	@ResponseBody
-	public int todoWrite(@RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 작성하는 기능
+	public int todoWrite(@RequestBody TDdetailDTO dto, @PathVariable String tdDate, HttpSession se) { //투두리스트 작성하는 기능
+		//input값: 할 일에 대한 String tododetail내용, yyMMdd 형식의 날짜
 		//tdId는 sessionId 이용
+		String sessionId = (String) se.getAttribute("sessionId");
 		
+		//sessionId와 tdDate를 이용해서 tdId를 가져오는 메소드
+		int tdId = ts.tdIdSearch(tdDate, sessionId);
 //		System.out.println("ctrl,todo:"+ dto.getTdDetail());
 //		System.out.println(dto.getTdId());
 		return ts.todoWrite(dto); //이후 세션아이디 넣어야함
 	}
 	
-	@PutMapping(value="/{ToDoDetailID}", produces="application/json; charset=utf-8")
-	public int updateState(@PathVariable int ToDoDetailID, String state, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
-		int result = ts.updateState(ToDoDetailID, state);
+	@PutMapping(value="/{tdDetailId}", produces="application/json; charset=utf-8")
+	public int updateState(@PathVariable int tdDetailId, String state, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
+		int result = ts.updateState(tdDetailId, state);
 		
 		String sessionId = (String) se.getAttribute("sessionId");
 		//int tdId = ts.tdIdSearch(tdDate,sessionId);
 //업데이트 하면 자동으로 현재 진척도를 가져오도록 수정할것
-//현재 프론트에서 요청을 위해 입력하는 값이 무엇인지 확인이 필요함
+//현재 프론트에서 요청을 위해 입력하는 값이 무엇인지 확인이 필요함-> tdDetailId 입력해줘야함
 		return result; 
 	}
 	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
@@ -82,17 +87,12 @@ public class TodoListController {
 		return ts.todoModify(dto);
 	}
 	
-	@DeleteMapping(value="delete/{tdDate}", produces="application/json; charset=utf-8")
-	public int todoDel(@PathVariable int ToDoDetailID) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
+	@DeleteMapping(value="delete/{tdDetailId}", produces="application/json; charset=utf-8")
+	public int todoDel(@PathVariable int tdDetailId) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
 		
-		return ts.todoDel(ToDoDetailID);
+		return ts.todoDel(tdDetailId);
 	}
 	
-	@GetMapping(value="/progress/{tdId}", produces="application/json; charest=utf-8")
-	public double getProgress(@PathVariable int tdId) { //하루의 투두리스트 진척도를 업데이트 하는 기능, ser에서 연산
-		return ts.todoProgress(tdId); //진척도 업데이트시 자동으로 진척도 결과값 반환
-	}
-	  
 	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; chareset=utf-8")
 	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
 		String sessionId = (String) se.getAttribute("sessionId");

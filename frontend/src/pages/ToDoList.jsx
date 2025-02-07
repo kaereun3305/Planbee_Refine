@@ -4,22 +4,44 @@ import Banner from "../components/Banner";
 import "../css/Main.css";
 import "../css/ToDoList.css";
 import axios from "axios";
-
+import {
+  getFormattedTodayYYMMDD,
+  getFormattedTomorrowYYMMDD,
+  getFormattedTodayYYYYMMDD,
+  getFormattedTomorrowYYYYMMDD,
+} from "../components/DateUtils";
 const ToDoList = () => {
-  const [todoDetails, setTodoDetails] = useState([]);
+  const [todoDetailsToday, setTodoDetailsToday] = useState([]);
+  const [todoDetailsTomorrow, setTodoDetailsTomorrow] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/planbee/todolist")
+      .get(
+        `http://localhost:8080/planbee/todolist/${getFormattedTodayYYMMDD()}`
+      )
       .then((response) => {
         if (Array.isArray(response.data)) {
-          setTodoDetails(response.data.map((item) => item.tdDetail));
+          setTodoDetailsToday(response.data.map((item) => item.tdDetail));
         } else {
           console.error("에러", response.data);
         }
       })
       .catch((error) => {
         console.error("fetch data error", error);
+      });
+    axios
+      .get(
+        `http://localhost:8080/planbee/todolist/${getFormattedTomorrowYYMMDD()}`
+      )
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setTodoDetailsTomorrow(response.data.map((item) => item.tdDetail));
+        } else {
+          console.error("내일의 데이터 에러", response.data);
+        }
+      })
+      .catch((error) => {
+        console.error("내일의 데이터 fetch 에러", error);
       });
   }, []);
 
@@ -33,11 +55,11 @@ const ToDoList = () => {
             <div className="todolist">
               <div className="todolist_index">Today</div>
               <div className="todolist_content">
-                <h2 className="todolist_date">2025.02.05</h2>
+                <h2 className="todolist_date">{getFormattedTodayYYYYMMDD()}</h2>
                 <div className="todolist_checkbox">
-                  {todoDetails.length > 0 ? (
+                  {todoDetailsToday.length > 0 ? (
                     <ul>
-                      {todoDetails.map((detail, index) => (
+                      {todoDetailsToday.map((detail, index) => (
                         <li key={index}>{detail}</li>
                       ))}
                     </ul>
@@ -59,11 +81,13 @@ const ToDoList = () => {
             <div className="todolist">
               <div className="todolist_index">Tomorrow</div>
               <div className="todolist_content">
-                <h2 className="todolist_date">2025.02.06</h2>
+                <h2 className="todolist_date">
+                  {getFormattedTomorrowYYYYMMDD()}
+                </h2>
                 <div className="todolist_checkbox">
-                  {todoDetails.length > 0 ? (
+                  {todoDetailsTomorrow.length > 0 ? (
                     <ul>
-                      {todoDetails.map((detail, index) => (
+                      {todoDetailsTomorrow.map((detail, index) => (
                         <li key={index}>{detail}</li>
                       ))}
                     </ul>

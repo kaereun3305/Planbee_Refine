@@ -12,27 +12,32 @@
 		<result property="userId" column="user_id"/>
 		
 	</resultMap>
-	<!-- 날짜를 가져오는 기능 -->
+	<!-- 날짜와 todoId 가져오는 기능 -->
 	<select id="getDate"> 
-    	select todo_date from todolist
+    	select todo_date, todo_id from ToDoList where user_id =#{sessionId}
+    </select>
+    
+    <select id="getLatest"> <!-- 가장 최근에 입력된 todoID 고유번호를 가져오는 쿼리문 -->
+    	select last_insert_id()
     </select>
     
     <!-- 날짜 확인해서 입력하는 기능 -->
+   
     <insert id="dateWrite">
-     	insert into todolist (todo_date, todo_memo, todo_progress, user_id) values (sysdate(), "", "0.0", #{todoId})
+     	insert into ToDoList (todo_date, todo_memo, todo_progress, user_id) values (#{tdDate}, "", "0.0", #{sessionId})
     </insert>
     
 	<!-- 메모 가져오는 기능 -->
 	 <select id="getMemo" resultMap ="todolist">
-    	select todo_memo from todolist where todo_id=#{tdId}
+    	select todo_memo from ToDoList where todo_id=#{tdId}
     </select>
     
     <update id="memoWrite">
-    	update todolist set todo_memo=#{tdMemo} where todo_id=#{tdId}
+    	update ToDoList set todo_memo=#{tdMemo} where todo_id=#{tdId}
     </update>
     
     <delete id="memoDel">
-    	delete todo_memo from todolist where todo_id=#{tdId}
+    	delete todo_memo from ToDoList where todo_id=#{tdId}
     </delete>
     
     

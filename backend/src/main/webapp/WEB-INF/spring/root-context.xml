@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
        https://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- 📌 JavaMailSender 설정 -->
+    <!-- JavaMailSender 설정 -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="587"/>
@@ -21,26 +21,26 @@
         </property>
     </bean>
 
-    <!-- 📌 히카리 커넥션풀 설정 -->
+    <!-- 히카리 커넥션풀 설정 -->
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
         <property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl" />
-        <property name="username" value="c##java" />
+        <property name="username" value="c##eclip" />
         <property name="password" value="1234" />
     </bean>
 
-    <!-- 📌 데이터소스 등록 -->
+    <!-- 데이터소스 등록 -->
     <bean id="ds" class="com.zaxxer.hikari.HikariDataSource">
         <constructor-arg ref="hikariConfig"/>
     </bean>
 
-    <!-- 📌 MyBatis SQL 세션 팩토리 설정 -->
+    <!-- MyBatis SQL 세션 팩토리 설정 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="ds"/>
         <property name="mapperLocations" value="classpath:/mappers/**/*Mapper.xml"/>
     </bean>
 
-    <!-- ✅ **올바른 MyBatis 매퍼 스캔 설정** -->
+    <!--  **올바른 MyBatis 매퍼 스캔 설정** -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.pj.planbee.mapper"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>

@@ -16,7 +16,7 @@ import com.pj.planbee.dto.TempUserDTO;
 import com.pj.planbee.service.TempUserService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins="*")
 @RequestMapping("/tempuser")
 public class TempUserController {
 

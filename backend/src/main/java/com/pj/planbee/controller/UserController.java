@@ -7,7 +7,7 @@ import com.pj.planbee.dto.UserDTO;
 import com.pj.planbee.service.UserService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins="*")
 @RequestMapping("/user")  //  User API 기본 경로 설정
 public class UserController {
 

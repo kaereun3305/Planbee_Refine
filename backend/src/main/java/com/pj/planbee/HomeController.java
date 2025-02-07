@@ -45,7 +45,7 @@ public class HomeController {
 	@GetMapping("index")
 	public String index(Model model) {
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
-		list = ts.getList();
+		//list = ts.getList();
 		return "index";
 	}
 }

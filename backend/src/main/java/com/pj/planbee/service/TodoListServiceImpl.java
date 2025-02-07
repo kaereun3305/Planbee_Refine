@@ -30,7 +30,7 @@ public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 St
 	DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd"); //날짜 변환
 	String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
 	String tomorrowStr = tomorrow.format(form); //내일 날짜를 위 형식으로 변환
-	System.out.println("내일날짜 변환: " + tomorrowStr);
+	//System.out.println("내일날짜 변환: " + tomorrowStr);
 	
 	HashMap<String, String> todayTomo = new HashMap<String, String>();
 	todayTomo.put("todayStr", todayStr);
@@ -45,8 +45,9 @@ public int inputRow(String tdDate, String sessionId) { //오늘과 내일의 열
 		String tomorrowStr = checkToday().get("tomorrowStr"); //내일의 날짜 변환값 가져옴
 		
 		int selectedtdId = 0;
-		List <TDstartDTO> dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
-		if(dateId.size()==0) { //리스트가 아예 빈 경우
+		List <TDstartDTO> dateId = null;
+		 dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
+		if(dateId == null || dateId.size()==0) { //리스트가 아예 빈 경우
 			tlMap.dateWrite(todayStr, sessionId); //열을 작성함
 			tlMap.dateWrite(tomorrowStr, sessionId); //내일의 열도 작성함
 			 selectedtdId = tlMap.getLatest(); //가장 최신으로 작성된 열의 고유번호를 가져옴

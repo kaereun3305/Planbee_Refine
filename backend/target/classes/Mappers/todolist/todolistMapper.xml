@@ -40,6 +40,10 @@
     	update ToDoList set todo_memo= "" where todo_id=#{tdId}
     </update>
     
+    <select id="dateSearch">
+    	select todo_date from ToDoList where todo_id=#{tdId}
+    </select>
+    
     
     
 </mapper>

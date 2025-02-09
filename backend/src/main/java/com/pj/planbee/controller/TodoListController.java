@@ -72,34 +72,41 @@ public class TodoListController {
 //		System.out.println(dto.getTdId());
 		return ts.todoWrite(dto); //이후 세션아이디 넣어야함
 	}
+	//정상작동됨
 	
-	@PutMapping(value="/state/{tdDetailId}", produces="application/json; charset=utf-8")
-	public int updateState(@PathVariable("tdDetailId") int tdDetailId, @RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
-		int result = ts.updateState(tdDetailId, dto.isTdDetailState());
-		System.out.println("tdDetailId: " + tdDetailId);
+	@PutMapping(value="/state", produces="application/json; charset=utf-8")
+	public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
+		//input값: body에서 기존값 detail DTO 모두 입력해주어야함
+		ts.updateState(dto.getTdDetailId(), dto.isTdDetailState()); 
+		System.out.println("tdDetailId: " + dto.getTdDetailId());
 		System.out.println("state:" + dto.isTdDetailState());
-		String sessionId = (String) se.getAttribute("sessionId");
-		//int tdId = ts.tdIdSearch(tdDate,sessionId);
-//업데이트 하면 자동으로 현재 진척도를 가져오도록 수정할것
-//현재 프론트에서 요청을 위해 입력하는 값이 무엇인지 확인이 필요함-> tdDetailId 입력해줘야함
-		return result; 
+		//String sessionId = (String) se.getAttribute("sessionId");
+		//String tdDate = ts.dateSearch(dto.getTdId()); //tdId기반으로 tdDate가져옴
+		
+		//postman입력값을 dto이름과 맞춰줘야함!!!!
+		double progress = ts.todoProgress(dto.getTdId()); //업데이트 하면 자동으로 현재 진척도를 가져오는 기능
+		
+		return progress; 
 	}
 	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
 	public int todoModify(@RequestBody TDdetailDTO dto) { //투두리스트 수정하는 기능, 시간지나면 수정불가는 프론트에서 해주시길..
-		//System.out.println("detail내용:" + dto.getTdDetail());
+	//input 값: detailDTO, 변동없는 경우에는 기존값이 입력되도록 해야함
+		//System.out.println("boolean 값 :" + dto.isTdDetailState());
 		return ts.todoModify(dto);
 	}
-//문제 발생함 true/false를 못가져옴 -> 질문필요
+	//정상 작동완료, 내용수정위한 기능 
+	//
 	
 	@DeleteMapping(value="delete/{tdDetailId}", produces="application/json; charset=utf-8")
 	public int todoDel(@PathVariable int tdDetailId) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
-		
+	//input값: list에서 받은 tdDetailId
 		return ts.todoDel(tdDetailId);
 	}
 	//잘 작동됨
 	
 	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; chareset=utf-8")
 	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
+	//input값: yyMMdd형식의 String날짜
 		session(se);//세션 메소드 호출 삭제예정
 		String sessionId = (String) se.getAttribute("sessionId");
 		//System.out.println("ctrl:" + sessionId);
@@ -114,6 +121,7 @@ public class TodoListController {
 	
 	@PutMapping(value="/memoWrite", produces="application/json; charset=utf-8")
 	public int memoWrite(@RequestBody TodoListDTO listDto) { //메모를 작성하고 수정하는 기능
+	//input값: tdListDTO값 모두. 메모제외한 값은 기존값이 모두 입력되어야함
 		//열을 미리 만들어두려고 하므로 메모의 작성과 수정을 모두 이 것을 사용하면 됨
 		//System.out.println("controller: "+ listDto.getTdMemo());
 		return ts.memoWrite(listDto);
@@ -123,6 +131,7 @@ public class TodoListController {
 
 	@DeleteMapping(value="/memoDel/{tdDate}", produces="application/json; charset=utf-8")
 	public int memoDel(@PathVariable String tdDate, HttpSession se) { //메모를 삭제하는 기능
+	//input값: yyMMdd형식의 String날짜	
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
 		int tdId = ts.tdIdSearch(tdDate, sessionId); //td고유Id로 변환
@@ -132,12 +141,14 @@ public class TodoListController {
 	
 	@GetMapping(value="/progress/{tdDate}", produces="application/json; charset=utf-8")
 	public double getProgress(@PathVariable String tdDate, HttpSession se) { //진척도 랜더링하는 기능
+	//input값: yyMMdd형식의 String날짜
 		//250206과 같은 날짜값을 String으로 입력하고 세션아이디 값을 받아서 td고유Id로 변환
 		String sessionId = (String) se.getAttribute("sessionId");
 		int tdId = ts.tdIdSearch(tdDate,sessionId);
 		//tdId에 대한 진척도를 가져옴
 		return ts.todoProgress(tdId);
 	}
+	//정상 작동함
 	
 	
 	

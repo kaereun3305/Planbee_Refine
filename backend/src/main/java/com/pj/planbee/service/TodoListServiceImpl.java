@@ -199,5 +199,18 @@ public int memoDel(int tdId) {
 	return result;
 }
 
+@Override
+public String dateSearch(int tdId) {
+	
+	String date = null;
+	try {
+		date = tlMap.dateSearch(tdId);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return date;
+}
+
+
 
 }

@@ -36,9 +36,9 @@
     	update ToDoList set todo_memo=#{tdMemo} where todo_id=#{tdId}
     </update>
     
-    <delete id="memoDel">
-    	delete todo_memo from ToDoList where todo_id=#{tdId}
-    </delete>
+    <update id="memoDel">
+    	update ToDoList set todo_memo= "" where todo_id=#{tdId}
+    </update>
     
     
     

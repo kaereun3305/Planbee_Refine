@@ -54,7 +54,7 @@ public int inputRow(String tdDate, String sessionId) { //오늘과 내일의 열
 			 selectedtdId = tlMap.getLatest(); //가장 최신으로 작성된 열의 고유번호를 가져옴
 		}else{
 			    for (TDstartDTO dto : dateId) {
-			        if (dto.getTodo_date().equals(todayStr)) { // 날짜가 250209인 경우
+			        if (dto.getTodo_date().equals(tdDate)) { // 날짜가 250209인 경우
 			            found = true;
 			            selectedtdId = dto.getTodo_Id(); // 해당 날짜의 tdId를 선택
 			            break; // 해당 날짜를 찾았으므로 반복문 종료

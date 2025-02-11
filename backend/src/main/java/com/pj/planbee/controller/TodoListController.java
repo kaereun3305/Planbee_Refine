@@ -51,6 +51,7 @@ public class TodoListController {
 		String sessionId = (String) se.getAttribute("sessionId");
 		int todoId = ts.inputRow(tdDate, sessionId); //오늘과 내일의 열이 없으면 입력하고, 있으면 오늘의 tdId 반환해주는 메소드
 		//추가한 후 todoId 고유번호를 반환하도록 설정
+		System.out.println(todoId);
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getTodo(todoId);
 		return list;

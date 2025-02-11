@@ -72,12 +72,12 @@ public int inputRow(String tdDate, String sessionId) { //오늘과 내일의 열
 }
 public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
 	List<TDstartDTO> dateId = tlMap.getDate(sessionId);
-	System.out.println("service: " + sessionId);
+	System.out.println("service: "+dateId.get(3).getTodo_Id());
 	int selectedtdId = 0;
 	for (int i =0; i<dateId.size(); i++) {//dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
 		if(dateId.get(i).getTodo_date().equals(tdDate)) {
 			//리스트 중에 입력한 날짜와 같은 열, 세션아이디와 같은 값을 가진 열을 찾으면 그 고유번호를 반환함
-			selectedtdId = i+1; //for문 사용하여 index번화 반환하므로 1 더해줌
+			selectedtdId = dateId.get(i).getTodo_Id(); //for문 사용하여 index번화 반환하므로 1 더해줌
 		}
 	}
 	return selectedtdId;
@@ -144,6 +144,7 @@ public double todoProgress(int tdId) {
 	double progress = 0.0;
 	if(getTodo(tdId).size()==0){
 	//todoId로 가져온 값이 표에서 하나도 없으면, 그냥 0을 반환한다.
+		System.out.println("ser:"+ getTodo(tdId));
 		progress = 0.0;
 		System.out.println("ser.progress:tdlist_detail 표에 값이 없음");
 		

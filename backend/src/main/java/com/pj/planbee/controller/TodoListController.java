@@ -143,8 +143,11 @@ public class TodoListController {
 	public double getProgress(@PathVariable String tdDate, HttpSession se) { //진척도 랜더링하는 기능
 	//input값: yyMMdd형식의 String날짜
 		//250206과 같은 날짜값을 String으로 입력하고 세션아이디 값을 받아서 td고유Id로 변환
+		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
+		System.out.println(sessionId);
 		int tdId = ts.tdIdSearch(tdDate,sessionId);
+		System.out.println(tdId);
 		//tdId에 대한 진척도를 가져옴
 		return ts.todoProgress(tdId);
 	}

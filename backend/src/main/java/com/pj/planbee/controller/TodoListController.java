@@ -71,6 +71,7 @@ public class TodoListController {
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
 //		System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
 //		System.out.println(dto.getTdId());
+		dto.setTdId(tdId);
 		return ts.todoWrite(dto); //이후 세션아이디 넣어야함
 	}
 	//정상작동됨

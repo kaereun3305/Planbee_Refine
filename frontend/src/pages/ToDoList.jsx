@@ -5,41 +5,9 @@ import TodayCom from "../components/TodayCom";
 import TomorrowCom from "../components/TomorrowCom";
 import "../css/Main.css";
 import "../css/ToDoList.css";
+import axios from "axios";
 
 const ToDoList = () => {
-  {
-    /*useEffect(() => {
-    axios
-      .get(
-        `http://localhost:8080/planbee/todolist/${getFormattedTodayYYMMDD()}`
-      )
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setTodoDetailsToday(response.data.map((item) => item.tdDetail));
-        } else {
-          console.error("에러", response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("fetch data error", error);
-      });
-    axios
-      .get(
-        `http://localhost:8080/planbee/todolist/${getFormattedTomorrowYYMMDD()}`
-      )
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setTodoDetailsTomorrow(response.data.map((item) => item.tdDetail));
-        } else {
-          console.error("내일의 데이터 에러", response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("내일의 데이터 fetch 에러", error);
-      });
-  }, []); */
-  }
-
   return (
     <div className="main_container">
       <Banner />

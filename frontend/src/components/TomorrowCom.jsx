@@ -1,32 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { getFormattedTomorrowYYYYMMDD } from "./DateUtils";
+import {
+  getFormattedTomorrowYYYYMMDD,
+  getFormattedTomorrowYYMMDD,
+} from "./DateUtils";
+import axios from "axios";
 import "../css/TodayCom.css";
 const TomorrowCom = () => {
   const [todoDetailsTomorrow, setTodoDetailsTomorrow] = useState([]);
+  const [memo, setMemo] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newTask, setNewTask] = useState({ tdDetail: "", tdDetailTime: "" });
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
-    // 가짜 데이터 생성
-    const fakeDataTomorrow = [
-      {
-        tdDetailId: 6,
-        tdId: 4,
-        tdDetail: "내일 해야 할 일 1",
-        tdDetailTime: "1500",
-        tdDetailState: false,
-      },
-      {
-        tdDetailId: 7,
-        tdId: 4,
-        tdDetail: "내일 해야 할 일 2",
-        tdDetailTime: "1800",
-        tdDetailState: false,
-      },
-    ];
-    setTodoDetailsTomorrow(fakeDataTomorrow);
+    const fetchTodoDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/todolist/${getFormattedTomorrowYYMMDD()}`
+        );
+        if (Array.isArray(response.data)) {
+          setTodoDetailsTomorrow(response.data);
+        } else {
+          console.error("내일의 데이터 에러", response.data);
+        }
+      } catch (error) {
+        console.error("내일의 데이터 fetch 에러", error);
+      }
+    };
+
+    const fetchMemo = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/todolist/getMemo/250206`
+        );
+        setMemo(response.data); // 응답 데이터에서 메모 저장
+      } catch (error) {
+        console.error("메모 데이터 fetch 에러", error);
+      }
+    };
+
+    fetchTodoDetails();
+    fetchMemo();
   }, []);
+  useEffect(() => {
+    console.log("현재 memo 값:", memo);
+  }, [memo]);
+
   const handleCheckboxChange = (id) => {
     setTodoDetailsTomorrow((prev) =>
       prev.map((item) =>
@@ -40,9 +59,16 @@ const TomorrowCom = () => {
     console.log("수정 버튼 클릭, 아이디:", id);
   };
   const handleDeleteClick = (id) => {
-    setTodoDetailsTomorrow((prev) =>
-      prev.filter((item) => item.tdDetailId !== id)
-    );
+    axios
+      .delete(`http://localhost:8080/planbee/todolist/detail/${id}`)
+      .then(() => {
+        setTodoDetailsTomorrow((prev) =>
+          prev.filter((item) => item.tdDetailId !== id)
+        );
+      })
+      .catch((error) => {
+        console.error("삭제 실패:", error);
+      });
   };
   const handleCompleteClick = (id) => {
     setTodoDetailsTomorrow((prev) =>
@@ -53,12 +79,25 @@ const TomorrowCom = () => {
   };
   const handleAddTask = () => {
     if (newTask.tdDetail.trim() && newTask.tdDetailTime.trim()) {
-      setTodoDetailsTomorrow((prev) => [
-        ...prev,
-        { tdDetailId: Date.now(), ...newTask, tdDetailState: false },
-      ]);
-      setNewTask({ tdDetail: "", tdDetailTime: "" });
-      setIsAdding(false);
+      const newTaskData = {
+        tdDetail: newTask.tdDetail,
+        tdDetailTime: newTask.tdDetailTime,
+        tdDetailState: false,
+      };
+
+      axios
+        .post(
+          `http://localhost:8080/planbee/todolist/${getFormattedTomorrowYYMMDD()}`,
+          newTaskData
+        )
+        .then((response) => {
+          setTodoDetailsTomorrow((prev) => [...prev, response.data]);
+          setNewTask({ tdDetail: "", tdDetailTime: "" });
+          setIsAdding(false);
+        })
+        .catch((error) => {
+          console.error("추가 실패:", error);
+        });
     }
   };
   const toggleDropdown = (id) => {
@@ -131,6 +170,7 @@ const TomorrowCom = () => {
         )}
         <div className="todolist_memo">
           <h3>Memo</h3>
+          <div className="memomemo">{memo}</div>
         </div>
       </div>
     </div>

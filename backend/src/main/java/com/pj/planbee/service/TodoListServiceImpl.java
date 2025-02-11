@@ -46,19 +46,33 @@ public int inputRow(String tdDate, String sessionId) { //오늘과 내일의 열
 		
 		int selectedtdId = 0;
 		List <TDstartDTO> dateId = null;
+		boolean found = false;
 		 dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
 		if(dateId == null || dateId.size()==0) { //리스트가 아예 빈 경우
 			tlMap.dateWrite(todayStr, sessionId); //열을 작성함
 			tlMap.dateWrite(tomorrowStr, sessionId); //내일의 열도 작성함
 			 selectedtdId = tlMap.getLatest(); //가장 최신으로 작성된 열의 고유번호를 가져옴
-		}else { //그 외의 경우에는 
-			selectedtdId = tdIdSearch(tdDate, sessionId);
+		}else{
+			    for (TDstartDTO dto : dateId) {
+			        if (dto.getTodo_date().equals(todayStr)) { // 날짜가 250209인 경우
+			            found = true;
+			            selectedtdId = dto.getTodo_Id(); // 해당 날짜의 tdId를 선택
+			            break; // 해당 날짜를 찾았으므로 반복문 종료
+			        }
+			    }
 		}
+		if (!found) {
+	        // 날짜가 없으면 추가
+	        tlMap.dateWrite(todayStr, sessionId);
+	        selectedtdId = tlMap.getLatest(); // 가장 최근에 작성된 날짜의 고유번호를 가져옴
+	    }
+		//System.out.println("service 변환된 tdㅑㅇ"+ selectedtdId);
 		
 		return selectedtdId; //tdId값을 반환함
 }
 public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
 	List<TDstartDTO> dateId = tlMap.getDate(sessionId);
+	System.out.println("service: " + sessionId);
 	int selectedtdId = 0;
 	for (int i =0; i<dateId.size(); i++) {//dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
 		if(dateId.get(i).getTodo_date().equals(tdDate)) {
@@ -91,7 +105,7 @@ public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, �
 }
 
 @Override
-public int updateState(int ToDoDetailID, String state) {  //투두리스트 작업상태 업데이트 하는 기능
+public int updateState(int ToDoDetailID, boolean state) {  //투두리스트 작업상태 업데이트 하는 기능
 	//완료시 True혹은 t, 기본값은 False혹은 f
 	int result =0;
 	try {
@@ -126,6 +140,7 @@ public int todoDel(int ToDoDetailID) { //투두리스트 한 개 삭제하는 �
 
 @Override
 public double todoProgress(int tdId) {
+	
 	double progress = 0.0;
 	if(getTodo(tdId).size()==0){
 	//todoId로 가져온 값이 표에서 하나도 없으면, 그냥 0을 반환한다.
@@ -183,6 +198,19 @@ public int memoDel(int tdId) {
 	}
 	return result;
 }
+
+@Override
+public String dateSearch(int tdId) {
+	
+	String date = null;
+	try {
+		date = tlMap.dateSearch(tdId);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return date;
+}
+
 
 
 }

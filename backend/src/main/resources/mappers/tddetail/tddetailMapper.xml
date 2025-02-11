@@ -42,7 +42,7 @@
     
     <update id="todoModify">
 <!--  수정하는 기능.. 수정필요 -->
-    	update ToDoList_Detail set tododetail=#{tdDetail}, tododetail_time=#{tdDetailTime} where tododetail_id=#{tdDetailId}
+    	update ToDoList_Detail set tododetail=#{tdDetail}, tododetail_time=#{tdDetailTime}, tododetail_state=#{tdDetailState} where tododetail_id=#{tdDetailId}
     </update>
     
     <delete id="todoDel">

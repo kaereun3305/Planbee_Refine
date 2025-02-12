@@ -16,12 +16,22 @@
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* 상단부터 배치 */
   align-items: center;
+  overflow: hidden; /* 크기 초과 방지 */
 }
 .todolist_checkbox {
   height: 350px;
   width: 500px;
+  background-color: bisque;
+}
+.todolist_checkbox tbody {
+  display: block;
+  height: 350px; /* tbody 크기를 table과 맞춤 */
+  overflow-y: auto; /* 스크롤 추가 */
+}
+.todolist_checkbox tr {
+  font-size: 20px;
 }
 .todolist_memo {
   height: 200px;

@@ -31,12 +31,7 @@
   justify-content: end;
   align-items: center;
 }
-.todo_bar_ex {
-  width: 80%;
-  height: 50%;
-  border-radius: 20px;
-  background-color: #f4cc3a;
-}
+
 .todo_save_btn {
   height: 100px;
   width: 100%;

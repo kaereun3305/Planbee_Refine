@@ -46,18 +46,38 @@ const TomorrowCom = () => {
     console.log("현재 memo 값:", memo);
   }, [memo]);
 
-  const handleCheckboxChange = (id) => {
-    setTodoDetailsTomorrow((prev) =>
-      prev.map((item) =>
-        item.tdDetailId === id
-          ? { ...item, tdDetailState: !item.tdDetailState }
-          : item
-      )
+  //todolist 체크박스 상태 변경 함수
+  const handleCheckboxChange = async (id) => {
+    const updatedTodoDetails = todoDetailsTomorrow.map((item) =>
+      item.tdDetailId === id
+        ? { ...item, tdDetailState: !item.tdDetailState } //false인 경우 true로 바꿈
+        : item
     );
+
+    setTodoDetailsTomorrow(updatedTodoDetails);
+
+    //변경된 상태를 저장한 후 api 요청 보내기기
+    const changedItem = updatedTodoDetails.find(
+      (item) => item.tdDetailId === id
+    );
+
+    try {
+      await axios.put("http://localhost:8080/planbee/todolist/state", {
+        tdDetailId: changedItem.tdDetailId,
+        tdId: changedItem.tdId,
+        tdDetail: changedItem.tdDetail,
+        tdDetailTime: changedItem.tdDetailTime,
+        tdDetailState: changedItem.tdDetailState, // 반전된 상태값을 저장시켜서 전송송
+      });
+    } catch (error) {
+      console.error("체크박스 처리 오류:", error);
+    }
   };
+
   const handleEditClick = (id) => {
     console.log("수정 버튼 클릭, 아이디:", id);
   };
+
   const handleDeleteClick = (id) => {
     axios
       .delete(`http://localhost:8080/planbee/todolist/detail/${id}`)

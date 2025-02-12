@@ -1,48 +1,94 @@
 import React, { useEffect, useState } from "react";
-import { getFormattedTodayYYYYMMDD } from "./DateUtils";
+import {
+  getFormattedTodayYYYYMMDD,
+  getFormattedTodayYYMMDD,
+} from "./DateUtils";
+import axios from "axios";
 import "../css/TodayCom.css";
 const TodayCom = () => {
   const [todoDetailsToday, setTodoDetailsToday] = useState([]);
+  const [memo, setMemo] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newTask, setNewTask] = useState({ tdDetail: "", tdDetailTime: "" });
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
-    // 가짜 데이터 생성
-    const fakeDataToday = [
-      {
-        tdDetailId: 4,
-        tdId: 3,
-        tdDetail: "추가적으로 작성해보기",
-        tdDetailTime: "1730",
-        tdDetailState: false,
-      },
-      {
-        tdDetailId: 5,
-        tdId: 3,
-        tdDetail: "다른날짜도 될까?",
-        tdDetailTime: "1730",
-        tdDetailState: false,
-      },
-    ];
-    setTodoDetailsToday(fakeDataToday);
+    const fetchTodoDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/todolist/${getFormattedTodayYYMMDD()}`
+        );
+        if (Array.isArray(response.data)) {
+          setTodoDetailsToday(response.data);
+        } else {
+          console.error("오늘늘의 데이터 에러", response.data);
+        }
+      } catch (error) {
+        console.error("오늘의 데이터 fetch 에러", error);
+      }
+    };
+
+    const fetchMemo = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/todolist/getMemo/${getFormattedTodayYYMMDD()}`
+        );
+        setMemo(response.data); // 응답 데이터에서 메모 저장
+      } catch (error) {
+        console.error("메모 데이터 fetch 에러", error);
+      }
+    };
+
+    fetchTodoDetails();
+    fetchMemo();
   }, []);
-  const handleCheckboxChange = (id) => {
-    setTodoDetailsToday((prev) =>
-      prev.map((item) =>
-        item.tdDetailId === id
-          ? { ...item, tdDetailState: !item.tdDetailState }
-          : item
-      )
+  useEffect(() => {
+    console.log("현재 memo 값:", memo);
+  }, [memo]);
+
+  //todolist 체크박스 상태 변경 함수
+  const handleCheckboxChange = async (id) => {
+    const updatedTodoDetails = todoDetailsToday.map((item) =>
+      item.tdDetailId === id
+        ? { ...item, tdDetailState: !item.tdDetailState } //false인 경우 true로 바꿈
+        : item
     );
+
+    setTodoDetailsToday(updatedTodoDetails);
+
+    //변경된 상태를 저장한 후 api 요청 보내기기
+    const changedItem = updatedTodoDetails.find(
+      (item) => item.tdDetailId === id
+    );
+
+    try {
+      await axios.put("http://localhost:8080/planbee/todolist/state", {
+        tdDetailId: changedItem.tdDetailId,
+        tdId: changedItem.tdId,
+        tdDetail: changedItem.tdDetail,
+        tdDetailTime: changedItem.tdDetailTime,
+        tdDetailState: changedItem.tdDetailState, // 반전된 상태값을 저장시켜서 전송송
+      });
+    } catch (error) {
+      console.error("체크박스 처리 오류:", error);
+    }
   };
+
   const handleEditClick = (id) => {
     console.log("수정 버튼 클릭, 아이디:", id);
   };
+
   const handleDeleteClick = (id) => {
-    setTodoDetailsToday((prev) =>
-      prev.filter((item) => item.tdDetailId !== id)
-    );
+    axios
+      .delete(`http://localhost:8080/planbee/todolist/detail/${id}`)
+      .then(() => {
+        setTodoDetailsToday((prev) =>
+          prev.filter((item) => item.tdDetailId !== id)
+        );
+      })
+      .catch((error) => {
+        console.error("삭제 실패:", error);
+      });
   };
   const handleCompleteClick = (id) => {
     setTodoDetailsToday((prev) =>
@@ -53,12 +99,25 @@ const TodayCom = () => {
   };
   const handleAddTask = () => {
     if (newTask.tdDetail.trim() && newTask.tdDetailTime.trim()) {
-      setTodoDetailsToday((prev) => [
-        ...prev,
-        { tdDetailId: Date.now(), ...newTask, tdDetailState: false },
-      ]);
-      setNewTask({ tdDetail: "", tdDetailTime: "" });
-      setIsAdding(false);
+      const newTaskData = {
+        tdDetail: newTask.tdDetail,
+        tdDetailTime: newTask.tdDetailTime,
+        tdDetailState: false,
+      };
+
+      axios
+        .post(
+          `http://localhost:8080/planbee/todolist/${getFormattedTodayYYMMDD()}`,
+          newTaskData
+        )
+        .then((response) => {
+          setTodoDetailsToday((prev) => [...prev, response.data]);
+          setNewTask({ tdDetail: "", tdDetailTime: "" });
+          setIsAdding(false);
+        })
+        .catch((error) => {
+          console.error("추가 실패:", error);
+        });
     }
   };
   const toggleDropdown = (id) => {

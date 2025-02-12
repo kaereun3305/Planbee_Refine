@@ -44,6 +44,10 @@
     	select todo_date from ToDoList where todo_id=#{tdId}
     </select>
     
+    <update id="regiProgress">
+    	update ToDoList set todo_progress=#{progress} where todo_id=#{tdId}
+    </update>
+    
     
     
 </mapper>

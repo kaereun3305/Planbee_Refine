@@ -21,6 +21,7 @@ public interface TodoListService {
 	public int todoModify(TDdetailDTO dto); //투두리스트 자체를 수정하는 기능
 	public int todoDel(int ToDoDetailID); //투두리스트 한 개 삭제하는 기능
 	public double todoProgress(int tdId); //진척도 가져오는 기능
+	public int regiProgress(int tdId, double progress)//업데이트된 진척도를 저장하는 기능
 	
 	
 	//todolist의 memo에 대한 기능들

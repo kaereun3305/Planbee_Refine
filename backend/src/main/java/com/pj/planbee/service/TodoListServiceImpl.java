@@ -212,6 +212,18 @@ public String dateSearch(int tdId) {
 	return date;
 }
 
+@Override
+public int regiProgress(int tdId, double progress) {
+	int result = 0;
+	
+	try {
+		result = tlMap.regiProgress(tdId, progress);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return 0;
+}
+
 
 
 }

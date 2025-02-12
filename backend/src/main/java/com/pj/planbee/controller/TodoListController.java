@@ -151,6 +151,10 @@ public class TodoListController {
 		int tdId = ts.tdIdSearch(tdDate,sessionId);
 		System.out.println(tdId);
 		//tdId에 대한 진척도를 가져옴
+		//추가 코드-> progress저장하는 기능
+		double progress = ts.todoProgress(tdId);
+		ts.regiProgress(tdId, progress);
+		
 		return ts.todoProgress(tdId);
 	}
 	//정상 작동함

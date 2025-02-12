@@ -3,6 +3,10 @@ package com.pj.planbee.controller;
 import com.pj.planbee.dto.CalendarDTO;
 import com.pj.planbee.service.CalendarService;
 import com.pj.planbee.service.TodoListService;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +37,13 @@ public class CalendarController {
        
        return progress;
     }
+    @GetMapping(value="/progress/{userId}", produces="application/json;charset=UTF-8")
+	public int curProgress(@PathVariable String userId) {
+    	Map<String, Integer> result = new HashMap<String, Integer>(); //결과 값을 받아오기 위함
+    	result = cs.curProgress(userId); //받아옴
+    	int days = result.get("curStreak");
+  
+		return days;
+	}
 }
     

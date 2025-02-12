@@ -44,6 +44,10 @@
     	select todo_date from ToDoList where todo_id=#{tdId}
     </select>
     
+    <!-- 캘린더 -->
+    <select id="userProgress">
+    	select todo_progress from ToDoList where user_id=#{userId} order by todo_Date asc
+    </select>
     
     
 </mapper>

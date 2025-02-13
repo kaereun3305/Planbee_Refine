@@ -10,7 +10,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pj.planbee.dto.CalendarDTO;
 import com.pj.planbee.dto.TDstartDTO;
+import com.pj.planbee.mapper.CalendarMapper;
 import com.pj.planbee.mapper.TodoListMapper;
 
 
@@ -18,6 +20,7 @@ import com.pj.planbee.mapper.TodoListMapper;
 public class CalendarServiceImpl implements CalendarService {
 
 	@Autowired TodoListMapper tlMap;
+	@Autowired CalendarMapper calMap;
 	
 	@Override
 	public int getProgress(String calDate, String sessionId) {
@@ -48,7 +51,6 @@ public class CalendarServiceImpl implements CalendarService {
 		Map<String, Integer> result = new HashMap<String, Integer>();
 		int curStreak = 0;
 		int maxStreak = 0;
-		int totalStreak = 0;
 		int tempStreak = 0;
 		
 		ArrayList<Double> userProgress = new ArrayList<Double>();
@@ -57,26 +59,49 @@ public class CalendarServiceImpl implements CalendarService {
 		String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
 		
 		for(int i = 0; i < userProgress.size(); i++) {
-			if(userProgress.get(i) > 0.1) {
-				totalStreak++;
+			if(userProgress.get(i) > 0.8) {
 				tempStreak++;
 				maxStreak = Math.max(maxStreak, tempStreak);
 			} else {
 				tempStreak = 0; //연속 달성일 초기화
 			}
-			if(!userProgress.isEmpty() && userProgress.get(userProgress.size() - 1) > 0.1) {
+			if(!userProgress.isEmpty() && userProgress.get(userProgress.size() - 1) > 0.8) {
 				curStreak = tempStreak;
-			} //0.1% 미만일 시에 연속 달성일 초기화
+			} //0.8% 미만일 시에 연속 달성일 초기화
 			
-			result.put("curStreak", curStreak);
-			result.put("maxStreak", maxStreak);
-			result.put("totalStreak", totalStreak);
+			result.put("curStreak", curStreak);//현재 연속 달성일
+			result.put("maxStreak", maxStreak); //최대 연속 달성일
 			result.put("tempStreak", tempStreak);
-			result.put("maxStreak", maxStreak);
 		}
 		return result;
 	
 
+	}
+
+	@Override
+	public List<CalendarDTO> getMemo(String calDate, String sessionId) {
+		List<CalendarDTO> cal = new ArrayList<CalendarDTO>();
+			cal = calMap.getMemo(calDate, sessionId);
+				
+		return cal;
+	}
+
+	@Override
+	public int addMemo(CalendarDTO calendar) {
+		
+		return 0;
+	}
+
+	@Override
+	public int modiMemo(CalendarDTO calendar) {
+		
+		return 0;
+	}
+
+	@Override
+	public int delMemo(String userId) {
+		
+		return 0;
 	}
 	
 }

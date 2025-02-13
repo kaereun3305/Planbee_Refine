@@ -38,7 +38,7 @@ public class TodoListController {
 //
 //	}
 	public void session(HttpSession se) { //세션일단 설정 추후 삭제예정
-		se.setAttribute("sessionId", "팥붕");
+		se.setAttribute("sessionId", "슈붕");
 		
 		
 	}

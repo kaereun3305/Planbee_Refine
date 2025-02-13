@@ -3,19 +3,32 @@ package com.pj.planbee.dto;
 
 public class CalendarDTO {
    int calId;
-   String calDetail, calDate, userId; //userId는 나중에 찬교님이 사용한 userID와 맞춰주면 됨
+   String calDetail1, calDetail2, calDetail3, calDate, userId; //userId는 나중에 찬교님이 사용한 userID와 맞춰주면 됨
    double calProgress;
+   
    public int getCalId() {
       return calId;
    }
    public void setCalId(int calId) {
       this.calId = calId;
    }
-   public String getCalDetail() {
-      return calDetail;
+   public String getCalDetail1() {
+	return calDetail1;
    }
-   public void setCalDetail(String calDetail) {
-      this.calDetail = calDetail;
+   public void setCalDetail1(String calDetail1) {
+	this.calDetail1 = calDetail1;
+   }
+   public String getCalDetail2() {
+	return calDetail2;
+   }
+   public void setCalDetail2(String calDetail2) {
+	this.calDetail2 = calDetail2;
+   }
+   public String getCalDetail3() {
+	return calDetail3;
+   }
+   public void setCalDetail3(String calDetail3) {
+	this.calDetail3 = calDetail3;
    }
    public String getCalDate() {
       return calDate;

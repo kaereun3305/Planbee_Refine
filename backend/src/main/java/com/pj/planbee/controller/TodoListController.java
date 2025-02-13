@@ -72,13 +72,14 @@ public class TodoListController {
 //		System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
 //		System.out.println(dto.getTdId());
 		dto.setTdId(tdId);
-		return ts.todoWrite(dto); //이후 세션아이디 넣어야함
+		return ts.todoWrite(dto); //세션아이디 넣을 필요 없음, 위에서 세션값을 통해 tdId를 반환해옴
 	}
 	//정상작동됨
 	
 	@PutMapping(value="/state", produces="application/json; charset=utf-8")
 	public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
 		//input값: body에서 기존값 detail DTO 모두 입력해주어야함
+		
 		ts.updateState(dto.getTdDetailId(), dto.isTdDetailState()); 
 		System.out.println("tdDetailId: " + dto.getTdDetailId());
 		System.out.println("state:" + dto.isTdDetailState());

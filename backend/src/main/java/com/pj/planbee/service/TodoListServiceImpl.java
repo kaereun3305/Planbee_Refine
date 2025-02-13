@@ -34,7 +34,7 @@ public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 St
 	
 	HashMap<String, String> todayTomo = new HashMap<String, String>();
 	todayTomo.put("todayStr", todayStr);
-	todayTomo.put("tomorrowStr", tomorrowStr);
+	//todayTomo.put("tomorrowStr", tomorrowStr); //오늘날짜에 대한 것만 입력하는 것이 안정성이 좋을 것 같음
 	return todayTomo;
 }
 
@@ -72,7 +72,7 @@ public int inputRow(String tdDate, String sessionId) { //오늘과 내일의 열
 }
 public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
 	List<TDstartDTO> dateId = tlMap.getDate(sessionId);
-	System.out.println("service: "+dateId.get(3).getTodo_Id());
+	//System.out.println("service: "+dateId.get(3).getTodo_Id());
 	int selectedtdId = 0;
 	for (int i =0; i<dateId.size(); i++) {//dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
 		if(dateId.get(i).getTodo_date().equals(tdDate)) {

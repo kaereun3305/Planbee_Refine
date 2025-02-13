@@ -5,7 +5,7 @@
 
 <mapper namespace="com.pj.planbee.mapper.TDdetailMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
 	<resultMap type="com.pj.planbee.dto.TDdetailDTO" id="tddetail">
-		<result property="tdDetailId" column="tododetail_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<id property="tdDetailId" column="tododetail_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
 		<result property="tdDetail" column="tododetail" />
 		<result property="tdDetailState" column="tododetail_state" />
 		<result property="tdDetailTime" column="tododetail_time"/>

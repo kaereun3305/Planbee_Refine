@@ -5,7 +5,7 @@
 
 <mapper namespace="com.pj.planbee.mapper.TodoListMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
 	<resultMap type="com.pj.planbee.dto.TodoListDTO" id="todolist">
-		<result property="tdId" column="todo_id" /> 
+		<id property="tdId" column="todo_id" /> 
 		<result property="tdDate" column="todo_date" /> <!-- PK로 지정한 것은 id로 받아준다 -->
 		<result property="tdMemo" column="todo_memo" />
 		<result property="tdProgress" column="todo_progress" />
@@ -43,6 +43,10 @@
     <select id="dateSearch">
     	select todo_date from ToDoList where todo_id=#{tdId}
     </select>
+    
+    <update id="regiProgress">
+    	update ToDoList set todo_progress=#{progress} where todo_id=#{tdId}
+    </update>
     
     
     

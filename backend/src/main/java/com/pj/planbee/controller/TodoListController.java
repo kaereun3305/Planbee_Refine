@@ -44,19 +44,25 @@ public class TodoListController {
 	}
 	
 	@GetMapping(value="/{tdDate}", produces="application/json; charset=utf-8")
-	public List<TDdetailDTO> getTodo(@PathVariable String tdDate, HttpSession se){ //하루의 투두리스트를 가져오는 기능
+	public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se){ //오늘의 투두리스트를 가져오는 기능
 		//input값: yyMMdd 형식의 날짜 데이터
 		//sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
-		int todoId = ts.inputRow(tdDate, sessionId); //오늘과 내일의 열이 없으면 입력하고, 있으면 오늘의 tdId 반환해주는 메소드
-		//추가한 후 todoId 고유번호를 반환하도록 설정
+		int todoId;
+		int result = ts.checkRow(tdDate, sessionId); //열 있는지 찾아오기, 
+		if(result ==0) {
+			ts.inputRow(tdDate, sessionId); //
+			todoId = ts.tdIdSearch(tdDate, sessionId);//추가한 후 todoId 고유번호를 반환하도록 설정
+		}else {
+			todoId = result;
+		}
+		//System.out.println("ctrl:" + todoId);
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		list = ts.getTodo(todoId);
 		return list;
 	}
 	//정상작동됨
-	
 	
 	@PostMapping(value="/write/{tdDate}", produces="application/json; charset=utf-8")
 	@ResponseBody
@@ -70,13 +76,15 @@ public class TodoListController {
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
 //		System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
 //		System.out.println(dto.getTdId());
-		return ts.todoWrite(dto); //이후 세션아이디 넣어야함
+		dto.setTdId(tdId);
+		return ts.todoWrite(dto); //세션아이디 넣을 필요 없음, 위에서 세션값을 통해 tdId를 반환해옴
 	}
 	//정상작동됨
 	
 	@PutMapping(value="/state", produces="application/json; charset=utf-8")
 	public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
 		//input값: body에서 기존값 detail DTO 모두 입력해주어야함
+		
 		ts.updateState(dto.getTdDetailId(), dto.isTdDetailState()); 
 		System.out.println("tdDetailId: " + dto.getTdDetailId());
 		System.out.println("state:" + dto.isTdDetailState());
@@ -104,7 +112,7 @@ public class TodoListController {
 	}
 	//잘 작동됨
 	
-	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; chareset=utf-8")
+	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; charset=utf-8")
 	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
 	//input값: yyMMdd형식의 String날짜
 		session(se);//세션 메소드 호출 삭제예정
@@ -114,7 +122,7 @@ public class TodoListController {
 		//System.out.println("Ctrl " + tdId);
 		List<TodoListDTO> list= new ArrayList<TodoListDTO>();
 		list = ts.getMemo(tdId);
-		System.out.println("ctrl: "+ list.get(0).getTdMemo());
+		//System.out.println("ctrl: "+ list.get(0).getTdMemo());
 		return list.get(0).getTdMemo();
 	}
 	//정상 작동됨
@@ -143,9 +151,16 @@ public class TodoListController {
 	public double getProgress(@PathVariable String tdDate, HttpSession se) { //진척도 랜더링하는 기능
 	//input값: yyMMdd형식의 String날짜
 		//250206과 같은 날짜값을 String으로 입력하고 세션아이디 값을 받아서 td고유Id로 변환
+		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
+		System.out.println(sessionId);
 		int tdId = ts.tdIdSearch(tdDate,sessionId);
+		System.out.println(tdId);
 		//tdId에 대한 진척도를 가져옴
+		//추가 코드-> progress저장하는 기능
+		double progress = ts.todoProgress(tdId);
+		ts.regiProgress(tdId, progress);
+		
 		return ts.todoProgress(tdId);
 	}
 	//정상 작동함

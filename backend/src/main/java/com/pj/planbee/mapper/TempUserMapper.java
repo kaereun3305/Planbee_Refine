@@ -14,4 +14,7 @@ public interface TempUserMapper {
 	public int insertTempUser(TempUserDTO dto); //TempUser DB로 저장
 	public int deleteTempUser(@Param("tempUserEmail") String tempUserEmail);
 	public String getTempUserCode(String tempUserEmail); //TempUser DB에 임시 저장한 파일 삭제
+	public int countUserId(String tempUserId);
+	public int countUserEmail(String tempUserEmail);
+	public TempUserDTO getTempUserByEmail(String tempUserEmail);
 }

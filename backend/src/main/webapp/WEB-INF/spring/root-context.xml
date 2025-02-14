@@ -6,10 +6,8 @@
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
-
-
     <!-- 히카리 커넥션풀 설정 -->
-          <!-- 히카리 커넥션풀 빈 등록 -->
+
    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
       <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
       <property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl" />

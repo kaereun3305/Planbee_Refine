@@ -38,22 +38,22 @@ public class TempUserController {
     // 이메일 인증 코드 발송 + TempUser 저장
     @PostMapping(value = "/sendCode", produces = "application/json; charset=utf-8")
     public int sendVerificationCode(@RequestBody TempUserDTO dto) {
-        int result = 0;
-        try {
-            // **6자리 인증 코드 생성 (한 번만 생성)**
-            String verificationCode = tempUserService.generateVerificationCode();
-            dto.setTempUserCode(verificationCode); // DTO에 설정
+        int result = tempUserService.insertTempUser(dto);
+  
 
-            // **DB에 저장할 때 같은 코드 사용**
-            tempUserService.insertTempUser(dto);
-
-            // **이메일 전송할 때도 같은 코드 사용**
-            result = tempUserService.sendCode(dto.getTempUserEmail(), verificationCode);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (result == -1) {
+           //이미 가입된 ID
+            return result;
+        } else if (result == -2) {
+           //이미 가입된 이메일
+            return result;
+        } else if (result > 0) {
+            //이메일 인증 코드 발송
+            return result;
+        } else {
+            //?? 무슨 오류인지 모름
+            return result;
         }
-        return result;
     }
 
 }

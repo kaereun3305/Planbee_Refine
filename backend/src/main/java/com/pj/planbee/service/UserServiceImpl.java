@@ -17,29 +17,37 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired TempUserService tus;
 	
-	@Transactional 
+	@Transactional
 	@Override
 	public int regiseterUser(UserDTO user) {
 	    int result = 0;
 
 	    try {
+	        // 최종 중복 검사 (Real_User 테이블에서 확인)
 	        if (isUserIdExists(user.getUserId())) {
-	            System.out.println("회원 가입 실패 : 이미 가입 완료 된 ID 입니다.");
-	            return -1;
+	            return -1; // 중복된 ID
 	        }
 	        if (isEmailExists(user.getUserEmail())) {
-	            System.out.println("회원 가입 실패 : 이미 인증이 완료된 email 입니다.");
-	            return -2;
+	            return -2; // 중복된 Email
 	        }
 
-	        // 입력한 인증 코드가 Temp_User 데이터베이스의 tempuser_code와 일치하는지 확인
-	        String storedCode = tus.getTempUserCode(user.getUserEmail()); // DB에서 저장된 코드 가져오기
-	        if (storedCode == null || !storedCode.equals(user.getTempUserCode())) {
-	            System.out.println("회원 가입 실패 : 인증 코드 불일치");
+	        // Temp_User 테이블에서 저장된 데이터 가져오기
+	        TempUserDTO tempUser = tus.getTempUserByEmail(user.getUserEmail());
+
+	        // 저장된 인증 코드 비교 (인증 코드 불일치 시 가입 불가)
+	        if (tempUser == null || !tempUser.getTempUserCode().equals(user.getTempUserCode())) {
 	            return -3; // 인증 코드 불일치
 	        }
 
-	        // RealUser 테이블에 정보 저장
+	        // 저장된 Temp_User 정보와 입력한 정보 비교 (모든 값이 일치해야 가입 가능)
+	        if (!tempUser.getTempUserId().equals(user.getUserId()) ||
+	            !tempUser.getTempUserPw().equals(user.getUserPw()) ||
+	            !tempUser.getTempUserName().equals(user.getUserName()) ||
+	            !tempUser.getTempUserPhone().equals(user.getUserPhone())) {
+	            return -4; // Temp_User 정보 불일치
+	        }
+
+	        // 모든 정보가 일치하면 Real_User 테이블에 정보 저장
 	        result = mapper.insertUser(user);
 
 	        // 회원가입 성공 시 TempUser 삭제
@@ -49,9 +57,11 @@ public class UserServiceImpl implements UserService{
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        throw new RuntimeException("회원가입 실패");
 	    }
 	    return result;
 	}
+
 
 
 	

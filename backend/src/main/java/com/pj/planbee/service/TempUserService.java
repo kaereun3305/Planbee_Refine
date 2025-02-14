@@ -18,4 +18,6 @@ public interface TempUserService {
 	public String generateVerificationCode();
 	
 	public String getTempUserCode(String tempUserEmail);
+	
+	public TempUserDTO getTempUserByEmail(String tempUserEmail);
 }

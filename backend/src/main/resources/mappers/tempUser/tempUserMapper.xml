@@ -12,7 +12,17 @@
         <result property="tempUserCode" column="tempuser_code"/>
     </resultMap>
     
+    <select id="countUserId" resultType="int">
+       SELECT COUNT(*) FROM Real_User WHERE user_id = #{tempUserId}
+    </select>
+
+    <select id="countUserEmail" resultType="int">
+        SELECT COUNT(*) FROM Real_User WHERE user_email = #{tempUserEmail}
+    </select>
     
+    <select id="getTempUserByEmail" resultMap="tempuser">
+    	SELECT * FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
+	</select>
     
     <select id="getTempUser" resultMap="tempuser">
         SELECT * FROM Temp_User

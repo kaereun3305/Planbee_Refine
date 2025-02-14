@@ -28,6 +28,9 @@ public class UserController {
         } else if (result == -3) {
             //"회원가입 실패: 인증 코드 불일치";
         	return result;
+        } else if (result == -4) {
+            //"회원가입 실패: 인증 정보 불일치";
+        	return result;
         } else if (result > 0) {
             //"회원가입 성공!";
         	return result;

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TDstartDTO;
@@ -34,42 +35,33 @@ public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 St
 	
 	HashMap<String, String> todayTomo = new HashMap<String, String>();
 	todayTomo.put("todayStr", todayStr);
-	//todayTomo.put("tomorrowStr", tomorrowStr); //오늘날짜에 대한 것만 입력하는 것이 안정성이 좋을 것 같음
+	todayTomo.put("tomorrowStr", tomorrowStr); //오늘날짜에 대한 것만 입력하는 것이 안정성이 좋을 것 같음
 	return todayTomo;
 }
-
-public int inputRow(String tdDate, String sessionId) { //오늘과 내일의 열이 없으면 입력하고, 있으면 오늘의 tdId 반환해주는 메소드
-	//오늘 날짜와 일치하는 탭이 있으면 try catch를 실행한다.
-	//세션아이디 실제로 사용하기 전에는 ctrl에서 임의지정한 sessionId 사용
-		String todayStr = checkToday().get("todayStr");//오늘의 날짜 변환값 가져옴
-		String tomorrowStr = checkToday().get("tomorrowStr"); //내일의 날짜 변환값 가져옴
-		
-		int selectedtdId = 0;
-		List <TDstartDTO> dateId = null;
-		boolean found = false;
-		 dateId = tlMap.getDate(sessionId); //todolist table에서 sessionId 해당하는 모든 날짜를 가져옴
-		if(dateId == null || dateId.size()==0) { //리스트가 아예 빈 경우
-			tlMap.dateWrite(todayStr, sessionId); //열을 작성함
-			tlMap.dateWrite(tomorrowStr, sessionId); //내일의 열도 작성함
-			 selectedtdId = tlMap.getLatest(); //가장 최신으로 작성된 열의 고유번호를 가져옴
-		}else{
-			    for (TDstartDTO dto : dateId) {
-			        if (dto.getTodo_date().equals(tdDate)) { // 날짜가 250209인 경우
-			            found = true;
-			            selectedtdId = dto.getTodo_Id(); // 해당 날짜의 tdId를 선택
-			            break; // 해당 날짜를 찾았으므로 반복문 종료
-			        }
-			    }
+public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인하는 메소드
+	//순환문을 돌리면서 값이 있는지 확인한다.
+	List<TDstartDTO> dateId = new ArrayList<TDstartDTO>();
+	dateId = tlMap.getDate(sessionId); //sessionId에 해당하는 todoDate와 todoId를 가져온다
+	int selectedtdId = 0; //return할 selectedId를 초기화
+	
+	for(int i =0; i<dateId.size(); i++) { //일치하는 열이 있는지 찾는다.
+		if(dateId.get(i).getTodo_date() == tdDate) {
+			selectedtdId = dateId.get(i).getTodo_Id();
+		}else {
+			selectedtdId = 0;
 		}
-		if (!found) {
-	        // 날짜가 없으면 추가
-	        tlMap.dateWrite(todayStr, sessionId);
-	        selectedtdId = tlMap.getLatest(); // 가장 최근에 작성된 날짜의 고유번호를 가져옴
-	    }
-		//System.out.println("service 변환된 tdㅑㅇ"+ selectedtdId);
-		
-		return selectedtdId; //tdId값을 반환함
+	}	
+	
+	return selectedtdId;
 }
+@Override
+public void inputRow(String tdDate, String sessionId) { //
+	tlMap.dateWrite(tdDate, sessionId); //열을 작성함	
+	
+}
+
+
+
 public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
 	List<TDstartDTO> dateId = tlMap.getDate(sessionId);
 	//System.out.println("service: "+dateId.get(3).getTodo_Id());

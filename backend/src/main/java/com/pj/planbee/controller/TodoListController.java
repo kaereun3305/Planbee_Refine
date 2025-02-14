@@ -50,7 +50,9 @@ public class TodoListController {
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
 		int todoId;
-		int result = ts.checkRow(tdDate, sessionId); //열 있는지 찾아오기, 
+		int result = ts.checkRow(tdDate, sessionId); //열 있는지 찾아오기,
+		//System.out.println("result" + result);
+		
 		if(result ==0) {
 			ts.inputRow(tdDate, sessionId); //
 			todoId = ts.tdIdSearch(tdDate, sessionId);//추가한 후 todoId 고유번호를 반환하도록 설정
@@ -83,17 +85,17 @@ public class TodoListController {
 	
 	@PutMapping(value="/state", produces="application/json; charset=utf-8")
 	public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { //투두리스트 완료내역 업데이트 하는 체크박스
-		//input값: body에서 기존값 detail DTO 모두 입력해주어야함
+		//input값: body에서 tdDetailId, tdDetailState, tdId
 		
 		ts.updateState(dto.getTdDetailId(), dto.isTdDetailState()); 
 		System.out.println("tdDetailId: " + dto.getTdDetailId());
 		System.out.println("state:" + dto.isTdDetailState());
 		//String sessionId = (String) se.getAttribute("sessionId");
 		//String tdDate = ts.dateSearch(dto.getTdId()); //tdId기반으로 tdDate가져옴
-		
+		//System.out.println("todoId날짜"+ dto.getTdId());
 		//postman입력값을 dto이름과 맞춰줘야함!!!!
 		double progress = ts.todoProgress(dto.getTdId()); //업데이트 하면 자동으로 현재 진척도를 가져오는 기능
-		
+	
 		return progress; 
 	}
 	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
@@ -136,7 +138,7 @@ public class TodoListController {
 	}
 	//정상 작동됨
 	
-
+//메모딜리트 기능은 사용하지 않기로 협의함-> 메모 수정기능을 사용해서 메모만 ""으로 바꾸는 것으로
 	@DeleteMapping(value="/memoDel/{tdDate}", produces="application/json; charset=utf-8")
 	public int memoDel(@PathVariable String tdDate, HttpSession se) { //메모를 삭제하는 기능
 	//input값: yyMMdd형식의 String날짜	

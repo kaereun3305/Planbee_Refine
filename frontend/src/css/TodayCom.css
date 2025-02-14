@@ -33,6 +33,32 @@
 .todolist_checkbox tr {
   font-size: 20px;
 }
+.todolist_checkbox td:first-child {
+  width: 20px;
+}
+.todolist_checkbox td:nth-child(2) {
+  width: 300px;
+  background-color: aquamarine;
+}
+.todolist_checkbox td:nth-child(3) {
+  width: 50px;
+}
+.todolist_checkbox td:nth-child(4) {
+  width: 120px;
+  text-align: end;
+  position: relative;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 0; /* 수정 아이콘과 같은 위치 */
+  left: -20px; /* 적절한 위치로 조정 */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  z-index: 10; /* 다른 요소보다 위에 위치하도록 설정 */
+}
 .todolist_memo {
   height: 200px;
   width: 580px;

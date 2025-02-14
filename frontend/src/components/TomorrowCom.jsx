@@ -3,8 +3,10 @@ import {
   getFormattedTomorrowYYYYMMDD,
   getFormattedTomorrowYYMMDD,
 } from "./DateUtils";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import "../css/TodayCom.css";
+
 const TomorrowCom = () => {
   const [todoDetailsTomorrow, setTodoDetailsTomorrow] = useState([]);
   const [memo, setMemo] = useState(null);
@@ -13,6 +15,7 @@ const TomorrowCom = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
+    //내일의 todolist 가져오는 기능
     const fetchTodoDetails = async () => {
       try {
         const response = await axios.get(
@@ -27,11 +30,11 @@ const TomorrowCom = () => {
         console.error("내일의 데이터 fetch 에러", error);
       }
     };
-
+    //내일의 Memo 가져오는 함수수
     const fetchMemo = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/getMemo/250206`
+          `http://localhost:8080/planbee/todolist/getMemo/${getFormattedTomorrowYYMMDD()}`
         );
         setMemo(response.data); // 응답 데이터에서 메모 저장
       } catch (error) {
@@ -141,25 +144,44 @@ const TomorrowCom = () => {
                 </td>
                 <td>{item.tdDetail}</td>
                 <td>{item.tdDetailTime}</td>
-                <td>
+                <td style={{ position: "relative" }}>
+                  {/* 수정 아이콘 */}
                   <span onClick={() => toggleDropdown(item.tdDetailId)}>🖉</span>
-                  {dropdownOpen === item.tdDetailId && (
-                    <div className="dropdown-menu">
-                      <button onClick={() => handleEditClick(item.tdDetailId)}>
-                        수정
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(item.tdDetailId)}
+
+                  {/* 애니메이션 적용된 버튼 그룹 */}
+                  <AnimatePresence>
+                    {dropdownOpen === item.tdDetailId && (
+                      <motion.div
+                        className="dropdown-menu"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ duration: 0.5 }}
+                        style={{
+                          position: "absolute",
+                          left: "-120px", // 아이콘 왼쪽으로 위치
+                          display: "flex",
+                          gap: "5px",
+                        }}
                       >
-                        삭제
-                      </button>
-                      <button
-                        onClick={() => handleCompleteClick(item.tdDetailId)}
-                      >
-                        완료
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          onClick={() => handleEditClick(item.tdDetailId)}
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClick(item.tdDetailId)}
+                        >
+                          삭제
+                        </button>
+                        <button
+                          onClick={() => handleCompleteClick(item.tdDetailId)}
+                        >
+                          완료
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </td>
               </tr>
             ))}

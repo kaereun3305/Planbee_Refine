@@ -43,10 +43,12 @@ public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인
 	List<TDstartDTO> dateId = new ArrayList<TDstartDTO>();
 	dateId = tlMap.getDate(sessionId); //sessionId에 해당하는 todoDate와 todoId를 가져온다
 	int selectedtdId = 0; //return할 selectedId를 초기화
+	System.out.println("service" + dateId.get(8).getTodo_date());
 	
 	for(int i =0; i<dateId.size(); i++) { //일치하는 열이 있는지 찾는다.
-		if(dateId.get(i).getTodo_date() == tdDate) {
+		if(dateId.get(i).getTodo_date().equals(tdDate)) {
 			selectedtdId = dateId.get(i).getTodo_Id();
+			break;
 		}else {
 			selectedtdId = 0;
 		}

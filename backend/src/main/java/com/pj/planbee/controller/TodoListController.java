@@ -50,7 +50,9 @@ public class TodoListController {
 		session(se);
 		String sessionId = (String) se.getAttribute("sessionId");
 		int todoId;
-		int result = ts.checkRow(tdDate, sessionId); //열 있는지 찾아오기, 
+		int result = ts.checkRow(tdDate, sessionId); //열 있는지 찾아오기,
+		System.out.println("result" + result);
+		
 		if(result ==0) {
 			ts.inputRow(tdDate, sessionId); //
 			todoId = ts.tdIdSearch(tdDate, sessionId);//추가한 후 todoId 고유번호를 반환하도록 설정

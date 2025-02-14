@@ -99,11 +99,12 @@ public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, �
 }
 
 @Override
-public int updateState(int ToDoDetailID, boolean state) {  //투두리스트 작업상태 업데이트 하는 기능
+public int updateState(int tdDetailId, boolean state) {  //투두리스트 작업상태 업데이트 하는 기능
 	//완료시 True혹은 t, 기본값은 False혹은 f
 	int result =0;
 	try {
-		result = tdMap.updateState(ToDoDetailID, state);
+		result = tdMap.updateState(tdDetailId, state);
+		System.out.println(result);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}

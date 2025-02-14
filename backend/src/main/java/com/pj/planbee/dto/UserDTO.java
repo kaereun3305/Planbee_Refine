@@ -1,8 +1,9 @@
 package com.pj.planbee.dto;
 
 public class UserDTO {
-	
+
 	String userId, userPw, userName, userEmail, userPhone;
+	String tempUserCode;
 
 	public String getUserId() {
 		return userId;
@@ -43,7 +44,12 @@ public class UserDTO {
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
-	
-	
+
+	public String getTempUserCode() {
+		return tempUserCode;
+	}
+
+	public void setTempUserCode(String tempUserCode) {
+		this.tempUserCode = tempUserCode;
+	}
 }
-	

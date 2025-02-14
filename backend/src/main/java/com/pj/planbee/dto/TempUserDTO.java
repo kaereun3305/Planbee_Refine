@@ -2,7 +2,7 @@ package com.pj.planbee.dto;
 
 public class TempUserDTO {
 	
-	String tempUserId, tempUserPw, tempUserName, tempUserEmail, tempUserPhone, tempUserCode;
+	String tempUserId, tempUserPw, tempUserName, tempUserEmail, tempUserPhone, tempUserCode="";
 
 	public String getTempUserId() {
 		return tempUserId;

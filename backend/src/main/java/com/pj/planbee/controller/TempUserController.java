@@ -36,25 +36,24 @@ public class TempUserController {
     }
 
     // 이메일 인증 코드 발송 + TempUser 저장
-    @PostMapping(value = "/sendcode", produces = "application/json; charset=utf-8")
-    public String sendVerificationCode(@RequestBody TempUserDTO dto) {
+    @PostMapping(value = "/sendCode", produces = "application/json; charset=utf-8")
+    public int sendVerificationCode(@RequestBody TempUserDTO dto) {
+        int result = 0;
         try {
+            // **6자리 인증 코드 생성 (한 번만 생성)**
+            String verificationCode = tempUserService.generateVerificationCode();
+            dto.setTempUserCode(verificationCode); // DTO에 설정
+
+            // **DB에 저장할 때 같은 코드 사용**
             tempUserService.insertTempUser(dto);
-            return "인증 코드가 이메일로 발송되었습니다.";
+
+            // **이메일 전송할 때도 같은 코드 사용**
+            result = tempUserService.sendCode(dto.getTempUserEmail(), verificationCode);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return "인증 코드 발송에 실패했습니다.";
         }
+        return result;
     }
 
-    // TempUser 삭제
-    @DeleteMapping(value = "/delete/{tempUserEmail}", produces = "application/json; charset=utf-8")
-    public String deleteTempUser(@PathVariable String tempUserEmail) {
-        int result = tempUserService.deleteTempUser(tempUserEmail);
-        if (result > 0) {
-            return "임시 사용자 데이터가 삭제되었습니다.";
-        } else {
-            return "삭제 실패: 해당 이메일이 존재하지 않습니다.";
-        }
-    }
 }

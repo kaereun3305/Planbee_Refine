@@ -13,6 +13,9 @@ public interface TempUserService {
 	
 	public int deleteTempUser(String tempUserEmail); // DB에 임시 저장한 파일 삭제 기능
 	
-	public void sendCode(String tempUserEmail, String tempUserCode) throws Exception; // 코드를 생성해 이메일로 보내는 기능
+	public int sendCode(String tempUserEmail, String tempUserCode) throws Exception; // 코드를 생성해 이메일로 보내는 기능
 	
+	public String generateVerificationCode();
+	
+	public String getTempUserCode(String tempUserEmail);
 }

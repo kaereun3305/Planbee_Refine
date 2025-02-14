@@ -112,7 +112,7 @@ public class TodoListController {
 	}
 	//잘 작동됨
 	
-	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; chareset=utf-8")
+	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; charset=utf-8")
 	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
 	//input값: yyMMdd형식의 String날짜
 		session(se);//세션 메소드 호출 삭제예정

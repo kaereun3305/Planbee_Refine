@@ -8,10 +8,10 @@ import axios from "axios";
 import "../css/TodayCom.css";
 
 const TomorrowCom = () => {
-  const [todoDetailsTomorrow, setTodoDetailsTomorrow] = useState([]);
-  const [memo, setMemo] = useState(null);
-  const [isAdding, setIsAdding] = useState(false);
-  const [newTask, setNewTask] = useState({ tdDetail: "", tdDetailTime: "" });
+  const [todoDetailsTomorrow, setTodoDetailsTomorrow] = useState([]); //내일 todolist 목록 불러오기기
+  const [memo, setMemo] = useState(""); //메모 fetch
+  const [isAdding, setIsAdding] = useState(false); //todolist 추가
+  const [newTask, setNewTask] = useState({ tdDetail: "", tdDetailTime: "" }); //todolist 추가가
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const TomorrowCom = () => {
         console.error("내일의 데이터 fetch 에러", error);
       }
     };
-    //내일의 Memo 가져오는 함수수
+    //내일의 Memo 가져오는 함수
     const fetchMemo = async () => {
       try {
         const response = await axios.get(

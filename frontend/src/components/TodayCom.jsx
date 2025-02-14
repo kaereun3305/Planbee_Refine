@@ -5,12 +5,16 @@ import {
 } from "./DateUtils";
 import axios from "axios";
 import "../css/TodayCom.css";
+
 const TodayCom = () => {
   const [todoDetailsToday, setTodoDetailsToday] = useState([]);
-  const [memo, setMemo] = useState(null);
+  const [memo, setMemo] = useState("");
+  const [isEditingMemo, setIsEditingMemo] = useState(false);
+  const [newMemo, setNewMemo] = useState(""); //서버에 전송할 수정된 memo값
   const [isAdding, setIsAdding] = useState(false);
   const [newTask, setNewTask] = useState({ tdDetail: "", tdDetailTime: "" });
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [todayTdId, setTodayTdId] = useState(null);
 
   useEffect(() => {
     const fetchTodoDetails = async () => {
@@ -20,6 +24,7 @@ const TodayCom = () => {
         );
         if (Array.isArray(response.data)) {
           setTodoDetailsToday(response.data);
+          setTodayTdId(response.data[0].tdId);
         } else {
           console.error("오늘늘의 데이터 에러", response.data);
         }
@@ -42,9 +47,40 @@ const TodayCom = () => {
     fetchTodoDetails();
     fetchMemo();
   }, []);
+
+  //메모 데이터를 제대로 받아온건지 확인하는 값 추후에 삭제할 코드
   useEffect(() => {
     console.log("현재 memo 값:", memo);
   }, [memo]);
+
+  const handleSaveMemo = async () => {
+    if (todayTdId === null) {
+      console.error("tdId를 가져올 수 없습니다");
+      return;
+    }
+
+    const requestData = {
+      tdId: todayTdId,
+      tdMemo: newMemo,
+    };
+
+    console.log("전송하는 데이터:", requestData);
+
+    try {
+      await axios.put("http://localhost:8080/planbee/todolist/memoWrite", {
+        tdId: todayTdId,
+        tdMemo: newMemo,
+      });
+      setMemo(newMemo);
+      setIsEditingMemo(false);
+    } catch (error) {
+      console.error("메모 수정 실패: ", error);
+    }
+  };
+  //메모 수정 버튼
+  const handleEditMemo = () => {
+    setIsEditingMemo(true);
+  };
 
   //todolist 체크박스 상태 변경 함수
   const handleCheckboxChange = async (id) => {
@@ -190,6 +226,20 @@ const TodayCom = () => {
         )}
         <div className="todolist_memo">
           <h3>Memo</h3>
+          {isEditingMemo ? (
+            <div>
+              <textarea
+                value={newMemo}
+                onChange={(e) => setNewMemo(e.target.value)}
+              />
+              <button onClick={handleSaveMemo}>저장</button>
+              <button onClick={() => setIsEditingMemo(false)}>취소</button>
+            </div>
+          ) : (
+            <div onClick={() => setIsEditingMemo(true)} className="memomemo">
+              {memo || "(메모 없음)"}
+            </div>
+          )}
         </div>
       </div>
     </div>

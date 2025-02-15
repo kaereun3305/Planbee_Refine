@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class TodoListController {
 		
 	}
 	
-	@GetMapping(value="/{tdDate}", produces="application/json; charset=utf-8")
+	@GetMapping(value="/getTodo/{tdDate}", produces="application/json; charset=utf-8")
 	public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se){ //오늘의 투두리스트를 가져오는 기능
 		//input값: yyMMdd 형식의 날짜 데이터
 		//sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
@@ -95,7 +96,7 @@ public class TodoListController {
 		//System.out.println("todoId날짜"+ dto.getTdId());
 		//postman입력값을 dto이름과 맞춰줘야함!!!!
 		double progress = ts.todoProgress(dto.getTdId()); //업데이트 하면 자동으로 현재 진척도를 가져오는 기능
-	
+		ts.regiProgress(dto.getTdId(), progress); //업데이트된 진척도를 저장함
 		return progress; 
 	}
 	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
@@ -113,7 +114,7 @@ public class TodoListController {
 		return ts.todoDel(tdDetailId);
 	}
 	//잘 작동됨
-	
+	@Transactional
 	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; charset=utf-8")
 	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
 	//input값: yyMMdd형식의 String날짜
@@ -121,17 +122,23 @@ public class TodoListController {
 		String sessionId = (String) se.getAttribute("sessionId");
 		//System.out.println("ctrl:" + sessionId);
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
-		//System.out.println("Ctrl " + tdId);
+		System.out.println("Ctrl " + tdId);
 		List<TodoListDTO> list= new ArrayList<TodoListDTO>();
 		list = ts.getMemo(tdId);
-		//System.out.println("ctrl: "+ list.get(0).getTdMemo());
+		System.out.println(tdDate+"일 때 리스트 사이즈: "+ list.size());
+		if(list.isEmpty()) { //만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
+			ts.inputRow(tdDate, sessionId);
+			tdId = ts.tdIdSearch(tdDate, sessionId);
+			list = ts.getMemo(tdId);
+		}
+		System.out.println("ctrl: "+ list.get(0).getTdMemo());
 		return list.get(0).getTdMemo();
 	}
 	//정상 작동됨
 	
 	@PutMapping(value="/memoWrite", produces="application/json; charset=utf-8")
 	public int memoWrite(@RequestBody TodoListDTO listDto) { //메모를 작성하고 수정하는 기능
-	//input값: tdListDTO값 모두. 메모제외한 값은 기존값이 모두 입력되어야함
+	
 		//열을 미리 만들어두려고 하므로 메모의 작성과 수정을 모두 이 것을 사용하면 됨
 		//System.out.println("controller: "+ listDto.getTdMemo());
 		return ts.memoWrite(listDto);

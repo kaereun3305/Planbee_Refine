@@ -4,6 +4,7 @@ import com.pj.planbee.dto.CalendarDTO;
 import com.pj.planbee.service.CalendarService;
 import com.pj.planbee.service.TodoListService;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class CalendarController {
     @GetMapping("/memo/{calDate}")
     public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {
     	String userId = (String) se.getAttribute("sessionId");
+    	
     	return cs.getMemo(calDate, userId);
     }
     

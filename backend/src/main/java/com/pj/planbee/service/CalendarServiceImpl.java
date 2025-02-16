@@ -1,6 +1,7 @@
 package com.pj.planbee.service;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pj.planbee.dto.CalendarDTO;
 import com.pj.planbee.dto.TDstartDTO;
@@ -88,9 +90,20 @@ public class CalendarServiceImpl implements CalendarService {
 
 	@Override
 	public int addMemo(CalendarDTO calendar) {
-		
-		return 0;
+	    System.out.println("📌 메모 추가 요청: " + calendar.getCalDate() + " / " + calendar.getUserId());
+	    System.out.println("📌 메모 내용: " + calendar.getCalDetail1() + ", " + calendar.getCalDetail2() + ", " + calendar.getCalDetail3());
+
+	    // 🛠 `NULL` 방지: NULL 값이 들어오면 빈 문자열("") 또는 기본값 설정
+	    if (calendar.getCalDetail1() == null) calendar.setCalDetail1("");
+	    if (calendar.getCalDetail2() == null) calendar.setCalDetail2("");
+	    if (calendar.getCalDetail3() == null) calendar.setCalDetail3("");
+	    if (calendar.getCalProgress() == 0.0) calendar.setCalProgress(0.0); // 기본값 0.0
+
+	    int result = calMap.addMemo(calendar);
+	    System.out.println("📌 INSERT 실행 결과: " + result);
+	    return result;
 	}
+
 
 	@Override
 	public int modiMemo(CalendarDTO calendar) {
@@ -103,5 +116,53 @@ public class CalendarServiceImpl implements CalendarService {
 		
 		return 0;
 	}
+
+	@Override
+	@Transactional
+	public void checkMonthly(int year, int month, String userId) {
+		String monthPre = String.format("%02d%02d", year % 100, month); //yyMM형식
+		int count = calMap.countByMonth(monthPre, userId); //현재 사용자의 해당 월 데이터 개수 확인
+		if (count > 0) {
+			return ;
+	}
+		//해당 월의 총 일수
+		YearMonth yearMonth = YearMonth.of(year, month);
+		int dayInMonth =  yearMonth.lengthOfMonth();
+		
+		//새로 삽입할 데이터를 저장할 리스트 생성
+		List<CalendarDTO> newDate = new ArrayList<>();
+		
+		//1일부터 마지막 날 까지 yyMMdd형식으로 날짜 생성 후 리스트에 추가
+		for(int day = 1; day <= dayInMonth; day++) {
+			String calDate = String.format("%02d%02d%02d", year % 100, month, day);
+			
+			//CalendarDTO객체 생성 후 기본 값 설정
+			CalendarDTO newEntry = new CalendarDTO();
+			newEntry.setUserId(userId);
+			newEntry.setCalDate(calDate);
+			newEntry.setCalDetail1(null);
+			newEntry.setCalDetail2(null);//기본 메모값 null
+			newEntry.setCalDetail3(null);
+			newEntry.setCalProgress(0); //기본 상태를 0으로 둠
+			
+			//리스트에 추가
+			newDate.add(newEntry);
+		}
+		//insert 삽입 실행하여 DB에 한 번에 저장
+		if(!newDate.isEmpty()) {
+			calMap.insertNewDate(newDate);
+		}
+	}
+
+	@Override
+	public List<CalendarDTO> getMonthly(int year, int month, String userId, String fileterId) {
+		//데이터가 존재하지 않으면 자동생성
+		checkMonthly(year, month, userId);
+		//yyMM 형식의 월 정보 생성
+		String monthPre = String.format("%02d%02d", year % 100, month);
+		//해당 월의 데이터 리스트 반환
+		return calMap.getByMonth(monthPre, userId);
+	}
+	
 	
 }

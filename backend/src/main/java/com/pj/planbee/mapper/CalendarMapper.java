@@ -8,4 +8,14 @@ import com.pj.planbee.dto.CalendarDTO;
 
 public interface CalendarMapper {
 	public List<CalendarDTO> getMemo(@Param("calDate") String calDate, @Param("sessionId") String sessionId);
+
+	public int countByMonth(@Param("monthPre") String monthPre, @Param("userId") String userId);
+
+	public void insertNewDate(@Param("date") List<CalendarDTO> newDate);
+
+	public List<CalendarDTO> getByMonth(@Param("monthPre") String monthPre, @Param("userId") String userId);
+
+	public int addMemo(CalendarDTO calendar);
+
+	public int updateMemo(CalendarDTO calendar);
 }

@@ -15,4 +15,7 @@ public interface CalendarService {
    public int addMemo (CalendarDTO calendar); //메모 추가
    public int modiMemo (CalendarDTO calendar); //메모 수정
    public int delMemo (String userId); //메모 삭제
+   
+   public void checkMonthly(int year, int month, String userId);
+   List<CalendarDTO> getMonthly(int year, int month, String userId, String fileterId);
 }

@@ -12,9 +12,17 @@
 		<result property="calDate" column="cal_date" />
 		<result property="userId" column="user_id" />
 		<result property="calProgress" column="cal_progress" />
-	
-	<!-- 특정 날짜 메모 조회 -->	
 	</resultMap>
+	
+<!-- 진척도(progress) 가져오기 -->
+    <select id="getProgress" resultType="double">
+    SELECT cal_progress 
+    FROM Calendar 
+    WHERE cal_date = #{calDate} AND user_id = #{userId}
+</select>
+
+	<!-- 특정 날짜 메모 조회 -->	
+	
 	<select id="getMemo" resultMap="calDTO">
     SELECT cal_id, cal_date, user_id, 
            COALESCE(cal_detail_1, '') AS cal_detail_1, 

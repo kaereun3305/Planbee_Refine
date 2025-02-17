@@ -18,4 +18,7 @@ public interface CalendarMapper {
 	public int addMemo(CalendarDTO calendar);
 
 	public int updateMemo(CalendarDTO calendar);
+	
+	List<Double> getProgress(@Param("calDate") String calDate, @Param("userId") String userId);
+
 }

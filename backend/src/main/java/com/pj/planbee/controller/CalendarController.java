@@ -28,27 +28,21 @@ public class CalendarController {
     @Autowired CalendarService cs;
     @Autowired TodoListService ts;
     
-    //일별 진척도
-    @GetMapping(value="/dprogress/{calDate}", produces="application/json;charset=UTF-8") //공백들어가면 안됨 ㅠㅠ
-    public double getProgress(@PathVariable String calDate, HttpSession se) { //일별 진척도 가져오는 기능
-        
-       // 세션만드는 메소드가 호출되어서 세션이 만들어짐
-       String sessionId = (String) se.getAttribute("sessionId"); //결과값은 팥붕이 받아진다
-       int tdId = cs.getProgress(calDate, sessionId);
-       double progress = ts.todoProgress(tdId);
-       
-       
-       return progress;
+    @GetMapping(value = "/progress/{calDate}/{sessionId}", produces = "application/json;charset=UTF-8")
+    public double getProgress(@PathVariable String calDate, @PathVariable String sessionId) {  
+        if (sessionId == null || sessionId.isEmpty()) {
+            return 0.0;
+        }
+        double progress = cs.getProgress(calDate, sessionId);return progress;
     }
-    
+
     // 현재 연속 달성일
-    @GetMapping(value="/curStreak", produces="application/json;charset=UTF-8")
+    @GetMapping(value="/curStreak/{sessionId}", produces="application/json;charset=UTF-8")
 	public int curStreak(HttpSession se) {
     	String userId = (String) se.getAttribute("sessionId");
     	Map<String, Integer> result = new HashMap<String, Integer>(); //결과 값을 받아오기 위함
     	result = cs.curProgress(userId); //받아옴
     	int days = result.get("curStreak");
-  
 		return days;
 	}
     
@@ -63,12 +57,9 @@ public class CalendarController {
     	return max;
     }
     
-    // 메모 조회
-    @GetMapping("/memo/{calDate}")
-    public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {
-    	String userId = (String) se.getAttribute("sessionId");
-    	
-    	return cs.getMemo(calDate, userId);
+    @GetMapping("/memo/{calDate}/{sessionId}")
+    public List<CalendarDTO> getMemo(@PathVariable String calDate, @PathVariable String sessionId) {
+        return cs.getMemo(calDate, sessionId);
     }
     
     //메모 추가

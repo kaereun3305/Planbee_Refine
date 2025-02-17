@@ -9,10 +9,13 @@
     <!-- 히카리 커넥션풀 설정 -->
 
    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-      <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-      <property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl" />
-      <property name="username" value="c##eclip" />
-      <property name="password" value="1234" />
+      <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+      <property name="jdbcUrl" value="jdbc:mysql://planbee.c14y0yi620fv.ap-northeast-2.rds.amazonaws.com:3306/whatever_test?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true "/>
+      <!-- localhost대신aws rds엔드포인트 :3306/whatever_test?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" --> 
+      <property name="username" value="planbee" />
+      <property name="password" value="PlanBee*" />
+      <property name="leakDetectionThreshold" value="2000"/>
+      <!-- mysql종료시 자꾸 오류발생해서 추가함 -->
    </bean>
    <!-- 히카리 데이터소스 빈 등록 -->
    <bean id="ds" class="com.zaxxer.hikari.HikariDataSource">

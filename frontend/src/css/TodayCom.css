@@ -1,0 +1,68 @@
+.todolist {
+  width: 618px;
+  height: 750px;
+}
+.todolist_index {
+  height: 70px;
+  font-size: 36px;
+  padding-left: 30px;
+  margin-top: 10px;
+  font-weight: 550;
+}
+.todolist_content {
+  width: 618px;
+  height: 640px;
+  background-color: #fefcfc;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 상단부터 배치 */
+  align-items: center;
+  overflow: hidden; /* 크기 초과 방지 */
+}
+.todolist_checkbox {
+  height: 350px;
+  width: 500px;
+  background-color: bisque;
+}
+.todolist_checkbox tbody {
+  display: block;
+  height: 350px; /* tbody 크기를 table과 맞춤 */
+  overflow-y: auto; /* 스크롤 추가 */
+}
+.todolist_checkbox tr {
+  font-size: 20px;
+}
+.todolist_checkbox td:first-child {
+  width: 20px;
+}
+.todolist_checkbox td:nth-child(2) {
+  width: 300px;
+  background-color: aquamarine;
+}
+.todolist_checkbox td:nth-child(3) {
+  width: 50px;
+}
+.todolist_checkbox td:nth-child(4) {
+  width: 120px;
+  text-align: end;
+  position: relative;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 0; /* 수정 아이콘과 같은 위치 */
+  left: -20px; /* 적절한 위치로 조정 */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  z-index: 10; /* 다른 요소보다 위에 위치하도록 설정 */
+}
+.todolist_memo {
+  height: 200px;
+  width: 580px;
+  border-radius: 30px;
+  background-color: #efefef;
+  padding: 20px;
+}

@@ -1,8 +1,12 @@
 package com.pj.planbee.dto;
 
+import java.sql.Timestamp;
+
 public class TempUserDTO {
 	
 	String tempUserId, tempUserPw, tempUserName, tempUserEmail, tempUserPhone, tempUserCode="";
+	Integer verifyStatus=0;
+	Timestamp createdAt; 
 
 	public String getTempUserId() {
 		return tempUserId;
@@ -51,7 +55,23 @@ public class TempUserDTO {
 	public void setTempUserCode(String tempUserCode) {
 		this.tempUserCode = tempUserCode;
 	}
-	
-	
+
+	public Integer getVerifyStatus() {
+		return verifyStatus;
+	}
+
+	public void setVerifyStatus(Integer verifyStatus) {
+		this.verifyStatus = verifyStatus;
+	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
 	
 }

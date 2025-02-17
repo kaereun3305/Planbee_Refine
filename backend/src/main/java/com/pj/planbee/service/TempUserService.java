@@ -9,7 +9,7 @@ public interface TempUserService {
 	
 	public List<TempUserDTO> getTempUserData(String tempUserId); //테스트 기능
 	
-	public int insertTempUser(TempUserDTO dto); // DB에 임시 저장 기능
+	public int insertTempUser(TempUserDTO dto); // DB에 임시 저장 기능(insertorupdate가 작동 시 삭제)
 	
 	public int deleteTempUser(String tempUserEmail); // DB에 임시 저장한 파일 삭제 기능
 	
@@ -20,4 +20,10 @@ public interface TempUserService {
 	public String getTempUserCode(String tempUserEmail);
 	
 	public TempUserDTO getTempUserByEmail(String tempUserEmail);
+	
+	public int insertOrUpdateTempUser(TempUserDTO tempUser); // 이메일 중복 시 업데이트
+	
+	public int updateVerifyStatus(String tempUserEmail); // 이메일 인증 후 verify_status 변경
+	
+	public Integer getVerifyStatus(String tempUserEmail);
 }

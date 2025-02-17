@@ -20,23 +20,17 @@ public class UserController {
         int result = userService.regiseterUser(user);
 
         if (result == -1) {
-            //"회원가입 실패: user_id 중복됨";
-            return result;
+            return result; // "회원가입 실패: user_id 중복됨"
         } else if (result == -2) {
-            //"회원가입 실패: email 중복됨";
-        	return result;
+            return result; // "회원가입 실패: email 중복됨"
         } else if (result == -3) {
-            //"회원가입 실패: 인증 코드 불일치";
-        	return result;
+            return result; // "회원가입 실패: 인증 코드 불일치"
         } else if (result == -4) {
-            //"회원가입 실패: 인증 정보 불일치";
-        	return result;
+            return result; // "회원가입 실패: 인증 완료되지 않음"
         } else if (result > 0) {
-            //"회원가입 성공!";
-        	return result;
+            return result; // "회원가입 성공!"
         } else {
-            //"회원가입 실패!";
-        	return 0;
+            return 0; // "회원가입 실패!"
         }
     }
 

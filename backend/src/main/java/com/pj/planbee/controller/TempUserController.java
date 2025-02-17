@@ -38,22 +38,28 @@ public class TempUserController {
     // 이메일 인증 코드 발송 + TempUser 저장
     @PostMapping(value = "/sendCode", produces = "application/json; charset=utf-8")
     public int sendVerificationCode(@RequestBody TempUserDTO dto) {
-        int result = tempUserService.insertTempUser(dto);
-  
+        int result = tempUserService.insertOrUpdateTempUser(dto);
 
         if (result == -1) {
-           //이미 가입된 ID
-            return result;
+            return result; // 이미 가입된 ID
         } else if (result == -2) {
-           //이미 가입된 이메일
-            return result;
+            return result; // 이미 가입된 이메일
         } else if (result > 0) {
-            //이메일 인증 코드 발송
-            return result;
+            return result; // 이메일 인증 코드 발송 성공
         } else {
-            //?? 무슨 오류인지 모름
-            return result;
+            return 0; // 알 수 없는 오류
         }
     }
 
+    @PostMapping(value = "/verifyCode", produces = "application/json; charset=utf-8")
+    public int verifyUserCode(@RequestBody TempUserDTO dto) {
+        String storedCode = tempUserService.getTempUserCode(dto.getTempUserEmail());
+
+        if (storedCode != null && storedCode.equals(dto.getTempUserCode())) {
+            // 인증 성공 → 1로 업데이트
+            return tempUserService.updateVerifyStatus(dto.getTempUserEmail());
+        }else {
+        return -1; // 인증 코드 불일치
+        }
+    }
 }

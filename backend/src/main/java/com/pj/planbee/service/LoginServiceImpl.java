@@ -17,11 +17,6 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public LoginDTO login(String userId, String userPw) {
-		Map<String, String> login = new HashMap<>();
-		login.put("userId", userId);
-		login.put("userPw", userPw);
-
-		return mapper.loginUser(login);
+		return mapper.login(userId, userPw); 
 	}
-
 }

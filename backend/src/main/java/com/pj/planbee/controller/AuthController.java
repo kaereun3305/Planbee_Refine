@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pj.planbee.dto.LoginDTO;
 import com.pj.planbee.dto.TempUserDTO;
 import com.pj.planbee.dto.UserDTO;
+import com.pj.planbee.mapper.UserMapper;
 import com.pj.planbee.service.LoginService;
 import com.pj.planbee.service.TempUserService;
 import com.pj.planbee.service.UserService;
@@ -31,6 +32,8 @@ public class AuthController {
     @Autowired UserService userService;
 
     @Autowired LoginService loginService;
+    
+    @Autowired UserMapper usermapper;
 
     // 이메일 인증 코드 발송
     @PostMapping(value = "/email/send", produces = "application/json; charset=utf-8")
@@ -46,6 +49,9 @@ public class AuthController {
     // 이메일 인증 코드 확인
     @PostMapping(value = "/email/verify", produces = "application/json; charset=utf-8")
     public int verifyUserCode(@RequestBody TempUserDTO dto) {
+    	
+    	usermapper.disableSafeUpdates();
+    	
         String storedCode = tempUserService.getTempUserCode(dto.getTempUserEmail());
 
         if (storedCode != null && storedCode.equals(dto.getTempUserCode())) {

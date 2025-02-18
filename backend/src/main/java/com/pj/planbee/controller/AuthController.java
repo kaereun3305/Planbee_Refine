@@ -93,13 +93,13 @@ public class AuthController {
         String userPw = loginDTO.getUserPw();
 
         if (userId == null || userPw == null) {
-            return -2; // 입력값이 null이면 로그인 실패 (-2)
+            return -3; // 입력값이 null이면 
         }
 
         // 아이디 존재 여부 확인
         boolean isUserExists = loginService.isUserExists(userId);
         if (!isUserExists) {
-            return -3; // 아이디가 존재하지 않음 (-3)
+            return -2; // 아이디가 존재하지 않음 
         }
 
         // 파라미터를 Map으로 전달
@@ -110,7 +110,7 @@ public class AuthController {
         LoginDTO user = loginService.login(paramMap);
 
         if (user == null) {
-            return -4; // 비밀번호 불일치 (-4)
+            return -1; // 비밀번호 불일치 
         }
 
         // 로그인 성공 → 세션 생성

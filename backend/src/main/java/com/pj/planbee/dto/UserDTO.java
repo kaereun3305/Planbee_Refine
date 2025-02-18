@@ -2,8 +2,15 @@ package com.pj.planbee.dto;
 
 public class UserDTO {
 
-	String userId, userPw, userName, userEmail, userPhone;
-	String tempUserCode;
+	String userId, userPw, userName, userEmail, userPhone, tempUserId, tempUserPw, tempUserName, tempUserEmail, tempUserPhone, tempUserCode;
+
+	public String getTempUserId() {
+		return tempUserId;
+	}
+
+	public void setTempUserId(String tempUserId) {
+		this.tempUserId = tempUserId;
+	}
 
 	public String getUserId() {
 		return userId;
@@ -21,28 +28,36 @@ public class UserDTO {
 		this.userPw = userPw;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getTempUserPw() {
+		return tempUserPw;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setTempUserPw(String tempUserPw) {
+		this.tempUserPw = tempUserPw;
 	}
 
-	public String getUserEmail() {
-		return userEmail;
+	public String getTempUserName() {
+		return tempUserName;
 	}
 
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
+	public void setTempUserName(String tempUserName) {
+		this.tempUserName = tempUserName;
 	}
 
-	public String getUserPhone() {
-		return userPhone;
+	public String getTempUserEmail() {
+		return tempUserEmail;
 	}
 
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
+	public void setTempUserEmail(String tempUserEmail) {
+		this.tempUserEmail = tempUserEmail;
+	}
+
+	public String getTempUserPhone() {
+		return tempUserPhone;
+	}
+
+	public void setTempUserPhone(String tempUserPhone) {
+		this.tempUserPhone = tempUserPhone;
 	}
 
 	public String getTempUserCode() {
@@ -52,4 +67,6 @@ public class UserDTO {
 	public void setTempUserCode(String tempUserCode) {
 		this.tempUserCode = tempUserCode;
 	}
+	
+
 }

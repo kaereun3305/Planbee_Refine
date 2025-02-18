@@ -13,14 +13,20 @@
     
     <insert id="insertUser">
         INSERT INTO Real_User (user_id, user_pw, user_name, user_email, user_phone) 
-        VALUES (#{userId}, #{userPw}, #{userName}, #{userEmail}, #{userPhone})
+        VALUES (#{tempUserId}, #{tempUserPw}, #{tempUserName}, #{tempUserEmail}, #{tempUserPhone})
     </insert>
     
-    <select id="countUserId">
-        SELECT COUNT(*) FROM Real_User WHERE user_id = #{userId}
+    <select id="countUserId" resultType="int">
+        SELECT COUNT(*) FROM Real_User WHERE user_id = #{tempUserId}
     </select>
     
-    <select id="countUserEmail">
-        SELECT COUNT(*) FROM Real_User WHERE user_email = #{userEmail}
+    <select id="countUserEmail" resultType="int">
+        SELECT COUNT(*) FROM Real_User WHERE user_email = #{tempUserEmail}
     </select>
+    
+    <update id="disableSafeUpdates">
+    	SET SQL_SAFE_UPDATES = 0;
+	</update>
+    
+  
 </mapper>

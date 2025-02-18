@@ -17,8 +17,8 @@ public interface TempUserMapper {
 	public int countUserId(String tempUserId);
 	public int countUserEmail(String tempUserEmail);
 	public TempUserDTO getTempUserByEmail(String tempUserEmail);
-	public int updateVerifyStatus(String tempUserEmail); // 이메일 인증 후 verify_status 변경
-	public Integer getVerifyStatus(String tempUserEmail);
+	public int updateVerifyStatus(@Param("tempUserEmail") String tempUserEmail); // 이메일 인증 후 verify_status 변경
+	public Integer getVerifyStatus(@Param("tempUserEmail") String tempUserEmail);
 	public Integer checkTempUserExists(String tempUserEmail);
 	public int updateTempUser(TempUserDTO dto);
 	public void deleteExpiredTempUsers();

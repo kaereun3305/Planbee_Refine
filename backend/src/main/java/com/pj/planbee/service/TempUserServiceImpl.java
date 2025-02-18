@@ -146,6 +146,7 @@ public class TempUserServiceImpl implements TempUserService{
 		return mapper.updateVerifyStatus(tempUserEmail);
 	}
 	
+	@Override
 	public Integer getVerifyStatus(String tempUserEmail) {
 	    Integer status = mapper.getVerifyStatus(tempUserEmail);
 	    return (status != null) ? status : 0; // NULL이면 기본값 0 반환

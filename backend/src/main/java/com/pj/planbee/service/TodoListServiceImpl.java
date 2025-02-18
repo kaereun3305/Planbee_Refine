@@ -25,6 +25,8 @@ public class TodoListServiceImpl implements TodoListService {
 @Autowired TodoListMapper tlMap;
 
 
+
+
 public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 String으로 변환하는 메소드
 	LocalDateTime today = LocalDateTime.now();
 	LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);

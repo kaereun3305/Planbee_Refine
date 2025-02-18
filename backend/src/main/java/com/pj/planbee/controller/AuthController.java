@@ -86,7 +86,7 @@ public class AuthController {
         return userService.isEmailExists(email);
     }
 
- // 로그인
+    //로그인
     @PostMapping(value = "/login", produces = "application/json; charset=utf-8")
     public int login(@RequestBody LoginDTO loginDTO, HttpSession session) {
         String userId = loginDTO.getUserId();
@@ -96,6 +96,12 @@ public class AuthController {
             return -2; // 입력값이 null이면 로그인 실패 (-2)
         }
 
+        // 아이디 존재 여부 확인
+        boolean isUserExists = loginService.isUserExists(userId);
+        if (!isUserExists) {
+            return -3; // 아이디가 존재하지 않음 (-3)
+        }
+
         // 파라미터를 Map으로 전달
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", userId);
@@ -103,12 +109,13 @@ public class AuthController {
 
         LoginDTO user = loginService.login(paramMap);
 
-        if (user != null) {
-            session.setAttribute("user", user); // 세션 생성
-            return 1; // 로그인 성공
-        } else {
-            return -1; // 로그인 실패 (아이디 또는 비밀번호 불일치)
+        if (user == null) {
+            return -4; // 비밀번호 불일치 (-4)
         }
+
+        // 로그인 성공 → 세션 생성
+        session.setAttribute("user", user);
+        return 1; // 로그인 성공
     }
 
     // 로그아웃

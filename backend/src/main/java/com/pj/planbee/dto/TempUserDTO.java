@@ -72,6 +72,5 @@ public class TempUserDTO {
 		this.createdAt = createdAt;
 	}
 
-
 	
 }

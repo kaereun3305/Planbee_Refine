@@ -53,11 +53,13 @@ public class TempUserController {
 
     @PostMapping(value = "/verifyCode", produces = "application/json; charset=utf-8")
     public int verifyUserCode(@RequestBody TempUserDTO dto) {
+    	int result = 0;
         String storedCode = tempUserService.getTempUserCode(dto.getTempUserEmail());
 
         if (storedCode != null && storedCode.equals(dto.getTempUserCode())) {
             // 인증 성공 → 1로 업데이트
-            return tempUserService.updateVerifyStatus(dto.getTempUserEmail());
+        	result = tempUserService.updateVerifyStatus(dto.getTempUserEmail());
+            return result;
         }else {
         return -1; // 인증 코드 불일치
         }

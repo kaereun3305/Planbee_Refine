@@ -39,13 +39,12 @@
 	</select>
 
 	<insert id="insertTempUser">
-		INSERT INTO Temp_User (tempuser_id, tempuser_pw,
-		tempuser_name,
-		tempuser_email, tempuser_phone, tempuser_code)
-		VALUES
-		(#{tempUserId}, #{tempUserPw}, #{tempUserName}, #{tempUserEmail},
-		#{tempUserPhone}, #{tempUserCode})
+    	INSERT INTO Temp_User (tempuser_id, tempuser_pw, tempuser_name,
+                           tempuser_email, tempuser_phone, tempuser_code, verify_status)
+    	VALUES (#{tempUserId}, #{tempUserPw}, #{tempUserName}, #{tempUserEmail},
+            #{tempUserPhone}, #{tempUserCode}, COALESCE(#{verifyStatus}, 0))
 	</insert>
+
 
 	<!-- 이메일 존재 여부 확인 -->
 	<select id="checkTempUserExists" resultType="int">
@@ -55,15 +54,16 @@
 
 	<!-- 기존 데이터가 있을 경우 업데이트 -->
 	<update id="updateTempUser">
-		UPDATE Temp_User
-		SET tempuser_id = #{tempUserId},
-		tempuser_pw = #{tempUserPw},
-		tempuser_name = #{tempUserName},
-		tempuser_phone = #{tempUserPhone},
-		tempuser_code = #{tempUserCode},
-		verify_status = #{verifyStatus}
-		WHERE tempuser_email = #{tempUserEmail}
+    	UPDATE Temp_User
+   	 	SET tempuser_id = #{tempUserId},
+        tempuser_pw = #{tempUserPw},
+        tempuser_name = #{tempUserName},
+        tempuser_phone = #{tempUserPhone},
+        tempuser_code = #{tempUserCode},
+        verify_status = COALESCE(#{verifyStatus}, 0)
+    	WHERE tempuser_email = #{tempUserEmail}
 	</update>
+
 
 	<delete id="deleteTempUser">
 		DELETE FROM Temp_User WHERE tempuser_email =
@@ -89,12 +89,12 @@
 	</select>
 
 	<delete id="deleteExpiredTempUsers">
-   		<![CDATA[
+    	<![CDATA[
     	DELETE FROM Temp_User
-		WHERE verify_status = 0 
-		AND created_at < NOW() - INTERVAL 5 MINUTE;
-
+    	WHERE verify_status = 0 
+    	AND created_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE);
     	]]>
 	</delete>
+
 
 </mapper>

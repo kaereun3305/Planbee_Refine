@@ -25,16 +25,32 @@ public class CalendarServiceImpl implements CalendarService {
 	@Autowired CalendarMapper calMap;
 	
 	@Override
-	public double getProgress(String calDate, String userId) {
-	    List<Double> progressList = calMap.getProgress(calDate, userId);
-	    if (progressList.isEmpty()) {
-	        return 0.0; // 기본값 반환
+	public int getProgress(String calDate, String sessionId) {
+	    int tdId = -1; // 기본값 설정 (예외 발생 시 반환할 값)
+
+	    try {
+	        tdId = tdIdSearch(calDate, sessionId);
+	    } catch (IndexOutOfBoundsException e) {
+	        System.out.println("getProgress()에서 IndexOutOfBoundsExceptio n 발생: " + e.getMessage());
+	    } catch (Exception e) {
+	        System.out.println("getProgress()에서 예외 발생: " + e.getMessage());
 	    }
-	    // 여러 개의 진척도 값이 있으면 평균값 반환
-	    double avgProgress = progressList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-	    return avgProgress;
+	    return tdId;
 	}
 
+	public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
+		   List<TDstartDTO> dateId = tlMap.getDate(sessionId);
+		   System.out.println("service: "+dateId.get(3).getTodo_Id());
+		   int selectedtdId = 0;
+		   for (int i =0; i<dateId.size(); i++) {//dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
+		      if(dateId.get(i).getTodo_date().equals(tdDate)) {
+		         //리스트 중에 입력한 날짜와 같은 열, 세션아이디와 같은 값을 가진 열을 찾으면 그 고유번호를 반환함
+		         selectedtdId = dateId.get(i).getTodo_Id(); //for문 사용하여 index번화 반환하므로 1 더해줌
+		      }
+		   }
+		   return selectedtdId;
+		
+		}
 	@Override
 	public Map<String, Integer> curProgress(String userId) {
 		LocalDateTime today = LocalDateTime.now(); //현재 날짜
@@ -73,31 +89,22 @@ public class CalendarServiceImpl implements CalendarService {
 	public List<CalendarDTO> getMemo(String calDate, String sessionId) {
 		List<CalendarDTO> cal = new ArrayList<CalendarDTO>();
 			cal = calMap.getMemo(calDate, sessionId);
-				
 		return cal;
 	}
 
 	@Override
 	public int addMemo(CalendarDTO calendar) {
-	    System.out.println("📌 메모 추가 요청: " + calendar.getCalDate() + " / " + calendar.getUserId());
-	    System.out.println("📌 메모 내용: " + calendar.getCalDetail1() + ", " + calendar.getCalDetail2() + ", " + calendar.getCalDetail3());
-
-	    // 🛠 `NULL` 방지: NULL 값이 들어오면 빈 문자열("") 또는 기본값 설정
-	    if (calendar.getCalDetail1() == null) calendar.setCalDetail1("");
-	    if (calendar.getCalDetail2() == null) calendar.setCalDetail2("");
-	    if (calendar.getCalDetail3() == null) calendar.setCalDetail3("");
-	    if (calendar.getCalProgress() == 0.0) calendar.setCalProgress(0.0); // 기본값 0.0
-
-	    int result = calMap.addMemo(calendar);
-	    System.out.println("📌 INSERT 실행 결과: " + result);
-	    return result;
+		 int result = calMap.addMemo(calendar);
+		 
+		return result;
 	}
 
 
 	@Override
 	public int modiMemo(CalendarDTO calendar) {
+		int result = calMap.modiMemo(calendar);
 		
-		return 0;
+		return result;
 	}
 
 	@Override

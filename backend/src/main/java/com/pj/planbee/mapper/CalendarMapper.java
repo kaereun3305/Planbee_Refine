@@ -21,4 +21,6 @@ public interface CalendarMapper {
 	
 	List<Double> getProgress(@Param("calDate") String calDate, @Param("userId") String userId);
 
+	public int modiMemo(CalendarDTO calendar);
+
 }

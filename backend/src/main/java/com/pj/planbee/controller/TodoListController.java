@@ -37,17 +37,11 @@ public class TodoListController {
 //		return list; 
 //
 //	}
-	public void session(HttpSession se) { //세션일단 설정 추후 삭제예정
-		se.setAttribute("sessionId", "슈붕");
-		
-		
-	}
-	
 	@GetMapping(value="/{tdDate}", produces="application/json; charset=utf-8")
 	public List<TDdetailDTO> getTodo(@PathVariable String tdDate, HttpSession se){ //하루의 투두리스트를 가져오는 기능
 		//input값: yyMMdd 형식의 날짜 데이터
 		//sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
-		session(se);
+		
 		String sessionId = (String) se.getAttribute("sessionId");
 		int todoId = ts.inputRow(tdDate, sessionId); //오늘과 내일의 열이 없으면 입력하고, 있으면 오늘의 tdId 반환해주는 메소드
 		//추가한 후 todoId 고유번호를 반환하도록 설정
@@ -63,7 +57,7 @@ public class TodoListController {
 	public int todoWrite(@RequestBody TDdetailDTO dto, @PathVariable String tdDate, HttpSession se) { //투두리스트 작성하는 기능
 		//input값: 할 일에 대한 String tododetail내용, yyMMdd 형식의 날짜
 		//tdId는 sessionId 이용
-		session(se);
+		
 		String sessionId = (String) se.getAttribute("sessionId");
 		
 		//sessionId와 tdDate를 이용해서 tdId를 가져오는 메소드
@@ -107,7 +101,7 @@ public class TodoListController {
 	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; chareset=utf-8")
 	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
 	//input값: yyMMdd형식의 String날짜
-		session(se);//세션 메소드 호출 삭제예정
+		
 		String sessionId = (String) se.getAttribute("sessionId");
 		//System.out.println("ctrl:" + sessionId);
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
@@ -132,7 +126,7 @@ public class TodoListController {
 	@DeleteMapping(value="/memoDel/{tdDate}", produces="application/json; charset=utf-8")
 	public int memoDel(@PathVariable String tdDate, HttpSession se) { //메모를 삭제하는 기능
 	//input값: yyMMdd형식의 String날짜	
-		session(se);
+		
 		String sessionId = (String) se.getAttribute("sessionId");
 		int tdId = ts.tdIdSearch(tdDate, sessionId); //td고유Id로 변환
 		return ts.memoDel(tdId);

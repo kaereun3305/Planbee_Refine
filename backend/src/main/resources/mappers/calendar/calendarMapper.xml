@@ -13,13 +13,6 @@
 		<result property="userId" column="user_id" />
 		<result property="calProgress" column="cal_progress" />
 	</resultMap>
-	
-<!-- 진척도(progress) 가져오기 -->
-    <select id="getProgress" resultType="double">
-    SELECT cal_progress 
-    FROM Calendar 
-    WHERE cal_date = #{calDate} AND user_id = #{userId}
-</select>
 
 	<!-- 특정 날짜 메모 조회 -->	
 	
@@ -56,19 +49,19 @@
         ORDER BY cal_date
     </select>
 
-    <!-- 🟢 메모 추가 (INSERT) -->
-	<insert id="addMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
-    	INSERT INTO Calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3, cal_progress)
-    	VALUES (#{calDate}, #{userId}, #{calDetail1}, #{calDetail2}, #{calDetail3}, #{calProgress});
+    <!-- 메모 추가 -->
+	<insert id="addMemo">
+    INSERT INTO Calendar (cal_detail_1, cal_detail_2, cal_detail_3, cal_date, cal_progress, user_id)
+    VALUES (#{calDetail1}, #{calDetail2}, #{calDetail3}, #{calDate}, #{calProgress}, #{userId})
 	</insert>
 
-	<!-- 🔵 기존 메모 수정 (UPDATE) -->
+	<!-- 기존 메모 수정  -->
 	<update id="updateMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
     	UPDATE Calendar
     	SET cal_detail_1 = #{calDetail1}, 
         	cal_detail_2 = #{calDetail2}, 
         	cal_detail_3 = #{calDetail3}, 
         	cal_progress = #{calProgress}
-    	WHERE cal_date = #{calDate} AND user_id = #{userId};
+    	WHERE cal_id = #{calId}
 	</update>
 </mapper>

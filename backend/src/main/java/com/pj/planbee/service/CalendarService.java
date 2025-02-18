@@ -7,7 +7,7 @@ import com.pj.planbee.dto.CalendarDTO;
 
 public interface CalendarService {
 
-   public double getProgress(String calDate, String sessionId);
+   public int getProgress(String calDate, String sessionId);
    
    public Map<String, Integer> curProgress(String userId);
    

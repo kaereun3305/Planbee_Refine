@@ -16,11 +16,11 @@
         VALUES (#{tempUserId}, #{tempUserPw}, #{tempUserName}, #{tempUserEmail}, #{tempUserPhone})
     </insert>
     
-    <select id="countUserId"  resultType="int">
+    <select id="countUserId" resultType="int">
         SELECT COUNT(*) FROM Real_User WHERE user_id = #{tempUserId}
     </select>
     
-    <select id="countUserEmail"  resultType="int">
+    <select id="countUserEmail" resultType="int">
         SELECT COUNT(*) FROM Real_User WHERE user_email = #{tempUserEmail}
     </select>
 </mapper>

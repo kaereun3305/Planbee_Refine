@@ -12,11 +12,10 @@ import com.pj.planbee.mapper.LoginMapper;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-	@Autowired
-	LoginMapper mapper;
+    @Autowired LoginMapper mapper;
 
-	@Override
-	public LoginDTO login(String userId, String userPw) {
-		return mapper.login(userId, userPw); 
-	}
+    @Override
+    public LoginDTO login(Map<String, Object> paramMap) {
+        return mapper.login(paramMap); 
+    }
 }

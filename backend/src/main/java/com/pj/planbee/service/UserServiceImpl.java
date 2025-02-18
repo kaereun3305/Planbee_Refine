@@ -23,21 +23,21 @@ public class UserServiceImpl implements UserService{
 	    int result = 0;
 
 	    try {
-	        if (isUserIdExists(user.getUserId())) {
+	        if (isUserIdExists(user.getTempUserId())) {
 	            return -1; // 이미 가입된 ID
 	        }
-	        if (isEmailExists(user.getUserEmail())) {
+	        if (isEmailExists(user.getTempUserEmail())) {
 	            return -2; // 이미 가입된 이메일
 	        }
 
 	        // 인증 상태 확인
-	        int verifyStatus = tus.getVerifyStatus(user.getUserEmail());
+	        int verifyStatus = tus.getVerifyStatus(user.getTempUserEmail());
 	        if (verifyStatus != 1) {
 	            return -4; // 이메일 인증이 완료되지 않음
 	        }
 
 	        // 인증 코드 확인
-	        String storedCode = tus.getTempUserCode(user.getUserEmail());
+	        String storedCode = tus.getTempUserCode(user.getTempUserEmail());
 	        if (storedCode == null || !storedCode.equals(user.getTempUserCode())) {
 	            return -3; // 인증 코드 불일치
 	        }
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService{
 
 	        // 회원가입 성공 시 TempUser 삭제
 	        if (result > 0) {
-	            tus.deleteTempUser(user.getUserEmail());
+	            tus.deleteTempUser(user.getTempUserEmail());
 	        }
 
 	    } catch (Exception e) {

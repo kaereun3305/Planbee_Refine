@@ -14,42 +14,42 @@
 		<result property="createdAt" column="created_at" />
 	</resultMap>
 
+	<!-- user_id 중복 확인 -->
 	<select id="countUserId" resultType="int">
-		SELECT COUNT(*) FROM
-		Real_User WHERE user_id = #{tempUserId}
+		SELECT COUNT(*) FROM Real_User WHERE user_id = #{tempUserId}
 	</select>
 
+	<!-- user_email 중복 확인 -->
 	<select id="countUserEmail" resultType="int">
-		SELECT COUNT(*) FROM
-		Real_User WHERE user_email = #{tempUserEmail}
+		SELECT COUNT(*) FROM Real_User WHERE user_email = #{tempUserEmail}
 	</select>
 
+	<!-- 특정 이메일을 기준으로 Temp_User 조회 -->
 	<select id="getTempUserByEmail" resultMap="tempuser">
-		SELECT * FROM
-		Temp_User WHERE tempuser_email = #{tempUserEmail}
+		SELECT * FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
 	</select>
 
+	<!-- 전체 Temp_User 조회 -->
 	<select id="getTempUser" resultMap="tempuser">
 		SELECT * FROM Temp_User
 	</select>
 
+	<!-- 특정 tempUserId로 Temp_User 조회 -->
 	<select id="getTempUserData" resultMap="tempuser">
-		SELECT * FROM Temp_User
-		WHERE tempuser_id = #{tempUserId}
+		SELECT * FROM Temp_User WHERE tempuser_id = #{tempUserId}
 	</select>
 
+	<!-- Temp_User 삽입 -->
 	<insert id="insertTempUser">
     	INSERT INTO Temp_User (tempuser_id, tempuser_pw, tempuser_name,
                            tempuser_email, tempuser_phone, tempuser_code, verify_status)
     	VALUES (#{tempUserId}, #{tempUserPw}, #{tempUserName}, #{tempUserEmail},
-            #{tempUserPhone}, #{tempUserCode}, COALESCE(#{verifyStatus}, 0))
+            #{tempUserPhone}, #{tempUserCode}, NVL(#{verifyStatus}, 0))
 	</insert>
-
 
 	<!-- 이메일 존재 여부 확인 -->
 	<select id="checkTempUserExists" resultType="int">
-		SELECT COUNT(*) FROM
-		Temp_User WHERE tempuser_email = #{tempUserEmail}
+		SELECT COUNT(*) FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
 	</select>
 
 	<!-- 기존 데이터가 있을 경우 업데이트 -->
@@ -60,41 +60,38 @@
         tempuser_name = #{tempUserName},
         tempuser_phone = #{tempUserPhone},
         tempuser_code = #{tempUserCode},
-        verify_status = COALESCE(#{verifyStatus}, 0)
+        verify_status = NVL(#{verifyStatus}, 0)
     	WHERE tempuser_email = #{tempUserEmail}
 	</update>
 
-
+	<!-- Temp_User 삭제 -->
 	<delete id="deleteTempUser">
-		DELETE FROM Temp_User WHERE tempuser_email =
-		#{tempUserEmail}
+		DELETE FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
 	</delete>
 
+	<!-- 특정 이메일에 해당하는 tempuser_code 조회 -->
 	<select id="getTempUserCode" resultType="String">
-		SELECT tempuser_code
-		FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
+		SELECT tempuser_code FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
 	</select>
 
+	<!-- 인증 성공 시 verify_status 업데이트 -->
 	<update id="updateVerifyStatus">
 		UPDATE Temp_User
 		SET verify_status = 1
-		WHERE
-		tempuser_email = #{tempUserEmail}
+		WHERE tempuser_email = #{tempUserEmail}
 	</update>
 
-
+	<!-- 특정 이메일의 verify_status 조회 -->
 	<select id="getVerifyStatus" resultType="Integer">
-		SELECT verify_status
-		FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
+		SELECT verify_status FROM Temp_User WHERE tempuser_email = #{tempUserEmail}
 	</select>
 
+	<!-- 만료된 Temp_User 삭제 -->
 	<delete id="deleteExpiredTempUsers">
     	<![CDATA[
     	DELETE FROM Temp_User
     	WHERE verify_status = 0 
-    	AND created_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE);
+    	AND created_at < SYSDATE - INTERVAL '5' MINUTE
     	]]>
 	</delete>
-
-
 </mapper>

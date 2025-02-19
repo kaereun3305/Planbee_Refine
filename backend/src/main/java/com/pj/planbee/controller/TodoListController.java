@@ -46,7 +46,7 @@ public class TodoListController {
 	}
 	
     @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 로그인 상태 확인
-    public int checkSession(HttpSession session) { //세션체크 -찬교님 코드 참고함
+    public int checkSession(HttpSession session) { //세션체크
         return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
     }
 	

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TDstartDTO;
 import com.pj.planbee.dto.TodoListDTO;
+import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
 import com.pj.planbee.mapper.TDdetailMapper;
 import com.pj.planbee.mapper.TodoListMapper;
 
@@ -163,8 +164,8 @@ public double todoProgress(int tdId) {
 }
 
 @Override
-public List<TodoListDTO> getMemo(int tdId) {
-	List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+public List<SubTodoListDTO> getMemo(int tdId) {
+	List<SubTodoListDTO> list = new ArrayList<SubTodoListDTO>();
 	try {
 		list = tlMap.getMemo(tdId);
 		//System.out.println("ser:"+ list);

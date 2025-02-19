@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TodoListDTO;
+import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
 @RestController
@@ -45,9 +46,9 @@ public class TodoListController {
 		
 	}
 	
-    @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 濡쒓렇�씤 �긽�깭 �솗�씤
-    public int checkSession(HttpSession session) { //�꽭�뀡泥댄겕 -李ш탳�떂 肄붾뱶 李멸퀬�븿
-        return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 濡쒓렇�씤�맂 �긽�깭, 0: 濡쒓렇�씤�릺吏� �븡�쓬
+    @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 로그인 상태 확인
+    public int checkSession(HttpSession session) { //세션체크
+        return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
     }
 	
 	
@@ -114,32 +115,30 @@ public class TodoListController {
 	}
 	//�젙�긽 �옉�룞�셿猷�, �궡�슜�닔�젙�쐞�븳 湲곕뒫 
 	//
+
 	
-	@DeleteMapping(value="delete/{tdDetailId}", produces="application/json; charset=utf-8")
-	public int todoDel(@PathVariable int tdDetailId) { //�닾�몢由ъ뒪�듃 �궘�젣�븯�뒗 湲곕뒫, �떆媛� 吏��굹硫� �궘�젣 遺덇�
-	//input媛�: list�뿉�꽌 諛쏆� tdDetailId
-		return ts.todoDel(tdDetailId);
-	}
-	//�옒 �옉�룞�맖
+	//delMemo기능 삭제로 빈칸 만들어둠
+	
+	
+	
+	
 	@Transactional
 	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; charset=utf-8")
-	public String getMemo(@PathVariable String tdDate, HttpSession se){ //�븯猷⑥쓽 硫붾え瑜� 媛��졇�삤�뒗 湲곕뒫, 硫붾え �븳媛쒖씠誘�濡� String�쑝濡� 諛쏆븯�쓬
-	//input媛�: yyMMdd�삎�떇�쓽 String�궇吏�
+	public List<SubTodoListDTO> getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
+	//input값: yyMMdd형식의 String날짜
 		
 		String sessionId = (String) se.getAttribute("sessionId");
 		//System.out.println("ctrl:" + sessionId);
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
 		System.out.println("Ctrl " + tdId);
-		List<TodoListDTO> list= new ArrayList<TodoListDTO>();
-		list = ts.getMemo(tdId);
-		System.out.println(tdDate+"�씪 �븣 由ъ뒪�듃 �궗�씠利�: "+ list.size());
-		if(list.isEmpty()) { //留뚯빟 todolist�뿉 �빐�떦�궇吏쒖뿉 ���븳 �뿴�씠 �엯�젰�릺�뼱�엳吏� �븡�쑝硫� inputRow瑜� �떎�뻾�븿
+		List<SubTodoListDTO> list = ts.getMemo(tdId);
+		System.out.println(tdDate+"일 때 리스트 사이즈: "+ list.get(0).getTdMemo() );
+		if(list.isEmpty()) { //만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
 			ts.inputRow(tdDate, sessionId);
 			tdId = ts.tdIdSearch(tdDate, sessionId);
 			list = ts.getMemo(tdId);
 		}
-		System.out.println("ctrl: "+ list.get(0).getTdMemo());
-		return list.get(0).getTdMemo();
+		return list;
 	}
 	//�젙�긽 �옉�룞�맖
 	

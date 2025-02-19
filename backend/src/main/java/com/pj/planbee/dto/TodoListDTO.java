@@ -7,6 +7,26 @@ public class TodoListDTO {
 	double tdProgress;
 	String userId; //유저아이디는 나중에 만들어지는 것과 맞춰서 만들어야함
 	
+	public static class SubTodoListDTO{ //추가: getMemo 메소드를 위해 하위 DTO를 생성함
+		public int tdId;
+		public String tdMemo;
+		
+		public SubTodoListDTO(int tdId, String tdMemo) {
+			this.tdId = tdId;
+			this.tdMemo = tdMemo;
+		}
+		public int getTdId() {
+			return tdId;
+		}
+		public String getTdMemo() {
+			return tdMemo;
+		}
+	}
+	
+	public SubTodoListDTO toSubTodoListDTO() {
+        return new SubTodoListDTO(this.tdId, this.tdMemo);
+    }
+	
 	public int getTdId() {
 		return tdId;
 	}

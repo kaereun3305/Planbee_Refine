@@ -26,7 +26,7 @@ const TodayCom = () => {
           setTodoDetailsToday(response.data);
           setTodayTdId(response.data[0].tdId);
         } else {
-          console.error("오늘늘의 데이터 에러", response.data);
+          console.error("오늘의 데이터 에러", response.data);
         }
       } catch (error) {
         console.error("오늘의 데이터 fetch 에러", error);

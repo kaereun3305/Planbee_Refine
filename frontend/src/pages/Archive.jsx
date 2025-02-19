@@ -16,7 +16,7 @@ const Archive = () => {
             <div className="archive_search">
               <div className="archive_search_calendar">
                 <input
-                  type="text"
+                  type="date"
                   id="date"
                   name="archiveDate"
                   placeholder="Date"

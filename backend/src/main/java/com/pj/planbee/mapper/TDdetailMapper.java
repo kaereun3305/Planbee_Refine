@@ -18,7 +18,7 @@ public interface TDdetailMapper {
 	public int todoWrite(TDdetailDTO dto); //투두리스트 작성기능
 	public int updateState(@Param("tdDetailId") int tdDetailId, @Param("state") boolean stae); //투두리스트 완료상황 업데이트기능
 	//그냥 id,state로 적으면 인식을 못해서 @Param("")를 추가함
-	public int todoModify(TDdetailDTO dto);//투두리스트 수정기능 문제있음
+	public int todoModify(TDdetailDTO dto);//투두리스트 수정기능
 	public int todoDel(@Param("tdDetailId") int ToDoDetailID); //투두리스트 한 개 삭제기능
 	
 	//진척도 계산을 위한 기능

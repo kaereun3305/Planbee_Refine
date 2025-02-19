@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TodoListDTO;
+import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
 
 public interface TodoListService {
 	
@@ -23,13 +24,13 @@ public interface TodoListService {
 	public int todoWrite(TDdetailDTO dto); //투두리스트 입력하는 기능
 	public int updateState(int tdDetailId, boolean state); //완료상황 t/f 업데이트하는 기능
 	public int todoModify(TDdetailDTO dto); //투두리스트 자체를 수정하는 기능
-	public int todoDel(int ToDoDetailID); //투두리스트 한 개 삭제하는 기능
+	//투두리스트 한 개 삭제하는 기능
 	public double todoProgress(int tdId); //진척도 가져오는 기능
 	public int regiProgress(int tdId, double progress);//업데이트된 진척도를 저장하는 기능
 	
 	
 	//todolist의 memo에 대한 기능들
-	public List<TodoListDTO> getMemo(int tdId); //하루의 메모 가져오는 기능, 하나 밖에 없으므로 string으로 받아옴
+	public List<SubTodoListDTO> getMemo(int tdId); //하루의 메모 가져오는 기능, 하나 밖에 없으므로 string으로 받아옴
 	public int memoWrite(TodoListDTO listDto);//메모를 작성하고 수정하는 기능
 	public int memoDel(int tdId); //메모를 삭제하는 기능
 

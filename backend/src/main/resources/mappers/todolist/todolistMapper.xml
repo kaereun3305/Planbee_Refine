@@ -28,8 +28,8 @@
     </insert>
     
 	<!-- 메모 가져오는 기능 -->
-	 <select id="getMemo" resultMap ="todolist">
-    	select todo_memo from ToDoList where todo_id=#{tdId}
+	 <select id="getMemo" resultType ="com.pj.planbee.dto.TodoListDTO$SubTodoListDTO">
+    	select todo_id, todo_memo from ToDoList where todo_id=#{tdId}
     </select>
     
     <update id="memoWrite">

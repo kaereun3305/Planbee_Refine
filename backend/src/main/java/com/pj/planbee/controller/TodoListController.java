@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TodoListDTO;
+import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
 @RestController
@@ -114,32 +115,30 @@ public class TodoListController {
 	}
 	//정상 작동완료, 내용수정위한 기능 
 	//
+
 	
-	@DeleteMapping(value="delete/{tdDetailId}", produces="application/json; charset=utf-8")
-	public int todoDel(@PathVariable int tdDetailId) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
-	//input값: list에서 받은 tdDetailId
-		return ts.todoDel(tdDetailId);
-	}
-	//잘 작동됨
+	//delMemo기능 삭제로 빈칸 만들어둠
+	
+	
+	
+	
 	@Transactional
 	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; charset=utf-8")
-	public String getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
+	public List<SubTodoListDTO> getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
 	//input값: yyMMdd형식의 String날짜
 		
 		String sessionId = (String) se.getAttribute("sessionId");
 		//System.out.println("ctrl:" + sessionId);
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
 		System.out.println("Ctrl " + tdId);
-		List<TodoListDTO> list= new ArrayList<TodoListDTO>();
-		list = ts.getMemo(tdId);
-		System.out.println(tdDate+"일 때 리스트 사이즈: "+ list.size());
+		List<SubTodoListDTO> list = ts.getMemo(tdId);
+		System.out.println(tdDate+"일 때 리스트 사이즈: "+ list.get(0).getTdMemo() );
 		if(list.isEmpty()) { //만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
 			ts.inputRow(tdDate, sessionId);
 			tdId = ts.tdIdSearch(tdDate, sessionId);
 			list = ts.getMemo(tdId);
 		}
-		System.out.println("ctrl: "+ list.get(0).getTdMemo());
-		return list.get(0).getTdMemo();
+		return list;
 	}
 	//정상 작동됨
 	

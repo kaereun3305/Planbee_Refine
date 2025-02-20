@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pj.planbee.dto.ArchDetailDTO;
 import com.pj.planbee.dto.ArchiveDTO;
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TDstartDTO;
@@ -243,10 +244,37 @@ public int saveArchive() {
 }
 @Override
 public int saveArchiveDetail() {
-	// TODO Auto-generated method stub
 	
-	//public List<TDdetailDTO> getTodoDetail(String yesterday); //어제날짜 기반으로 detail 전체 가져오는 기능
-	return 0;
+	checkToday().get("yesterdayStr"); //어제날짜를 yyMMdd로 변환
+	String yesterday = "250219";
+	//date 기반으로 tdId 가져오기
+	List<Integer> tdIds = saMap.tdIdSearch(yesterday);
+	System.out.println("service impl 어제날짜 해당하는 tdId값: " + tdIds);
+	ArrayList<TDdetailDTO> archDetail = new ArrayList<TDdetailDTO>();
+	for(int i =0 ; i<tdIds.size(); i++) {
+		 archDetail.addAll(saMap.todoDetailCheck(tdIds.get(i)));
+	}
+	
+	System.out.println("ser impl tdDetail 첫번째 값?" + archDetail.get(0).getTdDetail());
+	int result = 0;
+	//
+	if(archDetail == null) {
+		public List<TDdetailDTO> getTodoDetail(String yesterday); //어제날짜 기반으로 detail 전체 가져오는 기능
+		System.out.println("service impl dto값?"+ todolist.getTdDate());
+		try {
+			result = saMap.toArchive(todolist);//list에 담은 어제 값을 archive로 저장하는 기능
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("service Impl 성공여부" + result);
+	}else {
+		result = 2;
+	}
+	System.out.println("result: "+ result);
+	return result;
+	
+	//
+
 }
 
 

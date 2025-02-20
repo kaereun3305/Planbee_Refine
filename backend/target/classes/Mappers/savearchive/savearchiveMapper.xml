@@ -31,6 +31,15 @@
 		
 	</resultMap>
 	
+	<resultMap type="com.pj.planbee.dto.ArchDetailDTO" id="archDetail">
+		<id property="archDetailId" column="archivedetail_id" /> 
+		<result property="archDetail" column="archivedetail" />
+		<result property="archDetailState" column="archivedetail_state" />
+		<result property="archDetailTime" column="archivedetail_time"/>
+		<result property="archiveId" column="archive_id" />
+		
+	</resultMap>
+	
 	 <select id="getTodoList" resultMap = "todolist">
     	select * from ToDoList where todo_date=#{yesterday}
     </select>
@@ -42,6 +51,14 @@
     <insert id="toArchive">
     	insert into archive (archive_date, archive_memo, archive_progress, user_id) values (#{tdDate}, #{tdMemo}, #{tdProgress}, #{userId});
     </insert>
+    
+    <select id="tdIdSearch">
+    	select todo_Id from ToDoList where todo_date=#{yesterday}
+    </select>
+    
+    <select id="todoDetailCheck" resultMap="todoDetail" >
+    	select * from ToDoList_Detail where todo_id=#{tdIds}
+    </select>
     
     
     

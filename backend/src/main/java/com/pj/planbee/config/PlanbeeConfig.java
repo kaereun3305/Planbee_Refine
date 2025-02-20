@@ -17,13 +17,14 @@ public class PlanbeeConfig {
 	        this.ts = ts;
 	    }
 	
-	@Scheduled(cron = "0 11 16 * * *") // 매일 오후 4시에 실행
+	@Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
 	public void scheduledSaveArchive() {
 	   
 	    int result = ts.saveArchive();
 	    System.out.println("아카이브 자동 백업 실행 결과: " + result);
 	}
 	
+	@Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
 	public void saveDetailArchive() {
 		int result = ts.saveArchiveDetail();
 		System.out.println("아카이브 디테일 자동백업 실행결과: " + result);

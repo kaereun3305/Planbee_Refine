@@ -20,7 +20,10 @@ const TodayCom = () => {
     const fetchTodoDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/getTodo/${getFormattedTodayYYMMDD()}}`
+          `http://localhost:8080/planbee/todolist/getTodo/${getFormattedTodayYYMMDD()}`,
+          {
+            withCredentials: true,
+          }
         );
         if (Array.isArray(response.data)) {
           setTodoDetailsToday(response.data);
@@ -36,7 +39,10 @@ const TodayCom = () => {
     const fetchMemo = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/getMemo/${getFormattedTodayYYMMDD()}`
+          `http://localhost:8080/planbee/todolist/getMemo/${getFormattedTodayYYMMDD()}`,
+          {
+            withCredentials: true,
+          }
         );
         setMemo(response.data); // 응답 데이터에서 메모 저장
       } catch (error) {
@@ -236,9 +242,10 @@ const TodayCom = () => {
               <button onClick={() => setIsEditingMemo(false)}>취소</button>
             </div>
           ) : (
-            <div onClick={() => setIsEditingMemo(true)} className="memomemo">
-              {memo || "(메모 없음)"}
-            </div>
+            <div
+              onClick={() => setIsEditingMemo(true)}
+              className="memomemo"
+            ></div>
           )}
         </div>
       </div>

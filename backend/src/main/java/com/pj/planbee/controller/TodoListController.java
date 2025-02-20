@@ -25,7 +25,7 @@ import com.pj.planbee.service.TodoListService;
 
 @RestController
 @RequestMapping("/todolist") //�닚�꽌 諛붽퓞
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders= "*", allowCredentials = "true")
+@CrossOrigin(origins = "*", allowedHeaders= "*", allowCredentials = "true")
 public class TodoListController {
 	@Autowired TodoListService ts;
 	//�븵�쑝濡� ���뼱�굹媛� 二쇱꽍�뱾�� 臾몄젣�젏�씠 �엳�뒗 寃쎌슦

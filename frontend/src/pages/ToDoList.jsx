@@ -44,11 +44,12 @@ const ToDoList = () => {
     const fetchPercent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/progress/250219`,
+          `http://localhost:8080/planbee/todolist/progress/${getFormattedTodayYYMMDD()}`,
           {
             withCredentials: true,
           }
         );
+        setProgress(response.data);
         console.log("진척도", response.data);
       } catch (error) {
         console.error("에러다", error);
@@ -61,7 +62,7 @@ const ToDoList = () => {
 
   // progress 값을 기준으로 height와 background-color를 동적으로 설정하는 함수
   const getBarStyle = () => {
-    if (progress === null) return {}; // progress가 null일 때는 스타일 적용하지 않음
+    if (progress === null) return { height: "0%", backgroundColor: "#ff3b3b" }; // progress가 null일 때는 스타일 적용하지 않음
 
     const progressPercentage = progress * 100; // progress를 백분율로 변환
 
@@ -78,6 +79,8 @@ const ToDoList = () => {
       barColor = "#4caf50"; // 70% 이상은 녹색
     }
 
+    console.log("적용될 색상:", barColor); // 여기에서 출력되는 색상이 정상적인지 확인
+
     return {
       height: barHeight,
       backgroundColor: barColor,
@@ -91,7 +94,7 @@ const ToDoList = () => {
         <Sidebar />
         <div className="main_content">
           <div className="todolist_container">
-            {/*<TodayCom />*/}
+            <TodayCom />
             <div className="todo_progress">
               <div className="todo_percent">
                 {progress !== null

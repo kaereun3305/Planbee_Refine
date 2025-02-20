@@ -7,15 +7,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pj.planbee.dto.ArchiveDTO;
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TDstartDTO;
 import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
+import com.pj.planbee.mapper.SaveArchiveMapper;
 import com.pj.planbee.mapper.TDdetailMapper;
 import com.pj.planbee.mapper.TodoListMapper;
 
@@ -24,6 +28,7 @@ import com.pj.planbee.mapper.TodoListMapper;
 public class TodoListServiceImpl implements TodoListService {
 @Autowired TDdetailMapper tdMap;
 @Autowired TodoListMapper tlMap;
+@Autowired SaveArchiveMapper saMap;
 
 
 
@@ -31,14 +36,17 @@ public class TodoListServiceImpl implements TodoListService {
 public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 String으로 변환하는 메소드
 	LocalDateTime today = LocalDateTime.now();
 	LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
+	LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
 	DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd"); //날짜 변환
 	String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
 	String tomorrowStr = tomorrow.format(form); //내일 날짜를 위 형식으로 변환
+	String yesterdayStr = yesterday.format(form); //어제 날짜도 위 형식으로 변환
 	//System.out.println("내일날짜 변환: " + tomorrowStr);
 	
 	HashMap<String, String> todayTomo = new HashMap<String, String>();
 	todayTomo.put("todayStr", todayStr);
 	todayTomo.put("tomorrowStr", tomorrowStr); //오늘날짜에 대한 것만 입력하는 것이 안정성이 좋을 것 같음
+	todayTomo.put("yesterdayStr", yesterdayStr);
 	return todayTomo;
 }
 public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인하는 메소드
@@ -187,18 +195,6 @@ public int memoWrite(TodoListDTO listDto) {
 }
 
 @Override
-public int memoDel(int tdId) {
-	int result =0;
-	
-	try {
-		result = tlMap.memoDel(tdId);
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	return result;
-}
-
-@Override
 public String dateSearch(int tdId) {
 	
 	String date = null;
@@ -221,6 +217,39 @@ public int regiProgress(int tdId, double progress) {
 	}
 	return 0;
 }
+
+
+@Override
+public int saveArchive() {
+	
+	String yesterday = checkToday().get("yesterdayStr"); //어제날짜를 yyMMdd로 변환
+	ArchiveDTO archive = saMap.archiveCheck(yesterday);
+	System.out.println("service impl archive값?" + archive);
+	int result = 0;
+	if(archive== null) {
+		TodoListDTO todolist = saMap.getTodoList(yesterday); //기존 값을 가져와서 todolist에 담은 다음
+		System.out.println("service impl dto값?"+ todolist.getTdDate());
+		try {
+			result = saMap.toArchive(todolist);//list에 담은 어제 값을 archive로 저장하는 기능
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("service Impl 성공여부" + result);
+	}else {
+		result = 2;
+	}
+	System.out.println("result: "+ result);
+	return result;
+}
+@Override
+public int saveArchiveDetail() {
+	// TODO Auto-generated method stub
+	
+	//public List<TDdetailDTO> getTodoDetail(String yesterday); //어제날짜 기반으로 detail 전체 가져오는 기능
+	return 0;
+}
+
+
 
 
 

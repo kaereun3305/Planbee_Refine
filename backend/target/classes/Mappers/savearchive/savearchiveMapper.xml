@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.pj.planbee.mapper.SaveArchiveMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
+	<resultMap type="com.pj.planbee.dto.TodoListDTO" id="todolist">
+		<id property="tdId" column="todo_id" /> 
+		<result property="tdDate" column="todo_date" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<result property="tdMemo" column="todo_memo" />
+		<result property="tdProgress" column="todo_progress" />
+		<result property="userId" column="user_id"/>
+		
+	</resultMap>
+	
+	<resultMap type="com.pj.planbee.dto.TDdetailDTO" id="todoDetail">
+		<id property="tdDetailId" column="tododetail_id" /> 
+		<result property="tdDetail" column="tododetail" />
+		<result property="tdDetailState" column="tododetail_state" />
+		<result property="tdDetailTime" column="tododetail_time"/>
+		<result property="tdId" column="todo_id" />
+		
+	</resultMap>
+	
+	<resultMap type="com.pj.planbee.dto.ArchiveDTO" id="archive">
+		<id property="archiveId" column="archive_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<result property="archiveDate" column="archive_date" />
+		<result property="archiveMemo" column="archive_memo" />
+		<result property="archiveProgress" column="archive_progress"/>
+		<result property="userId" column="user_id" />
+		
+	</resultMap>
+	
+	 <select id="getTodoList" resultMap = "todolist">
+    	select * from ToDoList where todo_date=#{yesterday}
+    </select>
+	
+	<select id="archiveCheck" resultMap = "archive">
+		select * from archive where archive_date=#{yesterday} and user_id=#{sessionId}
+	</select>
+	
+    <insert id="toArchive">
+    	insert into archive (archive_date, archive_memo, archive_progress, user_id) values (#{tdDate}, #{tdMemo}, #{tdProgress}, #{userId});
+    </insert>
+    
+    
+    
+  
+    
+</mapper>

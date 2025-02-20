@@ -26,4 +26,8 @@ public interface TodoListMapper {
 		public int regiProgress(@Param("tdId")int tdId, @Param("progress")double progress);
 		
 		
+		
+		
+		
+		
 }

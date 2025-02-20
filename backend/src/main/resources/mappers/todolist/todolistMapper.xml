@@ -48,6 +48,8 @@
     	update ToDoList set todo_progress=#{progress} where todo_id=#{tdId}
     </update>
     
+   
+    
     
     
 </mapper>

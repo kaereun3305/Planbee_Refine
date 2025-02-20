@@ -12,16 +12,50 @@ const ToDoList = () => {
   const [progress, setProgress] = useState(null);
 
   useEffect(() => {
+    const makeSession = async () => {
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/planbee/todolist/makeSession`,
+          null, // POST 요청 시 body를 전달할 필요 없으면 null
+          {
+            withCredentials: true, // 쿠키 전송을 허용
+          }
+        );
+        console.log("세션 요청 여부:", response.data);
+        checkSession();
+      } catch (error) {
+        console.error("세션 fetching 실패!", error);
+      }
+    };
+
+    const checkSession = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/todolist/checkSession`,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("세션 확인 :", response.data);
+      } catch (error) {
+        console.error("에러", error);
+      }
+    };
     const fetchPercent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/progress/${getFormattedTodayYYMMDD()}`
+          `http://localhost:8080/planbee/todolist/progress/250219`,
+          {
+            withCredentials: true,
+          }
         );
-        setProgress(response.data); // 서버에서 받은 progress 값 설정
+        console.log("진척도", response.data);
       } catch (error) {
-        console.error("진척도 데이터 fetch 에러", error);
+        console.error("에러다", error);
       }
     };
+
+    makeSession();
     fetchPercent();
   }, []);
 
@@ -57,7 +91,7 @@ const ToDoList = () => {
         <Sidebar />
         <div className="main_content">
           <div className="todolist_container">
-            <TodayCom />
+            {/*<TodayCom />*/}
             <div className="todo_progress">
               <div className="todo_percent">
                 {progress !== null
@@ -68,7 +102,7 @@ const ToDoList = () => {
                 <div className="todo_bar_ex" style={getBarStyle()}></div>
               </div>
             </div>
-            <TomorrowCom />
+            {/*<TomorrowCom />*/}
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ const TodayCom = () => {
     const fetchTodoDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/${getFormattedTodayYYMMDD()}`
+          `http://localhost:8080/planbee/todolist/getTodo/${getFormattedTodayYYMMDD()}}`
         );
         if (Array.isArray(response.data)) {
           setTodoDetailsToday(response.data);

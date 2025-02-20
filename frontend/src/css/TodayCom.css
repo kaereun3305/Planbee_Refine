@@ -23,7 +23,6 @@
 .todolist_checkbox {
   height: 350px;
   width: 500px;
-  background-color: bisque;
 }
 .todolist_checkbox tbody {
   display: block;

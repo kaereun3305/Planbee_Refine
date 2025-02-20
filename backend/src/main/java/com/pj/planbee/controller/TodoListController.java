@@ -25,7 +25,7 @@ import com.pj.planbee.service.TodoListService;
 
 @RestController
 @RequestMapping("/todolist") //�닚�꽌 諛붽퓞
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders= "*", allowCredentials = "true")
 public class TodoListController {
 	@Autowired TodoListService ts;
 	//�븵�쑝濡� ���뼱�굹媛� 二쇱꽍�뱾�� 臾몄젣�젏�씠 �엳�뒗 寃쎌슦
@@ -42,12 +42,14 @@ public class TodoListController {
 	@PostMapping(value="/makeSession", produces = "application/json; charset=utf-8")//�꽭�뀡 �꽕�젙 硫붿냼�뱶
 	public int session(HttpSession se) { 
 		se.setAttribute("sessionId", "팥붕");
+		System.out.println("sessionId" + se.getAttribute("sessionId"));
 		return 1;
 		
 	}
 	
     @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 로그인 상태 확인
     public int checkSession(HttpSession session) { //세션체크
+    	System.out.println("세션체크: "+ session.getAttribute("sessionId"));
         return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
     }
 	

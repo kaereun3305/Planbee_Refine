@@ -78,22 +78,18 @@ public class CalendarController {
     @GetMapping("/memo/{calDate}")
     public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {
         String sessionId = (String) se.getAttribute("sessionId");
-        System.out.println(sessionId);
-        if (sessionId == null) {
-            throw new RuntimeException("세션 ID가 존재하지 않습니다.");
-        }
         return cs.getMemo(calDate, sessionId);
     }
 
-    
     //메모추가
-    @PostMapping("/addmemo/{calDate}/{sessionId}")
-    public int addMemo(@PathVariable String calDate, @PathVariable String sessionId, @RequestBody CalendarDTO calendar) {
+    @PostMapping("/addmemo/{calDate}")
+    public int addMemo(@PathVariable String calDate, @RequestBody CalendarDTO calendar, HttpSession se) {
+        String sessionId = (String) se.getAttribute("sessionId");
         calendar.setCalDate(calDate);
         calendar.setUserId(sessionId);
-        int result = cs.addMemo(calendar);
-        return result;
+        return cs.addMemo(calendar);
     }
+
 
     
     //메모 수정
@@ -106,11 +102,11 @@ public class CalendarController {
     
     //메모 삭제
     @GetMapping("/delmemo")
-    public int delMemo(@RequestBody CalendarDTO calendar, HttpSession se) {
-    	String userId = (String) se.getAttribute("sessionId");
-    	calendar.setUserId(userId);
-    	int result = cs.delMemo(userId);
-    	return result;
+    public int delMemo(@PathVariable String calDate, @RequestBody CalendarDTO calendar, HttpSession se) {
+        String sessionId = (String) se.getAttribute("sessionId");
+        calendar.setCalDate(calDate);
+        calendar.setUserId(sessionId);
+        return cs.delMemo(calendar);
     }
     
 }

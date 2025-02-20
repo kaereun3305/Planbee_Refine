@@ -4,7 +4,7 @@ package com.pj.planbee.dto;
 public class CalendarDTO {
    int calId;
    String calDetail1, calDetail2, calDetail3, calDate, userId; //userId는 나중에 찬교님이 사용한 userID와 맞춰주면 됨
-   double calProgress;
+   Double calProgress;
    
    public int getCalId() {
       return calId;
@@ -42,10 +42,10 @@ public class CalendarDTO {
    public void setUserId(String userId) {
       this.userId = userId;
    }
-   public double getCalProgress() {
+   public Double getCalProgress() {
       return calProgress;
    }
-   public void setCalProgress(double calProgress) {
+   public void setCalProgress(Double calProgress) {
       this.calProgress = calProgress;
    }
    

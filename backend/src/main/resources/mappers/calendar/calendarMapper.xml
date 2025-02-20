@@ -11,20 +11,38 @@
 		<result property="calDetail3" column="cal_detail_3"/>
 		<result property="calDate" column="cal_date" />
 		<result property="userId" column="user_id" />
-		<result property="calProgress" column="cal_progress" />
 	</resultMap>
 
 	<!-- 특정 날짜 메모 조회 -->	
-	
 	<select id="getMemo" resultMap="calDTO">
     SELECT cal_id, cal_date, user_id, 
            COALESCE(cal_detail_1, '') AS cal_detail_1, 
            COALESCE(cal_detail_2, '') AS cal_detail_2, 
-           COALESCE(cal_detail_3, '') AS cal_detail_3, 
-           cal_progress
-    FROM Calendar 
+           COALESCE(cal_detail_3, '') AS cal_detail_3
+    FROM calendar 
     WHERE cal_date = #{calDate} AND user_id = #{sessionId}
 </select>
+
+
+<!-- 메모추가 -->
+<insert id="addMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    INSERT INTO Calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3)
+    VALUES (#{calDate}, #{userId}, #{calDetail1}, #{calDetail2}, #{calDetail3})
+</insert>
+
+<!-- 메모 수정 -->
+<update id="modiMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    UPDATE Calendar
+    SET cal_detail_1 = #{calDetail1},
+        cal_detail_2 = #{calDetail2},
+        cal_detail_3 = #{calDetail3}
+    WHERE cal_id = #{calId}
+</update>
+<!-- 메모 삭제 -->
+<delete id="delMemo" parameterType="int">
+    DELETE FROM Calendar
+    WHERE cal_id = #{calId}
+</delete>
 
 
     <!-- 특정 월의 데이터 개수 확인 -->
@@ -49,11 +67,6 @@
         ORDER BY cal_date
     </select>
 
-    <!-- 메모 추가 -->
-	<insert id="addMemo">
-    INSERT INTO Calendar (cal_detail_1, cal_detail_2, cal_detail_3, cal_date, cal_progress, user_id)
-    VALUES (#{calDetail1}, #{calDetail2}, #{calDetail3}, #{calDate}, #{calProgress}, #{userId})
-	</insert>
 
 	<!-- 기존 메모 수정  -->
 	<update id="updateMemo" parameterType="com.pj.planbee.dto.CalendarDTO">

@@ -87,30 +87,44 @@ public class CalendarServiceImpl implements CalendarService {
 
 	@Override
 	public List<CalendarDTO> getMemo(String calDate, String sessionId) {
-		List<CalendarDTO> cal = new ArrayList<CalendarDTO>();
-			cal = calMap.getMemo(calDate, sessionId);
-		return cal;
+	    System.out.println("쿼리 실행 - calDate: " + calDate + ", sessionId: " + sessionId); // ✅ 디버깅 추가
+	    List<CalendarDTO> cal = calMap.getMemo(calDate, sessionId);
+	    System.out.println("DB에서 조회된 개수: " + cal.size());
+	    return cal;
 	}
 
 	@Override
 	public int addMemo(CalendarDTO calendar) {
-		 int result = calMap.addMemo(calendar);
-		 
-		return result;
+	    try {
+	        int result = calMap.addMemo(calendar); // DB에 삽입 실행
+	        return (result > 0) ? 1 : 0; // 성공하면 1, 실패하면 0 반환
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return 0;
+	    }
 	}
-
 
 	@Override
 	public int modiMemo(CalendarDTO calendar) {
-		int result = calMap.modiMemo(calendar);
-		
-		return result;
+	    try {
+	        int result = calMap.modiMemo(calendar); // DB에서 업데이트 실행
+	        return (result > 0) ? 1 : 0; // 성공하면 1, 실패하면 0 반환
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return 0;
+	    }
 	}
 
+	
 	@Override
-	public int delMemo(String userId) {
-		
-		return 0;
+	public int delMemo(CalendarDTO calendar) {
+		 try {
+		        int result = calMap.modiMemo(calendar); // DB에서 업데이트 실행
+		        return (result > 0) ? 1 : 0; // 성공하면 1, 실패하면 0 반환
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return 0;
+		    }
 	}
 
 	@Override
@@ -138,8 +152,7 @@ public class CalendarServiceImpl implements CalendarService {
 			newEntry.setCalDate(calDate);
 			newEntry.setCalDetail1(null);
 			newEntry.setCalDetail2(null);//기본 메모값 null
-			newEntry.setCalDetail3(null);
-			newEntry.setCalProgress(0); //기본 상태를 0으로 둠
+			newEntry.setCalDetail3(null); //기본 상태를 0으로 둠
 			
 			//리스트에 추가
 			newDate.add(newEntry);
@@ -158,7 +171,9 @@ public class CalendarServiceImpl implements CalendarService {
 		String monthPre = String.format("%02d%02d", year % 100, month);
 		//해당 월의 데이터 리스트 반환
 		return calMap.getByMonth(monthPre, userId);
+
+
+
 	}
-	
 	
 }

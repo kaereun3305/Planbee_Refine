@@ -23,4 +23,6 @@ public interface CalendarMapper {
 
 	public int modiMemo(CalendarDTO calendar);
 
+	public int addMemo(String calDate, String sessionId);
+
 }

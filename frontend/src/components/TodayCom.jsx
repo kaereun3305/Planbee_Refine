@@ -61,37 +61,6 @@ const TodayCom = () => {
     fetchMemo();
   }, []);
 
-  //메모 데이터를 제대로 받아온건지 확인하는 값 추후에 삭제할 코드
-  useEffect(() => {
-    console.log("현재 memo 값:", memo);
-  }, [memo]);
-
-  //memo 수정 함수
-  const handleSaveMemo = async () => {
-    if (todayTdId === null) {
-      console.error("tdId를 가져올 수 없습니다");
-      return;
-    }
-
-    const requestData = {
-      tdId: todayTdId,
-      tdMemo: newMemo,
-    };
-
-    console.log("전송하는 데이터:", requestData);
-
-    try {
-      await axios.put("http://localhost:8080/planbee/todolist/memoWrite", {
-        tdId: todayTdId,
-        tdMemo: newMemo,
-      });
-      setMemo(newMemo);
-      setIsEditingMemo(false);
-    } catch (error) {
-      console.error("메모 수정 실패: ", error);
-    }
-  };
-
   //todolist 체크박스 상태 변경 함수
   const handleCheckboxChange = async (id) => {
     const updatedTodoDetails = todoDetailsToday.map((item) =>
@@ -126,7 +95,9 @@ const TodayCom = () => {
 
   const handleDeleteClick = (id) => {
     axios
-      .delete(`http://localhost:8080/planbee/todolist/detail/${id}`)
+      .delete(`http://localhost:8080/planbee/todolist/detail/del`, {
+        withCredentials: true,
+      })
       .then(() => {
         setTodoDetailsToday((prev) =>
           prev.filter((item) => item.tdDetailId !== id)
@@ -136,6 +107,7 @@ const TodayCom = () => {
         console.error("삭제 실패:", error);
       });
   };
+
   const handleCompleteClick = (id) => {
     setTodoDetailsToday((prev) =>
       prev.map((item) =>
@@ -144,33 +116,73 @@ const TodayCom = () => {
     );
   };
   //checklist 생성
-  const handleAddTask = () => {
-    if (newTask.tdDetail.trim() && newTask.tdDetailTime.trim()) {
-      const newTaskData = {
-        tdDetail: newTask.tdDetail,
-        tdDetailTime: newTask.tdDetailTime,
-      };
+  const handleAddTask = async () => {
+    if (!newTask.tdDetail.trim() || !newTask.tdDetailTime.trim()) {
+      console.error("할 일과 목표 시간을 입력해야 합니다.");
+      return;
+    }
 
-      axios
-        .post(
-          `http://localhost:8080/planbee/todolist/write/${getFormattedTodayYYMMDD}`,
-          newTaskData,
-          {
-            withCredentials: true,
-          }
-        )
-        .then((response) => {
-          setTodoDetailsToday((prev) => [...prev, response.data]);
-          setNewTask({ tdDetail: "", tdDetailTime: "" });
-          setIsAdding(false);
-        })
-        .catch((error) => {
-          console.error("추가 실패:", error);
-        });
+    const newTaskData = {
+      tdDetail: newTask.tdDetail,
+      tdDetailTime: newTask.tdDetailTime,
+    };
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/planbee/todolist/write/${getFormattedTodayYYMMDD()}`,
+        newTaskData,
+        { withCredentials: true }
+      );
+
+      console.log("서버에서 받은 응답:", response.data);
+      if (response.data && response.data.tdDetailId) {
+        // 서버 응답을 기반으로 상태 업데이트
+        setTodoDetailsToday((prev) => [...prev, response.data]);
+      } else {
+        console.error("서버 응답에 tdDetailId가 없습니다:", response.data);
+      }
+
+      setNewTask({ tdDetail: "", tdDetailTime: "" });
+      setIsAdding(false);
+    } catch (error) {
+      console.error("추가 실패:", error);
     }
   };
+
+  //todolist 버튼 토글글
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
+  };
+
+  //메모 데이터를 제대로 받아온건지 확인하는 값 추후에 삭제할 코드
+  useEffect(() => {
+    console.log("현재 memo 값:", memo);
+  }, [memo]);
+
+  //memo 수정 함수
+  const handleSaveMemo = async () => {
+    if (todayTdId === null) {
+      console.error("tdId를 가져올 수 없습니다");
+      return;
+    }
+
+    const requestData = {
+      tdId: todayTdId,
+      tdMemo: newMemo,
+    };
+
+    console.log("전송하는 데이터:", requestData);
+
+    try {
+      await axios.put("http://localhost:8080/planbee/todolist/memoWrite", {
+        tdId: todayTdId,
+        tdMemo: newMemo,
+      });
+      setMemo(newMemo);
+      setIsEditingMemo(false);
+    } catch (error) {
+      console.error("메모 수정 실패: ", error);
+    }
   };
   return (
     <div className="todolist">
@@ -212,31 +224,36 @@ const TodayCom = () => {
                 </td>
               </tr>
             ))}
+            <tr>
+              <td colSpan="4">
+                {isAdding ? (
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="할 일 입력"
+                      value={newTask.tdDetail}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, tdDetail: e.target.value })
+                      }
+                    />
+                    <input
+                      type="text"
+                      placeholder="목표 시간"
+                      value={newTask.tdDetailTime}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, tdDetailTime: e.target.value })
+                      }
+                    />
+                    <button onClick={handleAddTask}>완료</button>
+                  </div>
+                ) : (
+                  <button onClick={() => setIsAdding(true)}>일정 추가</button>
+                )}
+              </td>
+            </tr>
           </tbody>
         </table>
-        {isAdding ? (
-          <div>
-            <input
-              type="text"
-              placeholder="할 일 입력"
-              value={newTask.tdDetail}
-              onChange={(e) =>
-                setNewTask({ ...newTask, tdDetail: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="목표 시간"
-              value={newTask.tdDetailTime}
-              onChange={(e) =>
-                setNewTask({ ...newTask, tdDetailTime: e.target.value })
-              }
-            />
-            <button onClick={handleAddTask}>완료</button>
-          </div>
-        ) : (
-          <button onClick={() => setIsAdding(true)}>일정 추가</button>
-        )}
+
         <div className="todolist_memo">
           <h3>Memo</h3>
           {isEditingMemo ? (

@@ -3,6 +3,8 @@ package com.pj.planbee.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,8 @@ public class TodoListController {
 //	}
 	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
 	public int session(HttpSession se) {
-		se.setAttribute("sessionId", "팥붕");
+		se.setAttribute("sessionId", "coffeeNine");
+		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
 		return 1;
 
 	}
@@ -89,9 +92,25 @@ public class TodoListController {
 //		System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
 //		System.out.println(dto.getTdId());
 		dto.setTdId(tdId);
-		return ts.todoWrite(dto); // 세션아이디 넣을 필요 없음, 위에서 세션값을 통해 tdId를 반환해옴
+		Map<String, Integer> response = new HashMap<String, Integer>();
+		int result =0; 
+		result = ts.todoWrite(dto);
+		if(result ==1) {
+			
+			return tdId;
+		}else {
+			return 0;
+		}
+		
+		//return ts.todoWrite(dto); // 세션아이디 넣을 필요 없음, 위에서 세션값을 통해 tdId를 반환해옴
 	}
 	// 정상작동됨
+	@DeleteMapping(value="/del", produces="application/json; charset=utf-8")
+	public int todoDel(@RequestBody TDdetailDTO dto) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
+		
+		return ts.todoDel(dto.getTdDetailId());
+	}
+	
 
 	@PutMapping(value = "/state", produces = "application/json; charset=utf-8")
 	public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { // 투두리스트 완료내역 업데이트 하는 체크박스
@@ -131,7 +150,7 @@ public class TodoListController {
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
 		System.out.println("Ctrl " + tdId);
 		List<SubTodoListDTO> list = ts.getMemo(tdId);
-		System.out.println(tdDate + "일 때 리스트 사이즈: " + list.get(0).getTdMemo());
+		
 		if (list.isEmpty()) { // 만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
 			ts.inputRow(tdDate, sessionId);
 			tdId = ts.tdIdSearch(tdDate, sessionId);
@@ -168,6 +187,14 @@ public class TodoListController {
 		return ts.todoProgress(tdId);
 	}
 	// 정상 작동함
+	
+	@GetMapping(value = "/testSaveDetail", produces = "application/json; charset=utf-8")
+	public void testSave(HttpSession se) { 
+		
+		ts.saveArchiveDetail();
+	}
+	// 정상 작동함
+	
 	
 	
 

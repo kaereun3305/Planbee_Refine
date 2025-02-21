@@ -19,4 +19,8 @@ public interface SaveArchiveMapper {
 	public List<Integer> tdIdSearch(String yesterday);
 	
 	public ArrayList<TDdetailDTO> todoDetailCheck(int tdIds);
+	
+	public int toArchiveDetail(TDdetailDTO tododetail);
+	
+	public int checkExist(int tdId);
 }

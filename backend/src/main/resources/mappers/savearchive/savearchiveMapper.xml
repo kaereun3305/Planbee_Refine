@@ -60,6 +60,14 @@
     	select * from ToDoList_Detail where todo_id=#{tdIds}
     </select>
     
+    <insert id="toArchiveDetail">
+    	insert into archive_detail (archivedetail, archivedetail_state, archivedetail_deadline, archive_id) values (#{tdDetail}, #{tdDetailState}, #{tdDetailTime}, #{tdId});
+    </insert>
+    
+    <select id="checkExist" parameterType="int" resultType="int">
+    	select count(*) from archive_detail where archive_id=#{tdId}
+    </select>
+    
     
     
   

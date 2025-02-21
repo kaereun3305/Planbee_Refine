@@ -17,6 +17,7 @@ const TodayCom = () => {
   const [todayTdId, setTodayTdId] = useState(null);
 
   useEffect(() => {
+    //checklist 불러오는 함수 -> 세션연결 성공, 테스트완료
     const fetchTodoDetails = async () => {
       try {
         const response = await axios.get(
@@ -36,6 +37,7 @@ const TodayCom = () => {
       }
     };
 
+    //memo 불러오는 함수 -> 세션연결 성공, 테스트완료
     const fetchMemo = async () => {
       try {
         const response = await axios.get(
@@ -44,7 +46,12 @@ const TodayCom = () => {
             withCredentials: true,
           }
         );
-        setMemo(response.data); // 응답 데이터에서 메모 저장
+        console.log(response.data);
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          setMemo(response.data[0].tdMemo); // 배열에서 tdMemo만 추출하여 설정
+        } else {
+          console.error("메모 데이터 형식 오류", response.data);
+        }
       } catch (error) {
         console.error("메모 데이터 fetch 에러", error);
       }
@@ -59,6 +66,7 @@ const TodayCom = () => {
     console.log("현재 memo 값:", memo);
   }, [memo]);
 
+  //memo 수정 함수
   const handleSaveMemo = async () => {
     if (todayTdId === null) {
       console.error("tdId를 가져올 수 없습니다");
@@ -83,10 +91,6 @@ const TodayCom = () => {
       console.error("메모 수정 실패: ", error);
     }
   };
-  //메모 수정 버튼
-  const handleEditMemo = () => {
-    setIsEditingMemo(true);
-  };
 
   //todolist 체크박스 상태 변경 함수
   const handleCheckboxChange = async (id) => {
@@ -109,7 +113,7 @@ const TodayCom = () => {
         tdId: changedItem.tdId,
         tdDetail: changedItem.tdDetail,
         tdDetailTime: changedItem.tdDetailTime,
-        tdDetailState: changedItem.tdDetailState, // 반전된 상태값을 저장시켜서 전송송
+        tdDetailState: changedItem.tdDetailState, // 반전된 상태값을 저장시켜서 전송
       });
     } catch (error) {
       console.error("체크박스 처리 오류:", error);
@@ -139,18 +143,21 @@ const TodayCom = () => {
       )
     );
   };
+  //checklist 생성
   const handleAddTask = () => {
     if (newTask.tdDetail.trim() && newTask.tdDetailTime.trim()) {
       const newTaskData = {
         tdDetail: newTask.tdDetail,
         tdDetailTime: newTask.tdDetailTime,
-        tdDetailState: false,
       };
 
       axios
         .post(
-          `http://localhost:8080/planbee/todolist/${getFormattedTodayYYMMDD()}`,
-          newTaskData
+          `http://localhost:8080/planbee/todolist/write/${getFormattedTodayYYMMDD}`,
+          newTaskData,
+          {
+            withCredentials: true,
+          }
         )
         .then((response) => {
           setTodoDetailsToday((prev) => [...prev, response.data]);
@@ -242,10 +249,9 @@ const TodayCom = () => {
               <button onClick={() => setIsEditingMemo(false)}>취소</button>
             </div>
           ) : (
-            <div
-              onClick={() => setIsEditingMemo(true)}
-              className="memomemo"
-            ></div>
+            <div onClick={() => setIsEditingMemo(true)} className="memomemo">
+              {memo}
+            </div>
           )}
         </div>
       </div>

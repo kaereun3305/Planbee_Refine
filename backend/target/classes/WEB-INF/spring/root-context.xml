@@ -10,11 +10,10 @@
 		<property name="driverClassName"
 			value="com.mysql.cj.jdbc.Driver" />
 
-		<property name="jdbcUrl"
-			value="jdbc:mysql://192.168.0.110:3306/planbee?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" />
+		<property name="jdbcUrl" value="jdbc:mysql://planbee.c14y0yi620fv.ap-northeast-2.rds.amazonaws.com/whatever_test?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" />
 
-		<property name="username" value="myuser" />
-		<property name="password" value="1234" />
+		<property name="username" value="planbee" />
+		<property name="password" value="PlanBee*" />
 
 		<property name="leakDetectionThreshold" value="2000" />
 	</bean>

@@ -3,9 +3,13 @@ package com.pj.planbee.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,170 +28,172 @@ import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
+
 @RestController
-@RequestMapping("/todolist") //�닚�꽌 諛붽퓞
-@CrossOrigin(origins = "*", allowedHeaders= "*", allowCredentials = "true")
+@RequestMapping("/todolist") // 순서 바꿈
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders= "*", allowCredentials = "true", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class TodoListController {
-	@Autowired TodoListService ts;
-	//�븵�쑝濡� ���뼱�굹媛� 二쇱꽍�뱾�� 臾몄젣�젏�씠 �엳�뒗 寃쎌슦
-	//�븘臾대쭚 �뾾�뒗 寃쎌슦 �젣��濡� �떎�뻾�릺�뒗 寃�
-	
+   @Autowired
+   TodoListService ts;
+   // 앞으로 튀어나간 주석들은 문제점이 있는 경우
+   // 아무말 없는 경우 제대로 실행되는 것
 
-//	@GetMapping(value="todolist", produces="application/json; charset=utf-8")
-//	public List<TDdetailDTO> getList(){ //�뀒�뒪�듃�슜 
-//		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
-//		list = ts.getList();
-//		return list; 
+//   @GetMapping(value="todolist", produces="application/json; charset=utf-8")
+//   public List<TDdetailDTO> getList(){ //테스트용 
+//      List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
+//      list = ts.getList();
+//      return list; 
 //
-//	}
-	@PostMapping(value="/makeSession", produces = "application/json; charset=utf-8")//�꽭�뀡 �꽕�젙 硫붿냼�뱶
-	public int session(HttpSession se) { 
-		se.setAttribute("sessionId", "팥붕");
-		System.out.println("sessionId" + se.getAttribute("sessionId"));
-		return 1;
-		
-	}
-	
-    @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 로그인 상태 확인
-    public int checkSession(HttpSession session) { //세션체크
-    	System.out.println("세션체크: "+ session.getAttribute("sessionId"));
-        return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
-    }
-	
-	
-	@GetMapping(value="/getTodo/{tdDate}", produces="application/json; charset=utf-8")
-	public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se){ //�삤�뒛�쓽 �닾�몢由ъ뒪�듃瑜� 媛��졇�삤�뒗 湲곕뒫
-		//input媛�: yyMMdd �삎�떇�쓽 �궇吏� �뜲�씠�꽣
-		//sessionId �엫�쓽吏��젙�븿, 異뷀썑 �쟾�뿭�뿉�꽌 �꽭�뀡 吏��젙�릺硫� �꽭�뀡�뙆�듃�뒗 吏��썙�룄 �맆�벏
-		
-		String sessionId = (String) se.getAttribute("sessionId");
-		int todoId;
-		int result = ts.checkRow(tdDate, sessionId); //�뿴 �엳�뒗吏� 李얠븘�삤湲�,
-		//System.out.println("result" + result);
-		
-		if(result ==0) {
-			ts.inputRow(tdDate, sessionId); //
-			todoId = ts.tdIdSearch(tdDate, sessionId);//異붽��븳 �썑 todoId 怨좎쑀踰덊샇瑜� 諛섑솚�븯�룄濡� �꽕�젙
-		}else {
-			todoId = result;
-		}
-		//System.out.println("ctrl:" + todoId);
-		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
-		list = ts.getTodo(todoId);
-		return list;
-	}
-	//�젙�긽�옉�룞�맖
-	
-	@PostMapping(value="/write/{tdDate}", produces="application/json; charset=utf-8")
-	@ResponseBody
-	public int todoWrite(@RequestBody TDdetailDTO dto, @PathVariable String tdDate, HttpSession se) { //�닾�몢由ъ뒪�듃 �옉�꽦�븯�뒗 湲곕뒫
-		//input媛�: �븷 �씪�뿉 ���븳 String tododetail�궡�슜, yyMMdd �삎�떇�쓽 �궇吏�
-		//tdId�뒗 sessionId �씠�슜
-		
-		String sessionId = (String) se.getAttribute("sessionId");
-		
-		//sessionId�� tdDate瑜� �씠�슜�빐�꽌 tdId瑜� 媛��졇�삤�뒗 硫붿냼�뱶
-		int tdId = ts.tdIdSearch(tdDate, sessionId);
-//		System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
-//		System.out.println(dto.getTdId());
-		dto.setTdId(tdId);
-		return ts.todoWrite(dto); //�꽭�뀡�븘�씠�뵒 �꽔�쓣 �븘�슂 �뾾�쓬, �쐞�뿉�꽌 �꽭�뀡媛믪쓣 �넻�빐 tdId瑜� 諛섑솚�빐�샂
-	}
-	//�젙�긽�옉�룞�맖
-	
-	@PutMapping(value="/state", produces="application/json; charset=utf-8")
-	public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { //�닾�몢由ъ뒪�듃 �셿猷뚮궡�뿭 �뾽�뜲�씠�듃 �븯�뒗 泥댄겕諛뺤뒪
-		//input媛�: body�뿉�꽌 tdDetailId, tdDetailState, tdId
-		
-		ts.updateState(dto.getTdDetailId(), dto.isTdDetailState()); 
-		System.out.println("tdDetailId: " + dto.getTdDetailId());
-		System.out.println("state:" + dto.isTdDetailState());
-		//String sessionId = (String) se.getAttribute("sessionId");
-		//String tdDate = ts.dateSearch(dto.getTdId()); //tdId湲곕컲�쑝濡� tdDate媛��졇�샂
-		//System.out.println("todoId�궇吏�"+ dto.getTdId());
-		//postman�엯�젰媛믪쓣 dto�씠由꾧낵 留욎떠以섏빞�븿!!!!
-		double progress = ts.todoProgress(dto.getTdId()); //�뾽�뜲�씠�듃 �븯硫� �옄�룞�쑝濡� �쁽�옱 吏꾩쿃�룄瑜� 媛��졇�삤�뒗 湲곕뒫
-		ts.regiProgress(dto.getTdId(), progress); //�뾽�뜲�씠�듃�맂 吏꾩쿃�룄瑜� ���옣�븿
-		return progress; 
-	}
-	@PutMapping(value="/modify", produces="application/json; charset=utf-8")
-	public int todoModify(@RequestBody TDdetailDTO dto) { //�닾�몢由ъ뒪�듃 �닔�젙�븯�뒗 湲곕뒫, �떆媛꾩��굹硫� �닔�젙遺덇��뒗 �봽濡좏듃�뿉�꽌 �빐二쇱떆湲�..
-	//input 媛�: detailDTO, 蹂��룞�뾾�뒗 寃쎌슦�뿉�뒗 湲곗〈媛믪씠 �엯�젰�릺�룄濡� �빐�빞�븿
-		//System.out.println("boolean 媛� :" + dto.isTdDetailState());
-		return ts.todoModify(dto);
-	}
-	//�젙�긽 �옉�룞�셿猷�, �궡�슜�닔�젙�쐞�븳 湲곕뒫 
-	//
+//   }
+   @PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
+   public int session(HttpSession se) {
+      se.setAttribute("sessionId", "coffeeNine");
+      System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
+      return 1;
 
-	
-	//delMemo기능 삭제로 빈칸 만들어둠
-	
-	
-	
-	
-	@Transactional
-	@GetMapping(value="/getMemo/{tdDate}", produces="application/json; charset=utf-8")
-	public List<SubTodoListDTO> getMemo(@PathVariable String tdDate, HttpSession se){ //하루의 메모를 가져오는 기능, 메모 한개이므로 String으로 받았음
-	//input값: yyMMdd형식의 String날짜
-		
-		String sessionId = (String) se.getAttribute("sessionId");
-		//System.out.println("ctrl:" + sessionId);
-		int tdId = ts.tdIdSearch(tdDate, sessionId);
-		System.out.println("Ctrl " + tdId);
-		List<SubTodoListDTO> list = ts.getMemo(tdId);
-		System.out.println(tdDate+"일 때 리스트 사이즈: "+ list.get(0).getTdMemo() );
-		if(list.isEmpty()) { //만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
-			ts.inputRow(tdDate, sessionId);
-			tdId = ts.tdIdSearch(tdDate, sessionId);
-			list = ts.getMemo(tdId);
-		}
-		return list;
-	}
-	//�젙�긽 �옉�룞�맖
-	
-	@PutMapping(value="/memoWrite", produces="application/json; charset=utf-8")
-	public int memoWrite(@RequestBody TodoListDTO listDto) { //硫붾え瑜� �옉�꽦�븯怨� �닔�젙�븯�뒗 湲곕뒫
-	
-		//�뿴�쓣 誘몃━ 留뚮뱾�뼱�몢�젮怨� �븯誘�濡� 硫붾え�쓽 �옉�꽦怨� �닔�젙�쓣 紐⑤몢 �씠 寃껋쓣 �궗�슜�븯硫� �맖
-		//System.out.println("controller: "+ listDto.getTdMemo());
-		return ts.memoWrite(listDto);
-	}
-	//�젙�긽 �옉�룞�맖
-	
-//硫붾え�뵜由ы듃 湲곕뒫�� �궗�슜�븯吏� �븡湲곕줈 �삊�쓽�븿-> 硫붾え �닔�젙湲곕뒫�쓣 �궗�슜�빐�꽌 硫붾え留� ""�쑝濡� 諛붽씀�뒗 寃껋쑝濡�
-	@DeleteMapping(value="/memoDel/{tdDate}", produces="application/json; charset=utf-8")
-	public int memoDel(@PathVariable String tdDate, HttpSession se) { //硫붾え瑜� �궘�젣�븯�뒗 湲곕뒫
-	//input媛�: yyMMdd�삎�떇�쓽 String�궇吏�	
-		
-		String sessionId = (String) se.getAttribute("sessionId");
-		int tdId = ts.tdIdSearch(tdDate, sessionId); //td怨좎쑀Id濡� 蹂��솚
-		return ts.memoDel(tdId);
-	}
-	//�젙�긽 �옉�룞�맖
-	
-	@GetMapping(value="/progress/{tdDate}", produces="application/json; charset=utf-8")
-	public double getProgress(@PathVariable String tdDate, HttpSession se) { //吏꾩쿃�룄 �옖�뜑留곹븯�뒗 湲곕뒫
-	//input媛�: yyMMdd�삎�떇�쓽 String�궇吏�
-		//250206怨� 媛숈� �궇吏쒓컪�쓣 String�쑝濡� �엯�젰�븯怨� �꽭�뀡�븘�씠�뵒 媛믪쓣 諛쏆븘�꽌 td怨좎쑀Id濡� 蹂��솚
-		
-		String sessionId = (String) se.getAttribute("sessionId");
-		System.out.println(sessionId);
-		int tdId = ts.tdIdSearch(tdDate,sessionId);
-		System.out.println(tdId);
-		//tdId�뿉 ���븳 吏꾩쿃�룄瑜� 媛��졇�샂
-		//異붽� 肄붾뱶-> progress���옣�븯�뒗 湲곕뒫
-		double progress = ts.todoProgress(tdId);
-		ts.regiProgress(tdId, progress);
-		
-		return ts.todoProgress(tdId);
-	}
-	//�젙�긽 �옉�룞�븿
-	
-	
-	
-	
-	
-	
-	
+   }
 
+   @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 로그인 상태 확인
+   public int checkSession(HttpSession session) { // 세션체크
+      return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
+   }
+
+   @GetMapping(value = "/getTodo/{tdDate}", produces = "application/json; charset=utf-8")
+   public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se) { // 오늘의 투두리스트를 가져오는 기능
+      // input값: yyMMdd 형식의 날짜 데이터
+      // sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
+
+      String sessionId = (String) se.getAttribute("sessionId");
+      int todoId;
+      int result = ts.checkRow(tdDate, sessionId); // 열 있는지 찾아오기,
+      // System.out.println("result" + result);
+
+      if (result == 0) {
+         ts.inputRow(tdDate, sessionId); //
+         todoId = ts.tdIdSearch(tdDate, sessionId);// 추가한 후 todoId 고유번호를 반환하도록 설정
+      } else {
+         todoId = result;
+      }
+      // System.out.println("ctrl:" + todoId);
+      List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
+      list = ts.getTodo(todoId);
+      return list;
+   }
+   // 정상작동됨
+
+   @PostMapping(value = "/write/{tdDate}", produces = "application/json; charset=utf-8")
+   @ResponseBody
+   public Map<String, Integer> todoWrite(@RequestBody TDdetailDTO dto, @PathVariable String tdDate, HttpSession se) { // 투두리스트 작성하는 기능
+      // input값: 할 일에 대한 String tododetail내용, yyMMdd 형식의 날짜
+      // tdId는 sessionId 이용
+
+      String sessionId = (String) se.getAttribute("sessionId");
+
+      // sessionId와 tdDate를 이용해서 tdId를 가져오는 메소드
+      int tdId = ts.tdIdSearch(tdDate, sessionId);
+//      System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
+//      System.out.println(dto.getTdId());
+      dto.setTdId(tdId);
+      Map<String, Integer> response = new HashMap<String, Integer>();
+      int result =0; 
+      result = ts.todoWrite(dto);
+      int returnTdDetailId = ts.getTodo(tdId).get(0).getTdDetailId();
+      if(result ==1) {
+         response.put("tdDetailId", returnTdDetailId);
+      
+         return response;
+      }else {
+         return null;
+      }
+      
+      //return ts.todoWrite(dto); // 세션아이디 넣을 필요 없음, 위에서 세션값을 통해 tdId를 반환해옴
+   }
+   // 정상작동됨
+   @DeleteMapping(value="/del", produces="application/json; charset=utf-8")
+   public int todoDel(@RequestBody TDdetailDTO dto) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
+      
+      return ts.todoDel(dto.getTdDetailId());
+   }
+   @RequestMapping(value = "/del", method = RequestMethod.OPTIONS) 
+   public ResponseEntity<?> handleOptions() {
+       return ResponseEntity.ok().build();
+   }
+
+   @PutMapping(value = "/state", produces = "application/json; charset=utf-8")
+   public double updateState(@RequestBody TDdetailDTO dto, HttpSession se) { // 투두리스트 완료내역 업데이트 하는 체크박스
+      // input값: body에서 tdDetailId, tdDetailState, tdId
+
+      ts.updateState(dto.getTdDetailId(), dto.isTdDetailState());
+      System.out.println("tdDetailId: " + dto.getTdDetailId());
+      System.out.println("state:" + dto.isTdDetailState());
+      // String sessionId = (String) se.getAttribute("sessionId");
+      // String tdDate = ts.dateSearch(dto.getTdId()); //tdId기반으로 tdDate가져옴
+      // System.out.println("todoId날짜"+ dto.getTdId());
+      // postman입력값을 dto이름과 맞춰줘야함!!!!
+      double progress = ts.todoProgress(dto.getTdId()); // 업데이트 하면 자동으로 현재 진척도를 가져오는 기능
+      ts.regiProgress(dto.getTdId(), progress); // 업데이트된 진척도를 저장함
+      return progress;
+   }
+
+   @PutMapping(value = "/modify", produces = "application/json; charset=utf-8")
+   public int todoModify(@RequestBody TDdetailDTO dto) { // 투두리스트 수정하는 기능, 시간지나면 수정불가는 프론트에서 해주시길..
+      // input 값: detailDTO, 변동없는 경우에는 기존값이 입력되도록 해야함
+      // System.out.println("boolean 값 :" + dto.isTdDetailState());
+      return ts.todoModify(dto);
+   }
+   // 정상 작동완료, 내용수정위한 기능
+   //
+
+   // delMemo기능 삭제로 빈칸 만들어둠
+
+   @Transactional
+   @GetMapping(value = "/getMemo/{tdDate}", produces = "application/json; charset=utf-8")
+   public List<SubTodoListDTO> getMemo(@PathVariable String tdDate, HttpSession se) { // 하루의 메모를 가져오는 기능, 메모 한개이므로
+                                                                  // String으로 받았음
+      // input값: yyMMdd형식의 String날짜
+
+      String sessionId = (String) se.getAttribute("sessionId");
+      // System.out.println("ctrl:" + sessionId);
+      int tdId = ts.tdIdSearch(tdDate, sessionId);
+      System.out.println("Ctrl " + tdId);
+      List<SubTodoListDTO> list = ts.getMemo(tdId);
+      
+      if (list.isEmpty()) { // 만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
+         ts.inputRow(tdDate, sessionId);
+         tdId = ts.tdIdSearch(tdDate, sessionId);
+         list = ts.getMemo(tdId);
+      }
+      return list;
+   }
+   // 정상 작동됨
+
+   @PutMapping(value = "/memoWrite", produces = "application/json; charset=utf-8")
+   public int memoWrite(@RequestBody TodoListDTO listDto) { // 메모를 작성하고 수정하는 기능
+
+      // 열을 미리 만들어두려고 하므로 메모의 작성과 수정을 모두 이 것을 사용하면 됨
+      // System.out.println("controller: "+ listDto.getTdMemo());
+      return ts.memoWrite(listDto);
+   }
+   // 정상 작동됨
+
+
+   @GetMapping(value = "/progress/{tdDate}", produces = "application/json; charset=utf-8")
+   public double getProgress(@PathVariable String tdDate, HttpSession se) { // 진척도 랜더링하는 기능
+      // input값: yyMMdd형식의 String날짜
+      // 250206과 같은 날짜값을 String으로 입력하고 세션아이디 값을 받아서 td고유Id로 변환
+
+      String sessionId = (String) se.getAttribute("sessionId");
+      System.out.println(sessionId);
+      int tdId = ts.tdIdSearch(tdDate, sessionId);
+      System.out.println(tdId);
+      // tdId에 대한 진척도를 가져옴
+      // 추가 코드-> progress저장하는 기능
+      double progress = ts.todoProgress(tdId);
+      ts.regiProgress(tdId, progress);
+
+      return ts.todoProgress(tdId);
+   }
+   // 정상 작동함
+   
+   
 }

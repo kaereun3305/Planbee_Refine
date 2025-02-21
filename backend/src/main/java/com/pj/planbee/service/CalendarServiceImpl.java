@@ -24,23 +24,14 @@ public class CalendarServiceImpl implements CalendarService {
 	@Autowired TodoListMapper tlMap;
 	@Autowired CalendarMapper calMap;
 	
-	@Override
-	public int getProgress(String calDate, String sessionId) {
-	    int tdId = -1; // 기본값 설정 (예외 발생 시 반환할 값)
-
-	    try {
-	        tdId = tdIdSearch(calDate, sessionId);
-	    } catch (IndexOutOfBoundsException e) {
-	        System.out.println("getProgress()에서 IndexOutOfBoundsExceptio n 발생: " + e.getMessage());
-	    } catch (Exception e) {
-	        System.out.println("getProgress()에서 예외 발생: " + e.getMessage());
-	    }
-	    return tdId;
-	}
+	   @Override
+	   public double getProgress(String calDate, String sessionId) {
+		    Double progress = tlMap.getProgress(calDate, sessionId);
+		    return (progress != null) ? progress : 0.0; // 값이 없으면 0.0 반환
+		}
 
 	public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
 		   List<TDstartDTO> dateId = tlMap.getDate(sessionId);
-		   System.out.println("service: "+dateId.get(3).getTodo_Id());
 		   int selectedtdId = 0;
 		   for (int i =0; i<dateId.size(); i++) {//dateId 리스트를 순회하며,todayStr과 같은 날짜가 있는지 확인 
 		      if(dateId.get(i).getTodo_date().equals(tdDate)) {
@@ -51,45 +42,46 @@ public class CalendarServiceImpl implements CalendarService {
 		   return selectedtdId;
 		
 		}
+	// 전역변수: 현재 연속 달성일 & 최대 연속 달성일
+	  private int curStreak = 0;
+	  private int maxStreak = 0;
+	    
 	@Override
-	public Map<String, Integer> curProgress(String userId) {
-		LocalDateTime today = LocalDateTime.now(); //현재 날짜
-		
-		Map<String, Integer> result = new HashMap<String, Integer>();
-		int curStreak = 0;
-		int maxStreak = 0;
-		int tempStreak = 0;
-		
-		ArrayList<Double> userProgress = new ArrayList<Double>();
-		userProgress = tlMap.userProgress(userId); // mapper에서 가져온
-		DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd"); //날짜 변환
-		String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
-		
-		for(int i = 0; i < userProgress.size(); i++) {
-			if(userProgress.get(i) > 0.8) {
-				tempStreak++;
-				maxStreak = Math.max(maxStreak, tempStreak);
-			} else {
-				tempStreak = 0; //연속 달성일 초기화
-			}
-			if(!userProgress.isEmpty() && userProgress.get(userProgress.size() - 1) > 0.8) {
-				curStreak = tempStreak;
-			} //0.8% 미만일 시에 연속 달성일 초기화
-			
-			result.put("curStreak", curStreak);//현재 연속 달성일
-			result.put("maxStreak", maxStreak); //최대 연속 달성일
-			result.put("tempStreak", tempStreak);
-		}
-		return result;
-	
+    // 현재 연속 달성일 및 최대 연속 달성일 계산
+    public Map<String, Integer> curProgress(String userId) {
+        LocalDateTime today = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+        String todayStr = today.format(formatter);
 
-	}
+        List<Double> userProgress = tlMap.userProgress(userId);
+
+        int tempStreak = 0;
+        maxStreak = 0;
+        curStreak = 0;
+
+        for (double progress : userProgress) {
+            if (progress > 0.8) {
+                tempStreak++;
+                maxStreak = Math.max(maxStreak, tempStreak);
+            } else {
+                tempStreak = 0;
+            }
+        }
+
+        if (!userProgress.isEmpty() && userProgress.get(userProgress.size() - 1) > 0.8) {
+            curStreak = tempStreak;
+        }
+
+        Map<String, Integer> result = new HashMap<>();
+        result.put("curStreak", curStreak);
+        result.put("maxStreak", maxStreak);
+        return result;
+    }
+
 
 	@Override
 	public List<CalendarDTO> getMemo(String calDate, String sessionId) {
-	    System.out.println("쿼리 실행 - calDate: " + calDate + ", sessionId: " + sessionId); // ✅ 디버깅 추가
 	    List<CalendarDTO> cal = calMap.getMemo(calDate, sessionId);
-	    System.out.println("DB에서 조회된 개수: " + cal.size());
 	    return cal;
 	}
 
@@ -117,9 +109,9 @@ public class CalendarServiceImpl implements CalendarService {
 
 	
 	@Override
-	public int delMemo(CalendarDTO calendar) {
+	public int delMemo(int calId) {
 		 try {
-		        int result = calMap.modiMemo(calendar); // DB에서 업데이트 실행
+		        int result = calMap.delMemo(calId); // DB에서 업데이트 실행
 		        return (result > 0) ? 1 : 0; // 성공하면 1, 실패하면 0 반환
 		    } catch (Exception e) {
 		        e.printStackTrace();

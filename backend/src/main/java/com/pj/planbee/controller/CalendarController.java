@@ -13,8 +13,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,11 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CalendarController {
 
     @Autowired CalendarService cs;
-    @Autowired TodoListService ts;
     
     @PostMapping(value="/makeSession", produces = "application/json; charset=utf-8")//세션 설정 메소드
     public int session(HttpSession se) { 
-       se.setAttribute("sessionId", "슈붕");
+       se.setAttribute("sessionId", "coffeeNine");
        return 1;
        
     }
@@ -46,19 +47,17 @@ public class CalendarController {
      }
     
     //일별 진척도
-     @GetMapping("/dprogress")
-     public double getProgress(@RequestParam String calDate, HttpSession se) {
-         String sessionId = (String) se.getAttribute("sessionId");
-         int tdId = cs.getProgress(calDate, sessionId);
-         return ts.todoProgress(tdId);
+     @GetMapping("/dprogress/{calDate}") //날짜를 가져와서 일별 진척도를 확인
+     public double getProgress(@PathVariable String calDate, HttpSession session) {
+         String sessionId = (String) session.getAttribute("sessionId");
+         return cs.getProgress(calDate, sessionId);
      }
-
-    
+     
     // 현재 연속 달성일
-    @GetMapping(value="/curStreak", produces="application/json;charset=UTF-8")
+    @GetMapping(value="/curStreak", produces="application/json;charset=UTF-8") // 
 	public int curStreak(HttpSession se) {
     	String sessionId = (String) se.getAttribute("sessionId");
-    	Map<String, Integer> result = new HashMap<String, Integer>(); //결과 값을 받아오기 위함
+    	 Map<String, Integer> result = cs.curProgress(sessionId); //결과 값을 받아오기 위함
     	result = cs.curProgress(sessionId); //받아옴
     	int days = result.get("curStreak");
 		return days;
@@ -67,14 +66,14 @@ public class CalendarController {
     // 최대 연속 달성일
     @GetMapping(value="/maxStreak", produces="application/json;charset=UTF-8")
     public int maxStreak(HttpSession se) {
-    	String userId = (String) se.getAttribute("sessionId");
-    	Map<String, Integer> result = new HashMap<String, Integer>(); 
-    	result = cs.curProgress(userId);
+    	String sessionId = (String) se.getAttribute("sessionId");
+   	 Map<String, Integer> result = cs.curProgress(sessionId); //결과 값을 받아오기 위함
+   	result = cs.curProgress(sessionId); //받아옴
     	int max = result. get("maxStreak");
     	
     	return max;
     }
-    
+    //메모 조회
     @GetMapping("/memo/{calDate}")
     public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {
         String sessionId = (String) se.getAttribute("sessionId");
@@ -101,12 +100,10 @@ public class CalendarController {
     }
     
     //메모 삭제
-    @GetMapping("/delmemo")
-    public int delMemo(@PathVariable String calDate, @RequestBody CalendarDTO calendar, HttpSession se) {
-        String sessionId = (String) se.getAttribute("sessionId");
-        calendar.setCalDate(calDate);
-        calendar.setUserId(sessionId);
-        return cs.delMemo(calendar);
+    @DeleteMapping("/delmemo/{calId}")
+    public int delMemo(@PathVariable int calId) {
+        return cs.delMemo(calId);
+       
     }
     
 }

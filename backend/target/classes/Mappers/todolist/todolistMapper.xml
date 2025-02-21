@@ -48,6 +48,12 @@
     <select id="userProgress">
     	select todo_progress from ToDoList where user_id=#{userId} order by todo_Date asc
     </select>
+    <!-- 일별 진척도 조회 -->
+    <select id="getProgress" resultType="double">
+        SELECT todo_progress 
+        FROM ToDoList
+        WHERE todo_date = #{calDate} AND user_id = #{userId}
+    </select>
     
     
 </mapper>

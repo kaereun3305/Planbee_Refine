@@ -27,5 +27,6 @@ public interface TodoListMapper {
 		
 		//캘린더 기능
 		public ArrayList<Double> userProgress(String userId);
+		public Double getProgress(@Param("calDate") String calDate, @Param("userId") String userId);
 		
 }

@@ -98,6 +98,8 @@ public class TodoListController {
 		int returnTdDetailId = ts.getTdDetailId(dto.getTdDetail(),tdId);
 		if(result ==1) {
 			response.put("tdDetailId", returnTdDetailId);
+			double newProgress = ts.todoProgress(tdId);
+			ts.regiProgress(tdId, newProgress);
 		
 			return response;
 		}else {

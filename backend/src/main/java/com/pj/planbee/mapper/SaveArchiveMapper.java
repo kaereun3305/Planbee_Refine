@@ -3,6 +3,8 @@ package com.pj.planbee.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.pj.planbee.dto.ArchDetailDTO;
 import com.pj.planbee.dto.ArchiveDTO;
 import com.pj.planbee.dto.TDdetailDTO;
@@ -18,9 +20,11 @@ public interface SaveArchiveMapper {
 	
 	public List<Integer> tdIdSearch(String yesterday);
 	
-	public ArrayList<TDdetailDTO> todoDetailCheck(int tdIds);
+	public ArrayList<TDdetailDTO> todoDetailCheck(@Param("tdIds")int tdIds);
+	
+	public ArrayList<TDdetailDTO> checkExist(int tdDetailId);
 	
 	public int toArchiveDetail(TDdetailDTO tododetail);
 	
-	public int checkExist(int tdId);
+	
 }

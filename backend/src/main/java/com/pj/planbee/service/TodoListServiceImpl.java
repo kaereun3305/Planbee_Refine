@@ -101,11 +101,14 @@ public List<TDdetailDTO> getTodo(int tdId) { //하루의 투두리스트를 가�
 public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, 성공시 결과값은 1
 	
 		int result =0;
-		System.out.println("service impl : "+ dto.getTdId());
+		//System.out.println("service impl todoWrite : "+ dto.getTdId());
 		try {
 			result = tdMap.todoWrite(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		if(result ==1) {
+			tlMap.getLatest();
 		}
 	
 	
@@ -220,6 +223,13 @@ public int regiProgress(int tdId, double progress) {
 	}
 	return 0;
 }
+@Override
+public int getTdDetailId(String tdDetail, int tdId) {
+	List<Integer> tdDetailId = tdMap.getTdDetailId(tdDetail, tdId);
+	//똑같은 값이 중복되어 있더라도 가장 최신값을 반환할 수 있도록 코드를 작성함
+	return tdDetailId.get(0);
+}
+
 
 
 @Override
@@ -258,17 +268,21 @@ public int saveArchiveDetail() {
 	
 	//System.out.println("service impl 어제날짜 해당하는 tdId값: " + uniTdIds.get(0));
 	
-	List<TDdetailDTO> archDetail = new ArrayList<TDdetailDTO>();
+	List<TDdetailDTO> toSaveDetail = new ArrayList<TDdetailDTO>();
 	//archDetail에 저장할 값을 담아두기 위한 LIst 생성
 	
 	
 	for(int i =0 ; i<uniTdIds.size(); i++) { //인덱스번호 순회해가면서 찾아서 넣어둔다.
-		 archDetail.addAll(saMap.todoDetailCheck(uniTdIds.get(i)));
+		 toSaveDetail.addAll(saMap.todoDetailCheck(uniTdIds.get(i)));
 	}
 	
 	//System.out.println("ser impl tdDetail 첫번째 값? :" + archDetail.size());
+	List<TDdetailDTO> checkExist = new ArrayList<TDdetailDTO>(); //archiveD에 해당 값이 있는지 확인
+	checkExist = saMap.checkExist(result)
+	//tdDetailId를 바탕으로 해당 값이 있는지 하나 찾은 후, 
+	//그 checkExist 배열이 0이면 toSaveDetail의 값을 입력한다
 	
-	
+	if(checkExist)
 	if(!archDetail.isEmpty()) {
 		for(int i =0; i<archDetail.size(); i++) {
 			List<TDdetailDTO> detail = archDetail;

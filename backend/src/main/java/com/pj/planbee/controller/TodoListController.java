@@ -29,7 +29,7 @@ import com.pj.planbee.service.TodoListService;
 
 @RestController
 @RequestMapping("/todolist") // 순서 바꿈
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders= "*", allowCredentials = "true")
 public class TodoListController {
 	@Autowired
 	TodoListService ts;
@@ -44,10 +44,10 @@ public class TodoListController {
 //
 //	}
 	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
-	public int session(HttpSession se) {
+	public String session(HttpSession se) {
 		se.setAttribute("sessionId", "coffeeNine");
 		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
-		return 1;
+		return (String) se.getAttribute("sessionId");
 
 	}
 
@@ -81,7 +81,7 @@ public class TodoListController {
 
 	@PostMapping(value = "/write/{tdDate}", produces = "application/json; charset=utf-8")
 	@ResponseBody
-	public int todoWrite(@RequestBody TDdetailDTO dto, @PathVariable String tdDate, HttpSession se) { // 투두리스트 작성하는 기능
+	public Map<String, Integer> todoWrite(@RequestBody TDdetailDTO dto, @PathVariable String tdDate, HttpSession se) { // 투두리스트 작성하는 기능
 		// input값: 할 일에 대한 String tododetail내용, yyMMdd 형식의 날짜
 		// tdId는 sessionId 이용
 
@@ -95,11 +95,13 @@ public class TodoListController {
 		Map<String, Integer> response = new HashMap<String, Integer>();
 		int result =0; 
 		result = ts.todoWrite(dto);
+		int returnTdDetailId = ts.getTdDetailId(dto.getTdDetail(),tdId);
 		if(result ==1) {
-			
-			return tdId;
+			response.put("tdDetailId", returnTdDetailId);
+		
+			return response;
 		}else {
-			return 0;
+			return null;
 		}
 		
 		//return ts.todoWrite(dto); // 세션아이디 넣을 필요 없음, 위에서 세션값을 통해 tdId를 반환해옴

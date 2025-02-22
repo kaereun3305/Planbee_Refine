@@ -27,6 +27,7 @@ public interface TodoListService {
 	public int todoDel(int tdDetailId); //투두리스트 한 개 삭제하는 기능
 	public double todoProgress(int tdId); //진척도 가져오는 기능
 	public int regiProgress(int tdId, double progress);//업데이트된 진척도를 저장하는 기능
+	public int getTdDetailId(String tdDetail, int tdId);//새로 입력된 것 바탕으로 tdDetailId 반환(FE 요청)
 	
 	
 	//todolist의 memo에 대한 기능들

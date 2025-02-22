@@ -50,6 +50,10 @@
     	delete from ToDoList_Detail where tododetail_id=#{tdDetailId}
     </delete>
     
+    <select id="getTdDetailId">
+    	select tododetail_id from ToDoList_Detail where tododetail=#{tdDetail} and todo_id=#{tdId} order by tododetail_id DESC
+    </select>
+    
     <!-- 진척도 보기 위해서 완료된 행의 숫자와 전체 행의 숫자를 가져오는 기능 -->
     <select id="getComplete"> 
     	select count(*) from ToDoList_Detail where todo_id=#{todoId} and tododetail_state =1 

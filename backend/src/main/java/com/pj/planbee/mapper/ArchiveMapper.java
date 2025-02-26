@@ -23,8 +23,18 @@ public interface ArchiveMapper {
     // 최신 날짜
     String findLatestDate(@Param("userId") String userId);
     
-    // 검색
+    // 날짜 검색
     List<ArchiveDTO> findArchives(
             @Param("userId") String userId, 
             @Param("searchDate") String searchDate);
+    
+    // 내용 검색
+    List<ArchiveDTO> searchByDetail(
+    		@Param("userId") String userId, 
+            @Param("keyword") String keyword);
+    
+ // 특정 날짜의 데이터 가져오기
+    List<ArchiveDTO> findArchivesByDate(
+            @Param("userId") String userId, 
+            @Param("date") String date);
 }

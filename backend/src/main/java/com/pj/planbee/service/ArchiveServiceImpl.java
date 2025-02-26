@@ -25,7 +25,7 @@ public class ArchiveServiceImpl implements ArchiveService {
         
         // 어제 ~ 6일 전 
         List<ArchiveDTO> archives = mapper.findRecentArchives(
-            userId, startDate.toString(), endDate.toString());
+            userId, startDate, endDate);
 
         // 위가 없다면, 가장 최신의 데이터를 포함한 6일간 가져오기
         if (archives.isEmpty()) {
@@ -40,10 +40,21 @@ public class ArchiveServiceImpl implements ArchiveService {
         return archives;
     }
     
+    // 특정 날짜의 데이터 가져오기
+    @Override
+    public List<ArchiveDTO> getArchivesByDate(String userId, String date) {
+        return mapper.findArchivesByDate(userId, date);
+    }
+    
     
     @Override
     public List<ArchiveDTO> searchArchivesByDate(String userId, String date) {
         // 검색 날짜 기준으로 3일 전 ~ 2일 후 데이터
         return mapper.findArchives(userId, date);
+    }
+    
+    @Override
+    public List<ArchiveDTO> searchByDetail(String userId, String keyword) {
+        return mapper.searchByDetail(userId, keyword);
     }
 }

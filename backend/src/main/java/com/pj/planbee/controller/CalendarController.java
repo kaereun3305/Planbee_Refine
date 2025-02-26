@@ -50,6 +50,7 @@ public class CalendarController {
      @GetMapping("/dprogress/{calDate}") //날짜를 가져와서 일별 진척도를 확인
      public double getProgress(@PathVariable String calDate, HttpSession session) {
          String sessionId = (String) session.getAttribute("sessionId");
+      // getProgress 메소드를 호출하여 해당 날짜의 진척도 계산 후 반환
          return cs.getProgress(calDate, sessionId);
      }
      //월별 진척도
@@ -65,6 +66,7 @@ public class CalendarController {
     @GetMapping(value="/curStreak", produces="application/json;charset=UTF-8") // 
 	public int curStreak(HttpSession se) {
     	String sessionId = (String) se.getAttribute("sessionId");
+    	//curProgress 메소드로 현재 및 최대 연속 달성일을 포함한 결과를 받음
     	 Map<String, Integer> result = cs.curProgress(sessionId); //결과 값을 받아오기 위함
     	result = cs.curProgress(sessionId); //받아옴
     	int days = result.get("curStreak");
@@ -90,6 +92,7 @@ public class CalendarController {
 
     //메모추가
     @PostMapping("/addmemo/{calDate}")
+    // CalendarDTO 객체에 날짜(calDate)와 사용자 아이디를 설정한 후, DB에 메모를 저장
     public int addMemo(@PathVariable String calDate, @RequestBody CalendarDTO calendar, HttpSession se) {
         String sessionId = (String) se.getAttribute("sessionId");
         calendar.setCalDate(calDate);
@@ -102,12 +105,13 @@ public class CalendarController {
     //메모 수정
     @PutMapping("/modimemo/{calId}")
     public int modiMemo(@PathVariable int calId, @RequestBody CalendarDTO calendar) {
+    	 // 수정할 메모의 식별자를 CalendarDTO에 설정
     	 calendar.setCalId(calId);
     	int result = cs.modiMemo(calendar);
     	return result;
     }
     
-    //메모 삭제
+    //메모 삭제 성공 여부는 1, 0으로
     @DeleteMapping("/delmemo/{calId}")
     public int delMemo(@PathVariable int calId) {
         return cs.delMemo(calId);

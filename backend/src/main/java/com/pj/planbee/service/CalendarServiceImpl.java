@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,6 +167,12 @@ public class CalendarServiceImpl implements CalendarService {
 
 
 
+	}
+
+	@Override
+	public double monthProgress(@Param("yyMM") String yyMM, @Param("sessionId") String sessionId) {
+		  return calMap.monthProgress(yyMM, sessionId);
+		 
 	}
 	
 }

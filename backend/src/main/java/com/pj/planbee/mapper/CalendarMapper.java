@@ -24,5 +24,6 @@ public interface CalendarMapper {
 	public int modiMemo(CalendarDTO calendar);
 
 	public int delMemo(int calId);
-
+	
+	public double monthProgress(@Param("yyMM") String yyMM, @Param("sessionId") String sessionId);
 }

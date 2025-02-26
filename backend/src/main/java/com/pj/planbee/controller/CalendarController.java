@@ -36,7 +36,7 @@ public class CalendarController {
     
     @PostMapping(value="/makeSession", produces = "application/json; charset=utf-8")//세션 설정 메소드
     public int session(HttpSession se) { 
-       se.setAttribute("sessionId", "coffeeNine");
+       se.setAttribute("sessionId", "팥붕");
        return 1;
        
     }
@@ -51,6 +51,14 @@ public class CalendarController {
      public double getProgress(@PathVariable String calDate, HttpSession session) {
          String sessionId = (String) session.getAttribute("sessionId");
          return cs.getProgress(calDate, sessionId);
+     }
+     //월별 진척도
+     @GetMapping("/mprogress/{yyMM}")
+     public double monthProgress(@PathVariable String yyMM,HttpSession session) {
+    	 // 년, 월만 받아와서 해당 월의 데이터를 가져옴
+    	 
+    	 String sessionId = (String) session.getAttribute("sessionId");
+    	 return cs.monthProgress(yyMM, sessionId);
      }
      
     // 현재 연속 달성일

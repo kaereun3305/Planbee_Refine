@@ -21,6 +21,7 @@ public interface CalendarService {
    
    public void checkMonthly(int year, int month, String userId);
    List<CalendarDTO> getMonthly(int year, int month, String userId, String fileterId);
+   public double monthProgress(String yyMM, String sessionId);
 
 
    

@@ -20,6 +20,17 @@
     	WHERE todo_date = #{calDate} AND user_id = #{userId}
 	</select>
 
+	<!-- 월별 진척도(평균) 조회 -->
+   <select id="monthProgress" resultType="double" parameterType="map">
+   		SELECT ROUND(AVG(todo_progress), 2) AS avg_progress
+		FROM ToDoList
+		WHERE todo_date LIKE CONCAT(#{yyMM}, '%')
+ 		AND user_id = #{sessionId};
+	</select>
+
+
+
+
 	<!-- 특정 날짜 메모 조회 -->	
 	<select id="getMemo" resultMap="calDTO">
     SELECT cal_id, cal_date, user_id, 

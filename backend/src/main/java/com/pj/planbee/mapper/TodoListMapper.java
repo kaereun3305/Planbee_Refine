@@ -1,5 +1,6 @@
 package com.pj.planbee.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -29,5 +30,10 @@ public interface TodoListMapper {
 		
 		
 		
+		
+		//캘린더 기능
+		public ArrayList<Double> userProgress(String userId);
+		public Double getProgress(@Param("calDate") String calDate, @Param("userId") String userId);
+		public int monthProgress(String calDate, String sessionId);
 		
 }

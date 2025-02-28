@@ -1,0 +1,98 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.pj.planbee.mapper.CalendarMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
+	<resultMap type="com.pj.planbee.dto.CalendarDTO" id="calDTO"> <!-- database의 표 -->
+		<id property="calId" column="cal_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<result property="calDetail1" column="cal_detail_1" />
+		<result property="calDetail2" column="cal_detail_2" />
+		<result property="calDetail3" column="cal_detail_3"/>
+		<result property="calDate" column="cal_date" />
+		<result property="userId" column="user_id" />
+	</resultMap>
+	
+	<!-- 일별진척도 조회 -->
+    <select id="getProgress" resultType="double">
+    	SELECT todo_progress 
+    	FROM ToDoList
+    	WHERE todo_date = #{calDate} AND user_id = #{userId}
+	</select>
+
+	<!-- 월별 진척도(평균) 조회 -->
+   <select id="monthProgress" resultType="double" parameterType="map">
+   		SELECT ROUND(AVG(todo_progress), 2) AS avg_progress
+		FROM ToDoList
+		WHERE todo_date LIKE CONCAT(#{yyMM}, '%')
+ 		AND user_id = #{sessionId};
+	</select>
+
+
+
+
+	<!-- 특정 날짜 메모 조회 -->	
+	<select id="getMemo" resultMap="calDTO">
+    SELECT cal_id, cal_date, user_id, 
+           COALESCE(cal_detail_1, '') AS cal_detail_1, 
+           COALESCE(cal_detail_2, '') AS cal_detail_2, 
+           COALESCE(cal_detail_3, '') AS cal_detail_3
+    FROM calendar 
+    WHERE cal_date = #{calDate} AND user_id = #{sessionId}
+</select>
+
+
+<!-- 메모추가 -->
+<insert id="addMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    INSERT INTO calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3)
+    VALUES (#{calDate}, #{userId}, #{calDetail1}, #{calDetail2}, #{calDetail3})
+</insert>
+
+<!-- 메모 수정 -->
+<update id="modiMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    UPDATE calendar
+    SET cal_detail_1 = #{calDetail1},
+        cal_detail_2 = #{calDetail2},
+        cal_detail_3 = #{calDetail3}
+    WHERE cal_id = #{calId}
+</update>
+<!-- 메모 삭제 -->
+<delete id="delMemo" parameterType="int">
+    DELETE FROM calendar
+    WHERE cal_id = #{calId}
+</delete>
+
+
+    <!-- 특정 월의 데이터 개수 확인 -->
+    <select id="countByMonth" resultType="int">
+        SELECT COUNT(*) FROM Calendar
+        WHERE cal_date LIKE #{monthPre} || '%' AND user_id = #{userId}
+    </select>
+
+    <!-- 여러 날짜 데이터를 한 번에 삽입 (Insert) -->
+    <insert id="insertNewDate">
+        INSERT INTO calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3, cal_progress)
+        VALUES
+        <foreach collection="date" item="item" separator=",">
+            (#{item.calDate}, #{item.userId}, #{item.calDetail1}, #{item.calDetail2}, #{item.calDetail3}, #{item.calProgress})
+        </foreach>
+    </insert>
+
+    <!-- 특정 연도/월의 데이터를 조회 -->
+    <select id="getByMonth" resultMap="calDTO">
+        SELECT * FROM calendar
+        WHERE cal_date LIKE #{monthPre} || '%' AND user_id = #{userId}
+        ORDER BY cal_date
+    </select>
+
+
+	<!-- 기존 메모 수정  -->
+	<update id="updateMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    	UPDATE calendar
+    	SET cal_detail_1 = #{calDetail1}, 
+        	cal_detail_2 = #{calDetail2}, 
+        	cal_detail_3 = #{calDetail3}, 
+        	cal_progress = #{calProgress}
+    	WHERE cal_id = #{calId}
+	</update>
+</mapper>

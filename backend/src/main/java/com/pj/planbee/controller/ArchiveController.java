@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +51,14 @@ public class ArchiveController {
     //여기가 테스트 시작
     // 처음 /archive 페이지에 접속하면 어제 날짜로 리다이렉트
     @GetMapping(value = "/", produces = "application/json; charset=utf-8")
-    public void redirectToYesterday(HttpServletResponse res) throws IOException {
+    public void redirectToYesterday(HttpServletRequest req, HttpServletResponse res) throws IOException {
         // 어제 날짜 구하기
         LocalDate yesterday = LocalDate.now().minusDays(1);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         String yesterdayDate = yesterday.format(formatter);
         
         // 어제 날짜로 리다이렉트
-        res.sendRedirect("/archive/" + yesterdayDate);
+        res.sendRedirect(req.getContextPath() + "/archive/" + yesterdayDate);
     }
 
     // 어제 날짜 또는 검색한 날짜의 데이터 가져오기
@@ -67,7 +68,7 @@ public class ArchiveController {
         String userId = (String) se.getAttribute("sessionId");
 
         // 어제 날짜 또는 검색한 날짜의 데이터 가져오기
-        List<ArchiveDTO> archives = as.getArchivesWithDetails(userId);
+        List<ArchiveDTO> archives = as.getArchivesByRange(userId, date);
 
         return archives;
     }

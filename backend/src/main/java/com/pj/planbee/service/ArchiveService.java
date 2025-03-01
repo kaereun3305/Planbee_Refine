@@ -18,5 +18,8 @@ public interface ArchiveService {
 	//특정 날짜 불러오기
 	List<ArchiveDTO> getArchivesByDate(String userId, String date);
 
+	//특정 날짜 범위별로 불러오기
+	List<ArchiveDTO> getArchivesByRange(String userId, String date);
+
 	
 }

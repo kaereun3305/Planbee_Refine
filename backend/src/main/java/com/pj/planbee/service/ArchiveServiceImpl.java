@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pj.planbee.config.CacheConfig;
 import com.pj.planbee.dto.ArchiveDTO;
 import com.pj.planbee.mapper.ArchiveMapper;
 
@@ -56,5 +57,31 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<ArchiveDTO> searchByDetail(String userId, String keyword) {
         return mapper.searchByDetail(userId, keyword);
+    }
+    
+    @Override
+    public List<ArchiveDTO> getArchivesByRange(String userId, String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+
+        // 요청된 날짜를 LocalDate로 변환
+        LocalDate requestedDate = LocalDate.parse(date, formatter);
+
+        // 요청된 날짜 기준으로 6일간의 데이터 조회
+        String startDate = requestedDate.minusDays(5).format(formatter); // 5일 전
+        String endDate = requestedDate.format(formatter); // 요청된 날짜
+
+        // LRU 캐싱에서 먼저 데이터 조회
+        String cacheKey = userId + "_" + startDate + "_" + endDate;
+        if (CacheConfig.archiveCache.containsKey(cacheKey)) {
+            return CacheConfig.archiveCache.get(cacheKey);
+        }
+
+        // DB에서 데이터 조회
+        List<ArchiveDTO> archives = mapper.findArchivesByRange(userId, startDate, endDate);
+
+        // 조회된 데이터를 캐시에 저장
+        CacheConfig.archiveCache.put(cacheKey, archives);
+
+        return archives;
     }
 }

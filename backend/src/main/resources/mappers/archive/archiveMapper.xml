@@ -132,5 +132,24 @@
         AND a.archive_date = #{date}
         ORDER BY a.archive_date DESC;
     </select>
+    
+      <!-- 특정 날짜 기준 6일간 데이터 가져오기 -->
+    <select id="findArchivesByRange" resultMap="archiveResultMap">
+        SELECT
+        a.archive_id,
+        a.archive_date,
+        a.archive_memo,
+        a.archive_progress,
+        a.user_id,
+        ad.archivedetail_id,
+        ad.archivedetail,
+        ad.archivedetail_state,
+        ad.archivedetail_time
+        FROM archive a
+        LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
+        WHERE a.user_id = #{userId}
+        AND a.archive_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY a.archive_date DESC;
+    </select>
 
 </mapper>

@@ -37,4 +37,9 @@ public interface ArchiveMapper {
     List<ArchiveDTO> findArchivesByDate(
             @Param("userId") String userId, 
             @Param("date") String date);
+    
+    List<ArchiveDTO> findArchivesByRange(
+            @Param("userId") String userId, 
+            @Param("startDate") String startDate, 
+            @Param("endDate") String endDate);
 }

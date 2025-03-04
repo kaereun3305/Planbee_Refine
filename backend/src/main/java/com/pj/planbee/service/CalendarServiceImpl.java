@@ -61,7 +61,7 @@ public class CalendarServiceImpl implements CalendarService {
         curStreak = 0;
 
         for (double progress : userProgress) {
-            if (progress > 0.8) {
+            if (progress > 0.3) {
                 tempStreak++;
                 maxStreak = Math.max(maxStreak, tempStreak);
             } else {
@@ -69,7 +69,7 @@ public class CalendarServiceImpl implements CalendarService {
             }
         }
 
-        if (!userProgress.isEmpty() && userProgress.get(userProgress.size() - 1) > 0.8) {
+        if (!userProgress.isEmpty() && userProgress.get(userProgress.size() - 1) > 0.3) {
             curStreak = tempStreak;
         }
 

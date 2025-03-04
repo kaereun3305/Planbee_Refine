@@ -91,17 +91,14 @@ public class CalendarController {
 
          return ResponseEntity.ok(response);
      }
-    
-    // 최대 연속 달성일
-    @GetMapping(value="/maxStreak", produces="application/json;charset=UTF-8")
-    public Map<String, Object> maxStreak(HttpSession se) {
-        String sessionId = (String) se.getAttribute("sessionId");
-        Map<String, Integer> result = cs.curProgress(sessionId); // 결과 값을 받아오기
-        Map<String, Object> response = new HashMap<>();
-        response.put("최대 연속 달성일", result.get("maxStreak"));
+     //최대 연속 달성일
+     @GetMapping(value="/maxStreak", produces="application/json;charset=UTF-8")
+     public int maxStreak(HttpSession se) {
+         String sessionId = (String) se.getAttribute("sessionId");
+         Map<String, Integer> result = cs.curProgress(sessionId); // 결과 값을 받아오기
+         return result.get("maxStreak");
+     }
 
-        return response;   
-    }
     //메모 조회
     @GetMapping("/memo/{calDate}")
     public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {

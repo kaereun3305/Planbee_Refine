@@ -193,7 +193,7 @@ public class TodoListController {
 	}
 	// 정상 작동함
 	
-	@GetMapping(value = "/testSaveDetail", produces = "application/json; charset=utf-8")
+	@PostMapping(value = "/testSaveDetail", produces = "application/json; charset=utf-8")
 	public void testSave(HttpSession se) { 
 		
 		ts.saveArchiveDetail();

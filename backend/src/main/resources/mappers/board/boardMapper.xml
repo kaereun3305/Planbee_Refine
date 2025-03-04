@@ -1,0 +1,53 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+
+<mapper namespace="com.pj.planbee.mapper.BoardMapper"> <!-- 여기가 사용할 매퍼를 연결해주는 역할, 경로주의 -->
+	<resultMap type="com.pj.planbee.dto.BoardDTO" id="boardList">
+		<id property="postId" column="post_id" /> 
+		<result property="postTitle" column="post_title" /> <!-- PK로 지정한 것은 id로 받아준다 -->
+		<result property="postHit" column="post_hit" />
+		<result property="postContent" column="post_content" />
+		<result property="postDate" column="post_date"/>
+		<result property="userId" column="user_id"/>
+		<result property="groupId" column="group_id"/>
+		
+	</resultMap>
+	
+	
+	 <select id="getAllList" resultMap = "boardList">
+    	select post_id, post_title, post_hit, post_content, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id, group_id from posts order by post_date desc
+    </select>
+    
+    <select id="getView" resultMap="boardList">
+    	select post_id, post_title, post_hit, post_content, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id, group_id from posts where post_id=#{postId} order by post_date desc
+    </select>
+    
+    <insert id="writePost">
+    	insert into Posts (post_title, post_hit, post_content, user_id, group_id) values 
+    	(#{postTitle}, 0, #{postContent}, #{userId}, #{groupId})
+    </insert>
+	
+	<update id="boardModify">
+		update Posts set post_title = #{postTitle}, post_content =#{postContent}, group_id= #{groupId} where post_id=#{postId}
+	</update>
+	
+	<delete id="boardDel">
+		delete from Posts where post_id=#{postId}
+	</delete>
+	
+	<update id="boardHit">
+		update Posts set post_hit=post_hit+1 where post_id=#{postId}
+	</update>
+	
+	<select id="boardGroup">
+		select * from Posts where group_id=#{groupId}
+	</select>
+	
+	<select id="getWriter">
+		select user_id from Posts where post_id = #{postId}
+	</select>
+	
+    
+</mapper>

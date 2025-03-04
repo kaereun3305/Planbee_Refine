@@ -45,7 +45,7 @@
     </select>
 	
 	<select id="archiveCheck" resultMap = "archive">
-		select * from archive where archive_date=#{yesterday} and user_id=#{sessionId}
+		select * from archive where archive_date=#{yesterday}
 	</select>
 	
     <insert id="toArchive">

@@ -44,9 +44,13 @@
     	select todo_date from ToDoList where todo_id=#{tdId}
     </select>
     
-    <!-- 캘린더 -->
+    <update id="regiProgress">
+    	update ToDoList set todo_progress=#{progress} where todo_id=#{tdId}
+    </update>
+    
+   <!-- 캘린더 -->
     <select id="userProgress">
-    	select todo_progress from ToDoList where user_id=#{userId} order by todo_Date asc
+       select todo_progress from ToDoList where user_id=#{userId} order by todo_Date asc
     </select>
     <!-- 일별 진척도 조회 -->
     <select id="getProgress" resultType="double">
@@ -54,6 +58,7 @@
         FROM ToDoList
         WHERE todo_date = #{calDate} AND user_id = #{userId}
     </select>
+    
     
     
 </mapper>

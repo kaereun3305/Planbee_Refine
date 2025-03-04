@@ -70,17 +70,23 @@ public class ArchiveServiceImpl implements ArchiveService {
         String startDate = requestedDate.minusDays(5).format(formatter); // 5일 전
         String endDate = requestedDate.format(formatter); // 요청된 날짜
 
-        // LRU 캐싱에서 먼저 데이터 조회
+        // 캐시에서 데이터 확인
         String cacheKey = userId + "_" + startDate + "_" + endDate;
-        if (CacheConfig.archiveCache.containsKey(cacheKey)) {
-            return CacheConfig.archiveCache.get(cacheKey);
+        List<ArchiveDTO> cachedData = CacheConfig.archiveCache.get(cacheKey);
+        if (cachedData != null) {
+            System.out.println("캐시 데이터 있음 : " + cacheKey + " 데이터 반환");
+            CacheConfig.printCacheStatus(); // 캐시 상태 출력
+            return cachedData;
         }
+
+        System.out.println("캐시 데이터 없음 : " + cacheKey + " DB에서 조회 후 캐싱");
 
         // DB에서 데이터 조회
         List<ArchiveDTO> archives = mapper.findArchivesByRange(userId, startDate, endDate);
 
-        // 조회된 데이터를 캐시에 저장
-        CacheConfig.archiveCache.put(cacheKey, archives);
+    	// 캐시에 저장
+        CacheConfig.putCache(cacheKey, archives);
+        CacheConfig.printCacheStatus();
 
         return archives;
     }

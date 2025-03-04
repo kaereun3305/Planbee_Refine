@@ -11,7 +11,7 @@
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
 
-		<property name="jdbcUrl" value="jdbc:mysql:// 172.30.1.31:3306/planbee?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" />
+		<property name="jdbcUrl" value="jdbc:mysql:// 192.168.52.13:3306/planbee?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" />
 
 		<property name="username" value="myuser" />
 		<property name="password" value="1234" />

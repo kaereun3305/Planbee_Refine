@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,27 +63,41 @@ public class CalendarController {
     	 return cs.monthProgress(yyMM, sessionId);
      }
      
-    // 현재 연속 달성일
-    @GetMapping(value="/curStreak", produces="application/json;charset=UTF-8") // 
-	public int curStreak(HttpSession se) {
-    	String sessionId = (String) se.getAttribute("sessionId");
-    	//curProgress 메소드로 현재 및 최대 연속 달성일을 포함한 결과를 받음
-    	 Map<String, Integer> result = cs.curProgress(sessionId); //결과 값을 받아오기 위함
-    	result = cs.curProgress(sessionId); //받아옴
-    	int days = result.get("curStreak");
-		return days;
-	}
-    
-    // 최대 연속 달성일
-    @GetMapping(value="/maxStreak", produces="application/json;charset=UTF-8")
-    public Map<String, Object> maxStreak(HttpSession se) {
-        String sessionId = (String) se.getAttribute("sessionId");
-        Map<String, Integer> result = cs.curProgress(sessionId); // 결과 값을 받아오기
-        Map<String, Object> response = new HashMap<>();
-        response.put("최대 연속 달성일", result.get("maxStreak"));
+     @GetMapping(value = "/curStreak", produces = "application/json;charset=UTF-8")
+     public ResponseEntity<Map<String, Object>> curStreak(HttpSession se) {
+         String sessionId = (String) se.getAttribute("sessionId");
 
-        return response;   
-    }
+         // 현재 및 최대 연속 달성일 정보 가져오기
+         Map<String, Integer> result = cs.curProgress(sessionId);
+         int curStreak = result.get("curStreak");
+         int maxStreak = result.get("maxStreak");
+
+         // 응답 데이터 구성
+         Map<String, Object> response = new HashMap<>();
+         response.put("curStreak", curStreak);
+
+         // 연속 달성일 상태 메시지 결정
+         String message;
+         if (curStreak == maxStreak && curStreak > 0) {
+             message = "신기록 갱신중";
+         } else if (curStreak >= maxStreak * 0.5) {
+             message = "거의 다 왔어요 !";
+         } else {
+             message = "조금만 더 힘내요 !";
+         }
+
+         response.put("message", message);
+
+         return ResponseEntity.ok(response);
+     }
+     //최대 연속 달성일
+     @GetMapping(value="/maxStreak", produces="application/json;charset=UTF-8")
+     public int maxStreak(HttpSession se) {
+         String sessionId = (String) se.getAttribute("sessionId");
+         Map<String, Integer> result = cs.curProgress(sessionId); // 결과 값을 받아오기
+         return result.get("maxStreak");
+     }
+
     //메모 조회
     @GetMapping("/memo/{calDate}")
     public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {

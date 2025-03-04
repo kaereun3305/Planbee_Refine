@@ -2,6 +2,7 @@ package com.pj.planbee.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,32 +63,27 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<ArchiveDTO> getArchivesByRange(String userId, String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-
-        // 요청된 날짜를 LocalDate로 변환
         LocalDate requestedDate = LocalDate.parse(date, formatter);
 
-        // 요청된 날짜 기준으로 6일간의 데이터 조회
-        String startDate = requestedDate.minusDays(5).format(formatter); // 5일 전
-        String endDate = requestedDate.format(formatter); // 요청된 날짜
+        // 요청된 날짜 기준 데이터 조회
+        List<ArchiveDTO> totalData = new ArrayList<>();
+        for (int i = 5; i >= 0; i--) { 
+            String targetDate = requestedDate.minusDays(i).format(formatter);
 
-        // 캐시에서 데이터 확인
-        String cacheKey = userId + "_" + startDate + "_" + endDate;
-        List<ArchiveDTO> cachedData = CacheConfig.archiveCache.get(cacheKey);
-        if (cachedData != null) {
-            System.out.println("캐시 데이터 있음 : " + cacheKey + " 데이터 반환");
-            CacheConfig.printCacheStatus(); // 캐시 상태 출력
-            return cachedData;
+            // 개별 날짜 캐시 조회
+            List<ArchiveDTO> cachedData = CacheConfig.getCache(userId, targetDate);
+            if (cachedData != null) {
+                System.out.println("캐시 데이터 있음 : " + targetDate + " 데이터 반환");
+                totalData.addAll(cachedData);
+            } else {
+                //DB에서 캐싱
+                List<ArchiveDTO> archives = mapper.findArchivesByDate(userId, targetDate);
+                System.out.println("캐시 데이터 없음 : " + targetDate + " 데이터 추가");
+                CacheConfig.putCache(userId, targetDate, archives);
+                totalData.addAll(archives);
+            }
         }
-
-        System.out.println("캐시 데이터 없음 : " + cacheKey + " DB에서 조회 후 캐싱");
-
-        // DB에서 데이터 조회
-        List<ArchiveDTO> archives = mapper.findArchivesByRange(userId, startDate, endDate);
-
-    	// 캐시에 저장
-        CacheConfig.putCache(cacheKey, archives);
         CacheConfig.printCacheStatus();
-
-        return archives;
+        return totalData;
     }
 }

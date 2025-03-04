@@ -5,35 +5,57 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.springframework.stereotype.Component;
 
 import com.pj.planbee.dto.ArchiveDTO;
 
+@Component
 public class CacheConfig {
 
-    // LRU 캐시 (최대 30개 저장, 초과되면 가장 오래된 데이터부터 삭제)
-    public static final int CACHE_SIZE = 30;
-    
-    // 다중 스레드 안전 처리
-    public static final Map<String, List<ArchiveDTO>> archiveCache =
-        new ConcurrentHashMap<>();
-    
-    //캐시 추가 및 LRU 처리
-    public static synchronized void putCache(String key, List<ArchiveDTO> value) {
-        if (archiveCache.size() >= CACHE_SIZE) {
-            // 가장 오래된 항목 삭제
-            String eldestKey = archiveCache.keySet().iterator().next();
-            archiveCache.remove(eldestKey);
-            System.out.println("캐시 제거: " + eldestKey);
+    public static final int CACHE_SIZE = 100;
+
+    // 동시성 해결
+    public static final Map<String, List<ArchiveDTO>> archiveCache = new ConcurrentHashMap<>();
+
+    // 멀티스레드 환경에서 동기화 보장
+    private static final ReentrantLock cacheLock = new ReentrantLock();
+
+    // 날짜별로 캐시 저장 (멀티스레드 환경 안전)
+    public static void putCache(String userId, String date, List<ArchiveDTO> value) {
+        String cacheKey = userId + "_" + date;
+
+        cacheLock.lock(); // 락 획득
+        try {
+            if (archiveCache.size() >= CACHE_SIZE) {
+                // 가장 오래된 항목 삭제 (LRU 방식)
+                String eldestKey = archiveCache.keySet().iterator().next();
+                archiveCache.remove(eldestKey);
+                System.out.println("캐시 제거: " + eldestKey);
+            }
+            archiveCache.put(cacheKey, value);
+            System.out.println("캐시 추가: " + cacheKey);
+        } finally {
+            cacheLock.unlock(); // 락 해제
         }
-        archiveCache.put(key, value);
-        System.out.println("캐시 추가: " + key);
     }
 
-    //캐시 상태 출력 (동기화 추가)
+    // 날짜별로 캐시 조회 (읽기 작업은 동기화 필요 없음)
+    public static List<ArchiveDTO> getCache(String userId, String date) {
+        return archiveCache.get(userId + "_" + date);
+    }
+
+    // 캐시 상태 출력 (반복 중 캐시가 수정되지 않도록 동기화 추가)
     public static void printCacheStatus() {
-        System.out.println("현재 캐시된 데이터 목록:");
-        archiveCache.forEach((key, value) -> 
-            System.out.println(" - " + key + " 의 데이터 : " + value.size() + " 개")
-        );
+        cacheLock.lock();
+        try {
+            System.out.println("현재 캐시된 데이터 목록:");
+            archiveCache.forEach((key, value) -> 
+                System.out.println(" - " + key + " 의 데이터 : " + value.size() + " 개")
+            );
+        } finally {
+            cacheLock.unlock(); // 락 해제
+        }
     }
 }

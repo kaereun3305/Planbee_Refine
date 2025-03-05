@@ -1,6 +1,7 @@
 package com.pj.planbee.controller;
 
 import com.pj.planbee.dto.CalendarDTO;
+import com.pj.planbee.dto.ProgressDTO;
 import com.pj.planbee.service.CalendarService;
 import com.pj.planbee.service.TodoListService;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -99,11 +101,21 @@ public class CalendarController {
      }
 
     //메모 조회
-    @GetMapping("/memo/{calDate}")
-    public List<CalendarDTO> getMemo(@PathVariable String calDate, HttpSession se) {
-        String sessionId = (String) se.getAttribute("sessionId"); // 세션 값 불러오기
-        return cs.getMemo(calDate, sessionId);
-    }
+     @GetMapping("/memo/{yyMM}")
+     public Map<String, ProgressDTO> getMemo(@PathVariable String yyMM, HttpSession session) {
+         String sessionId = (String) session.getAttribute("sessionId");
+         // 1) 한 달치 메모 + 진행률 조회
+         List<ProgressDTO> memoList = cs.getMemo(yyMM, sessionId);
+
+         // 2) calDate 예: "250301" → 뒤 2자리 "01"를 key로 해서 Map 생성
+         //    만약 같은 일자에 여러 건이 있을 수 있다면, groupingBy를 사용해 Map<String, List<CalendarDTO>>로 만들 수도 있음.
+         return memoList.stream()
+             .collect(Collectors.toMap(
+                 dto -> dto.getCalDate().substring(4, 6),  // "250301" -> "01"
+                 dto -> dto
+             ));
+     }
+
 
     //메모추가
     @PostMapping("/addmemo/{calDate}")

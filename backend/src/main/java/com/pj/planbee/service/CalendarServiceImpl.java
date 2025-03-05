@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pj.planbee.dto.CalendarDTO;
+import com.pj.planbee.dto.ProgressDTO;
 import com.pj.planbee.dto.TDstartDTO;
 import com.pj.planbee.mapper.CalendarMapper;
 import com.pj.planbee.mapper.TodoListMapper;
@@ -81,8 +82,8 @@ public class CalendarServiceImpl implements CalendarService {
 
 
 	@Override
-	public List<CalendarDTO> getMemo(String calDate, String sessionId) {
-	    List<CalendarDTO> cal = calMap.getMemo(calDate, sessionId);
+	public List<ProgressDTO> getMemo(String yyMM, String sessionId) {
+	    List<ProgressDTO> cal = calMap.getMemo(yyMM, sessionId);
 	    return cal;
 	}
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.pj.planbee.dto.CalendarDTO;
+import com.pj.planbee.dto.ProgressDTO;
 
 public interface CalendarService {
 
@@ -14,7 +15,7 @@ public interface CalendarService {
    
    public Map<String, Integer> curProgress(String userId);
    
-   List<CalendarDTO> getMemo (String calDate, String sessionId);
+   List<ProgressDTO> getMemo (String yyMM, String sessionId);
    public int addMemo (CalendarDTO calendar); //메모 추가
    public int modiMemo (CalendarDTO calendar); //메모 수정
    public int delMemo(int calId); //메모 삭제

@@ -2,6 +2,8 @@ package com.pj.planbee.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.pj.planbee.dto.BoardDTO;
 
 public interface BoardMapper {
@@ -15,6 +17,8 @@ public interface BoardMapper {
 	public String getWriter(int postId); //postId기반으로 글쓴이 누구인지 확인
 	public List<BoardDTO> boardMine(String sessionId);
 	public List<BoardDTO> boardUser(String userId);
-	public List<BoardDTO> maxHit();
-	
+	public List<BoardDTO> maxHit(int groupId);
+	public int groupSearch(String sessionId); 
+	public List<BoardDTO> contentSearch(@Param("groupId") int groupId,@Param("content") String content);
+	public List<BoardDTO> titleSearch(@Param("groupId") int groupId,@Param("content") String content);
 }

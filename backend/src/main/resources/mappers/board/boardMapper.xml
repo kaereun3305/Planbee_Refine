@@ -54,7 +54,19 @@
 	</select>
 	
 	<select id="maxHit" resultMap="boardList">
-		select * from Posts order by post_hit desc
+		select * from Posts where group_id = #{groupId} order by post_hit desc
+	</select>
+	
+	<select id="groupSearch">
+		select group_id from group_members where user_id=#{sessionId}
+	</select>
+	
+	<select id="contentSearch" resultMap = "boardList">
+		select * from Posts where group_id=#{groupId} and post_content like concat('%', #{content}, '%');
+	</select>
+	
+	<select id="titleSearch" resultMap = "boardList">
+		select * from Posts where group_id=#{groupId} and post_title like concat('%', #{content}, '%');
 	</select>
 	
     

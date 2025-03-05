@@ -113,16 +113,43 @@ public class BoardServiceImpl implements BoardService{
 		}
 		return user;
 	}
-
 	@Override
-	public List<BoardDTO> maxHit() {
+	public List<BoardDTO> maxHit(int groupId) {
 		List<BoardDTO> maxHit = new ArrayList<BoardDTO>();
 		try {
-			maxHit = btMap.maxHit();
+			maxHit = btMap.maxHit(groupId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return maxHit;
+	}
+
+	@Override
+	public int groupSearch(String sessionId) {
+		int groupId = btMap.groupSearch(sessionId);
+		return groupId;
+	}
+
+	@Override
+	public List<BoardDTO> contentSearch(int groupId, String content) {
+		List<BoardDTO> contents = new ArrayList<BoardDTO>();
+		try {
+			contents = btMap.contentSearch(groupId, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contents;
+	}
+
+	@Override
+	public List<BoardDTO> titleSearch(int groupId, String content) {
+		List<BoardDTO> contents = new ArrayList<BoardDTO>();
+		try {
+			contents = btMap.titleSearch(groupId, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return contents;
 	}
 
 }

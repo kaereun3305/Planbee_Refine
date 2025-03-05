@@ -70,20 +70,20 @@ public class BoardController {
 	
 
 	//put board 수정하는 기능
-	@PutMapping(value="/boardModi", produces = "application/json; charset=utf-8")
-	public int boardModify(@RequestBody BoardDTO dto, HttpSession se) {
-		String userId = (String) se.getAttribute("sessionId");
+	@PutMapping(value="/boardModi/{postId}", produces = "application/json; charset=utf-8")
+	public int boardModify(@RequestBody BoardDTO dto, HttpSession se, @PathVariable int postId) {
+		String sessionId = (String) se.getAttribute("sessionId");
 		
 		
-		int result = bs.boardModify(dto, userId);
+		int result = bs.boardModify(dto, sessionId, postId);
 		return result;
 	}
 	
 	//del board 삭제하는 기능
 	@DeleteMapping(value="/boardDel/{postId}", produces = "application/json; charset=utf-8")
 	public int boardDel(@PathVariable int postId, HttpSession se) {
-		String userId = (String) se.getAttribute("sessionId");
-		int result = bs.boardDel(postId, userId);
+		String sessionId = (String) se.getAttribute("sessionId");
+		int result = bs.boardDel(postId, sessionId);
 		return result;
 	}
 	
@@ -95,7 +95,8 @@ public class BoardController {
 	}
 	//팀별 게시글 검색 기능
 	@GetMapping(value="/boardGroup/{groupId}", produces="application/json; charset=utf-8")
-	public List<BoardDTO> boardGroup(@PathVariable int groupId){ 
+	public List<BoardDTO> boardGroup(@PathVariable int groupId){
+		//System.out.println(groupId);
 		List<BoardDTO> boardGroup = new ArrayList<BoardDTO>();
 		boardGroup = bs.boardGroup(groupId);
 		
@@ -107,6 +108,32 @@ public class BoardController {
 //		return list;
 //	}
 //	//정렬기능 최신순
+	
+	@GetMapping(value="/boardMine", produces="application/json; charset=utf-8")
+	public List<BoardDTO> boardMine(HttpSession se){ 
+		String myId = (String) se.getAttribute("sessionId");
+		List<BoardDTO> myPost = new ArrayList<BoardDTO>();
+		myPost = bs.boardUser(myId);
+		
+		return myPost;
+	}
+	
+	@GetMapping(value="/boardUser/{userId}", produces="application/json; charset=utf-8")
+	public List<BoardDTO> byUser(@PathVariable String userId){ 
+		List<BoardDTO> byUser = new ArrayList<BoardDTO>();
+		byUser = bs.boardUser(userId);
+		
+		return byUser;
+	}
+	
+	@GetMapping(value="/maxHit", produces="application/json; charset=utf-8")
+	public List<BoardDTO> maxHit(){ 
+		List<BoardDTO> max = new ArrayList<BoardDTO>();
+		max = bs.maxHit();
+		
+		return max;
+	}
+	
 	
 
 	

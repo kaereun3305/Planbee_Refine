@@ -48,9 +48,11 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public int boardModify(BoardDTO dto, String userId) {
+	public int boardModify(BoardDTO dto, String sessionId, int postId) {
 		int result = 0;
-		if(dto.getUserId().equals(userId)) {
+		String writer = btMap.getWriter(postId);
+		dto.setPostId(postId);
+		if(writer.equals(sessionId)) {
 			try {
 				result = btMap.boardModify(dto);
 			} catch (Exception e) {
@@ -64,10 +66,10 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public int boardDel(int postId, String userId) {
+	public int boardDel(int postId, String sessionId) {
 		String writer = btMap.getWriter(postId);
 		int result = 0; 
-		if(writer.equals(userId)) {
+		if(writer.equals(sessionId)) {
 			try {
 				result = btMap.boardDel(postId);
 			} catch (Exception e) {
@@ -99,6 +101,28 @@ public class BoardServiceImpl implements BoardService{
 			e.printStackTrace();
 		}
 		return group;
+	}
+
+	@Override
+	public List<BoardDTO> boardUser(String userId) {
+		List<BoardDTO> user = new ArrayList<BoardDTO>();
+		try {
+			user = btMap.boardUser(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+
+	@Override
+	public List<BoardDTO> maxHit() {
+		List<BoardDTO> maxHit = new ArrayList<BoardDTO>();
+		try {
+			maxHit = btMap.maxHit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return maxHit;
 	}
 
 }

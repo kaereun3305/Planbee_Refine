@@ -3,7 +3,8 @@ import axios from "axios";
 import "../css/Streak.css";
 
 const CurStreak = () => {
-  const [curStreak, setCurStreak] = useState(null);
+  const [curStreak, setCurStreak] = useState(0);
+  const [message, setMessage] = useState("");
   useEffect(() => {
     const fetchCurStreak = async () => {
       try {
@@ -13,8 +14,10 @@ const CurStreak = () => {
             withCredentials: true,
           }
         );
-        console.log(response.data);
-        setCurStreak(response.data);
+        const data = response.data;
+        console.log(data);
+        setCurStreak(data.curStreak);
+        setMessage(data.message);
       } catch (error) {
         console.error("현재 진척도 fetch 에러", error);
       }
@@ -31,7 +34,7 @@ const CurStreak = () => {
         </span>
         <span className="curStreak_days">days</span>
       </div>
-      <div className="current_streak_comment"></div>
+      <div className="current_streak_comment">{message}</div>
     </div>
   );
 };

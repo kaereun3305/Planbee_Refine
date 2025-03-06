@@ -32,6 +32,7 @@ public class CalendarServiceImpl implements CalendarService {
 		    return (progress != null) ? progress : 0.0; // 값이 없으면 0.0 반환
 		}
 
+	
 	public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
 		   List<TDstartDTO> dateId = tlMap.getDate(sessionId);
 		   int selectedtdId = 0;
@@ -44,12 +45,10 @@ public class CalendarServiceImpl implements CalendarService {
 		   return selectedtdId;
 		
 		}
-	// 전역변수: 현재 연속 달성일 & 최대 연속 달성일
-	  private int curStreak = 0;
-	  private int maxStreak = 0;
+	
 	    
-	@Override
-    // 현재 연속 달성일 및 최대 연속 달성일 계산
+	@Override // 현재 연속 달성일 및 최대 연속 달성일 계산
+	@Transactional
     public Map<String, Integer> curProgress(String userId) {
         LocalDateTime today = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
@@ -58,8 +57,8 @@ public class CalendarServiceImpl implements CalendarService {
         List<Double> userProgress = tlMap.userProgress(userId);
 
         int tempStreak = 0;
-        maxStreak = 0;
-        curStreak = 0;
+        int maxStreak = 0;
+        int curStreak = 0;
 
         for (double progress : userProgress) {
             if (progress > 0.3) {

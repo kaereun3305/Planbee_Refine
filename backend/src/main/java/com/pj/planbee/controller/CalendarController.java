@@ -50,14 +50,14 @@ public class CalendarController {
      }
     
     //일별 진척도
-     @GetMapping("/dprogress/{calDate}") //날짜를 가져와서 일별 진척도를 확인
+     @GetMapping(value="/dprogress/{calDate}", produces = "application/json;charset=UTF-8") //날짜를 가져와서 일별 진척도를 확인
      public double getProgress(@PathVariable String calDate, HttpSession session) {
          String sessionId = (String) session.getAttribute("sessionId");
       // getProgress 메소드를 호출하여 해당 날짜의 진척도 계산 후 반환
          return cs.getProgress(calDate, sessionId);
      }
      //월별 진척도
-     @GetMapping("/mprogress/{yyMM}")
+     @GetMapping(value="/mprogress/{yyMM}", produces = "application/json;charset=UTF-8")
      public double monthProgress(@PathVariable String yyMM,HttpSession session) {
     	 // 년, 월만 받아와서 해당 월의 데이터를 가져옴
     	 
@@ -73,7 +73,7 @@ public class CalendarController {
          Map<String, Integer> result = cs.curProgress(sessionId);
          int curStreak = result.get("curStreak");
          int maxStreak = result.get("maxStreak");
-
+         
          // 응답 데이터 구성
          Map<String, Object> response = new HashMap<>();
          response.put("curStreak", curStreak);
@@ -97,11 +97,12 @@ public class CalendarController {
      public int maxStreak(HttpSession se) {
          String sessionId = (String) se.getAttribute("sessionId");
          Map<String, Integer> result = cs.curProgress(sessionId); // 결과 값을 받아오기
+ 
          return result.get("maxStreak");
      }
 
     //메모 조회
-     @GetMapping("/memo/{yyMM}")
+     @GetMapping(value = "/memo/{yyMM}", produces="application/json;charset=UTF-8")
      public Map<String, ProgressDTO> getMemo(@PathVariable String yyMM, HttpSession session) {
          String sessionId = (String) session.getAttribute("sessionId");
          // 1) 한 달치 메모 + 진행률 조회
@@ -118,7 +119,7 @@ public class CalendarController {
 
 
     //메모추가
-    @PostMapping("/addmemo/{calDate}")
+    @PostMapping(value="/addmemo/{calDate}", produces="application/json;charset=UTF-8")
     // CalendarDTO 객체에 날짜(calDate)와 사용자 아이디를 설정한 후, DB에 메모를 저장
     public int addMemo(@PathVariable String calDate, @RequestBody CalendarDTO calendar, HttpSession se) {
         String sessionId = (String) se.getAttribute("sessionId");

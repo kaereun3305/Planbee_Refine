@@ -176,8 +176,29 @@ public class BoardController {
 		
 		return contents;
 	}
-	
-	
 
+	@GetMapping(value="/newestSort", produces="application/json; charset=utf-8")
+	public List<BoardDTO> newestSort(HttpSession se){
+		String sessionId = (String) se.getAttribute("sessionId");
+		int groupId = bs.groupSearch(sessionId);
+		//로그인된 세션아이디 바탕으로 그룹아이디 추적
+		List<BoardDTO> newest = new ArrayList<BoardDTO>();
+		newest = bs.newestSort(groupId);
+		//해당 그룹 중에서 최신순 글 검색
+		
+		return newest;
+	}
+	
+	@GetMapping(value="/oldestSort", produces="application/json; charset=utf-8")
+	public List<BoardDTO> oldestSort(HttpSession se){
+		String sessionId = (String) se.getAttribute("sessionId");
+		int groupId = bs.groupSearch(sessionId);
+		//로그인된 세션아이디 바탕으로 그룹아이디 추적
+		List<BoardDTO> oldest = new ArrayList<BoardDTO>();
+		oldest = bs.oldestSort(groupId);
+		//해당 그룹 중에서 최신순 글 검색
+		
+		return oldest;
+	}
 	
 }

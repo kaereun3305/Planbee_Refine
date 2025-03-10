@@ -53,9 +53,7 @@
 		select * from Posts where user_id = #{userId}
 	</select>
 	
-	<select id="maxHit" resultMap="boardList">
-		select * from Posts where group_id = #{groupId} order by post_hit desc
-	</select>
+
 	
 	<select id="groupSearch">
 		select group_id from group_members where user_id=#{sessionId}
@@ -67,6 +65,18 @@
 	
 	<select id="titleSearch" resultMap = "boardList">
 		select * from Posts where group_id=#{groupId} and post_title like concat('%', #{content}, '%');
+	</select>
+	
+	<select id="maxHit" resultMap="boardList">
+		select post_id, post_title, post_hit, post_content, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id, group_id from Posts order by post_hit desc
+	</select>
+	
+	<select id="newestSort" resultMap="boardList">
+		select post_id, post_title, post_hit, post_content, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id, group_id from posts where group_id = #{groupId} order by post_date desc
+	</select>
+	
+	<select id="oldestSort" resultMap="boardList">
+		select post_id, post_title, post_hit, post_content, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id, group_id from posts where group_id = #{groupId} order by post_date asc
 	</select>
 	
     

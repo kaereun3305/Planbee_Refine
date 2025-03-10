@@ -21,4 +21,6 @@ public interface BoardMapper {
 	public int groupSearch(String sessionId); 
 	public List<BoardDTO> contentSearch(@Param("groupId") int groupId,@Param("content") String content);
 	public List<BoardDTO> titleSearch(@Param("groupId") int groupId,@Param("content") String content);
+	public List<BoardDTO> newestSort(int groupId); // 최신 순 정렬
+	public List<BoardDTO> oldestSort(int groupId); // 오래된 순 정렬
 }

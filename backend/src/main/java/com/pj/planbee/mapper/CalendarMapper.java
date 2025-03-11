@@ -1,6 +1,7 @@
 package com.pj.planbee.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -23,8 +24,10 @@ public interface CalendarMapper {
 	List<Double> getProgress(@Param("yyMM") String yyMM, @Param("userId") String userId);
 
 	public int modiMemo(CalendarDTO calendar);
-
-	public int delMemo(int calId);
 	
 	public double monthProgress(@Param("yyMM") String yyMM, @Param("sessionId") String sessionId);
+
+	public int delMemo(Map<String, Object> params);
+
+	
 }

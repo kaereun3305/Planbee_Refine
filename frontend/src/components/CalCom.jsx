@@ -25,7 +25,7 @@ const CalCom = () => {
           `http://localhost:8080/planbee/calendar/memo/${getFormattedTodayYYMM()}`,
           { withCredentials: true }
         );
-        console.log(response.data);
+        console.log("캘린더 데이터", response.data);
         setCalData(response.data);
       } catch (error) {
         console.error("캘린더 메모 fetch 에러", error);

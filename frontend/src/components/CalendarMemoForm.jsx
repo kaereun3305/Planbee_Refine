@@ -18,6 +18,7 @@ const CalendarMemoForm = ({
 
   useEffect(() => {
     if (memoData) {
+      console.log("memoData:", memoData);
       setForm({
         calDetail1: memoData.calDetail1 || "",
         calDetail2: memoData.calDetail2 || "",
@@ -59,16 +60,19 @@ const CalendarMemoForm = ({
     const clickDate = getFormattedTodayYYMM();
     const formattedDateKey = dateKey.toString().padStart(2, "0"); // 예: "11" (11일)
     const calDate = clickDate + formattedDateKey;
+    const calId = memoData?.calId; // 여기서 calId 추출
     const requestData = {
       ...form,
+      calId,
       calDate,
       userId: "팥붕", // 아직 세션 설정을 안해놔서 하드 코딩 해놓겠습니다
     };
 
+    console.log("전송하는 데이터", requestData);
     try {
       // PUT 요청으로 메모 수정
       const response = await axios.put(
-        `http://localhost:8080/plandbee/calendar/modimemo/${calDate}`,
+        `http://localhost:8080/plandbee/calendar/modimemo/${calId}`,
         requestData,
         { withCredentials: true }
       );

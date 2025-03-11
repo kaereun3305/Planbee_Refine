@@ -110,15 +110,12 @@ public class CalendarServiceImpl implements CalendarService {
 
 	
 	@Override
-	public int delMemo(int calId) {
-		 try {
-		        int result = calMap.delMemo(calId); // DB에서 업데이트 실행
-		        return (result > 0) ? 1 : 0; // 성공하면 1, 실패하면 0 반환
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		        return 0;
+	public int delMemo(int calId, int fieldNo) {
+		Map<String, Object> params = new HashMap<>();
+	    params.put("calId", calId);
+	    params.put("fieldNo", fieldNo);
+	    return calMap.delMemo(params);
 		    }
-	}
 
 	@Override
 	@Transactional

@@ -140,9 +140,9 @@ public class CalendarController {
     }
     
     //메모 삭제 성공 여부는 1, 0으로
-    @DeleteMapping("/delmemo/{calId}")
-    public int delMemo(@PathVariable int calId) {
-        return cs.delMemo(calId);
+    @DeleteMapping("/delmemo/{calId}/{fieldNo}")
+    public int delMemo(@PathVariable int calId, @PathVariable int fieldNo) {
+        return cs.delMemo(calId, fieldNo);
        
     }
     

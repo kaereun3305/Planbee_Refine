@@ -6,8 +6,7 @@ public class TDdetailDTO {
 	int tdDetailId, tdId;
 	String tdDetail, tdDetailTime;
 	boolean tdDetailState;
-	
-	
+
 	public int getTdDetailId() {
 		return tdDetailId;
 	}

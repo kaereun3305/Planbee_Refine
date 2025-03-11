@@ -32,7 +32,7 @@
 <!-- 투두디테일 작성하는 부분, 이 자료형으로는 성공
     자동으로 숫자 올라가는 부분, 날짜자료형 두 가지, 맨마지막 숫자 어떻게 할지 조정이 필요함 -->
     	insert into ToDoList_Detail (tododetail, tododetail_state, tododetail_time, todo_id) 
-    	values (#{tdDetail}, false, #{tdDetailTime}, #{tdId});
+    	values (#{tdDetail}, 0, #{tdDetailTime}, #{tdId});
     </insert>
     
     <update id="updateState">
@@ -49,6 +49,10 @@
     <!-- 투두디테일 삭제하는 기능, 성공 -->
     	delete from ToDoList_Detail where tododetail_id=#{tdDetailId}
     </delete>
+    
+    <select id="getTdDetailId">
+    	select tododetail_id from ToDoList_Detail where tododetail=#{tdDetail} and todo_id=#{tdId} order by tododetail_id DESC
+    </select>
     
     <!-- 진척도 보기 위해서 완료된 행의 숫자와 전체 행의 숫자를 가져오는 기능 -->
     <select id="getComplete"> 

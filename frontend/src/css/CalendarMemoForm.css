@@ -1,0 +1,17 @@
+.memo_form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 300px;
+}
+
+.memo_form textarea {
+  resize: none;
+  height: 60px;
+}
+
+.memo_buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}

@@ -31,6 +31,11 @@
   justify-content: end;
   align-items: center;
 }
+.todo_bar_ex {
+  width: 100%;
+  border-radius: 30px;
+  z-index: 10;
+}
 
 .todo_save_btn {
   height: 100px;

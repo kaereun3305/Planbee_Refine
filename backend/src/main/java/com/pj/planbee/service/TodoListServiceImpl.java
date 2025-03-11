@@ -6,15 +6,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pj.planbee.dto.ArchDetailDTO;
+import com.pj.planbee.dto.ArchiveDTO;
 import com.pj.planbee.dto.TDdetailDTO;
 import com.pj.planbee.dto.TDstartDTO;
 import com.pj.planbee.dto.TodoListDTO;
+import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
+import com.pj.planbee.mapper.SaveArchiveMapper;
 import com.pj.planbee.mapper.TDdetailMapper;
 import com.pj.planbee.mapper.TodoListMapper;
 
@@ -23,19 +30,25 @@ import com.pj.planbee.mapper.TodoListMapper;
 public class TodoListServiceImpl implements TodoListService {
 @Autowired TDdetailMapper tdMap;
 @Autowired TodoListMapper tlMap;
+@Autowired SaveArchiveMapper saMap;
+
+
 
 
 public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 String으로 변환하는 메소드
 	LocalDateTime today = LocalDateTime.now();
 	LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
+	LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
 	DateTimeFormatter form = DateTimeFormatter.ofPattern("yyMMdd"); //날짜 변환
 	String todayStr = today.format(form); //오늘 날짜를 위 형식으로 변환
 	String tomorrowStr = tomorrow.format(form); //내일 날짜를 위 형식으로 변환
+	String yesterdayStr = yesterday.format(form); //어제 날짜도 위 형식으로 변환
 	//System.out.println("내일날짜 변환: " + tomorrowStr);
 	
 	HashMap<String, String> todayTomo = new HashMap<String, String>();
 	todayTomo.put("todayStr", todayStr);
 	todayTomo.put("tomorrowStr", tomorrowStr); //오늘날짜에 대한 것만 입력하는 것이 안정성이 좋을 것 같음
+	todayTomo.put("yesterdayStr", yesterdayStr);
 	return todayTomo;
 }
 public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인하는 메소드
@@ -43,7 +56,7 @@ public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인
 	List<TDstartDTO> dateId = new ArrayList<TDstartDTO>();
 	dateId = tlMap.getDate(sessionId); //sessionId에 해당하는 todoDate와 todoId를 가져온다
 	int selectedtdId = 0; //return할 selectedId를 초기화
-	System.out.println("service" + dateId.get(8).getTodo_date());
+	//System.out.println("service" + dateId.get(8).getTodo_date());
 	
 	for(int i =0; i<dateId.size(); i++) { //일치하는 열이 있는지 찾는다.
 		if(dateId.get(i).getTodo_date().equals(tdDate)) {
@@ -88,10 +101,14 @@ public List<TDdetailDTO> getTodo(int tdId) { //하루의 투두리스트를 가�
 public int todoWrite(TDdetailDTO dto) { //투두리스트 작성하는 기능, 성공시 결과값은 1
 	
 		int result =0;
+		//System.out.println("service impl todoWrite : "+ dto.getTdId());
 		try {
 			result = tdMap.todoWrite(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		if(result ==1) {
+			tlMap.getLatest();
 		}
 	
 	
@@ -123,10 +140,10 @@ public int todoModify(TDdetailDTO dto) { //투두리스트 자체 수정기능
 }
 
 @Override
-public int todoDel(int ToDoDetailID) { //투두리스트 한 개 삭제하는 기능
+public int todoDel(int tdDetailId) { //투두리스트 한 개 삭제하는 기능
 	int result = 0;
 	try {
-		result = tdMap.todoDel(ToDoDetailID);
+		result = tdMap.todoDel(tdDetailId);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -161,8 +178,8 @@ public double todoProgress(int tdId) {
 }
 
 @Override
-public List<TodoListDTO> getMemo(int tdId) {
-	List<TodoListDTO> list = new ArrayList<TodoListDTO>();
+public List<SubTodoListDTO> getMemo(int tdId) {
+	List<SubTodoListDTO> list = new ArrayList<SubTodoListDTO>();
 	try {
 		list = tlMap.getMemo(tdId);
 		//System.out.println("ser:"+ list);
@@ -177,18 +194,6 @@ public int memoWrite(TodoListDTO listDto) {
 	int result = 0;
 	try {
 		result = tlMap.memoWrite(listDto);
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	return result;
-}
-
-@Override
-public int memoDel(int tdId) {
-	int result =0;
-	
-	try {
-		result = tlMap.memoDel(tdId);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -218,6 +223,82 @@ public int regiProgress(int tdId, double progress) {
 	}
 	return 0;
 }
+@Override
+public int getTdDetailId(String tdDetail, int tdId) {
+	List<Integer> tdDetailId = tdMap.getTdDetailId(tdDetail, tdId);
+	//똑같은 값이 중복되어 있더라도 가장 최신값을 반환할 수 있도록 코드를 작성함
+	return tdDetailId.get(0);
+}
+
+
+
+@Override
+public int saveArchive() {
+	
+	String yesterday = checkToday().get("yesterdayStr"); //어제날짜를 yyMMdd로 변환
+	ArchiveDTO archive = saMap.archiveCheck(yesterday);
+	System.out.println("service impl archive값?" + archive);
+	int result = 0;
+	if(archive== null) {
+		TodoListDTO todolist = saMap.getTodoList(yesterday); //기존 값을 가져와서 todolist에 담은 다음
+		System.out.println("service impl dto값?"+ todolist.getTdDate());
+		try {
+			result = saMap.toArchive(todolist);//list에 담은 어제 값을 archive로 저장하는 기능
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("service Impl 성공여부" + result);
+	}else {
+		result = 2; //기존에 값이 있어서 실행될 필요가 없으면 결과값이 2로 반환됨
+	}
+	System.out.println("result: "+ result);
+	return result;
+}
+//@Override
+//public int saveArchiveDetail() {
+//	int result = 0;
+//	
+//	String yesterday = checkToday().get("yesterdayStr"); //어제날짜를 yyMMdd로 변환
+//	//date 기반으로 tdId 가져오기, 근데 중복되는 값은 안가져올 수 있도록
+//	List<Integer> tdIds = saMap.tdIdSearch(yesterday); 
+//	Set<Integer> uniqueTdIds = new HashSet<>(tdIds);//중복값은 저장하지 않도록 SET을 돌려주고
+//	List<Integer> uniTdIds = new ArrayList<>(uniqueTdIds); //다시 리스트로 변환함
+//	//그럼 이제 담기는 값은 tdId 숫자들이 담길 것임
+//	
+//	
+//	//System.out.println("service impl 어제날짜 해당하는 tdId값: " + uniTdIds.get(0));
+//	
+//	List<TDdetailDTO> toSaveDetail = new ArrayList<TDdetailDTO>();
+//	//archDetail에 저장할 값을 담아두기 위한 LIst 생성
+//	
+//	
+//	for(int i =0 ; i<uniTdIds.size(); i++) { //인덱스번호 순회해가면서 찾아서 넣어둔다.
+//		 toSaveDetail.addAll(saMap.todoDetailCheck(uniTdIds.get(i)));
+//	}
+//	
+//	//System.out.println("ser impl tdDetail 첫번째 값? :" + archDetail.size());
+//	List<TDdetailDTO> checkExist = new ArrayList<TDdetailDTO>(); //archiveD에 해당 값이 있는지 확인
+//	checkExist = saMap.checkExist(result)
+//	//tdDetailId를 바탕으로 해당 값이 있는지 하나 찾은 후, 
+//	//그 checkExist 배열이 0이면 toSaveDetail의 값을 입력한다
+//	
+//	if(checkExist)
+//	if(!archDetail.isEmpty()) {
+//		for(int i =0; i<archDetail.size(); i++) {
+//			List<TDdetailDTO> detail = archDetail;
+//			int count = saMap.checkExist(detail.getTdId());
+//			
+//			if(count==0) {
+//				result = saMap.toArchiveDetail(detail);
+//			}else {
+//				System.out.println("auto save detail: 이미 존재하므로 실행하지 않음");
+//			}
+//		}	
+//	}	
+//	return result;
+//}
+
+
 
 
 

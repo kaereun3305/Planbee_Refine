@@ -1,27 +1,25 @@
-/* 날짜 셀 크기 조정 */
-.fc-daygrid-day {
-  padding: 4px; /* 셀 안쪽 여백 줄이기 */
-  height: 60px; /* 날짜 셀 높이 줄이기 */
+.fc-day-today {
+  background-color: rgb(
+    255,
+    255,
+    255
+  ) !important; /* 현재 배경보다 조금 더 진한 회색 */
 }
-
-/* 날짜 번호 크기 줄이기 */
-.fc-daygrid-day-number {
-  font-size: 18px; /* 숫자 텍스트 크기 줄이기 */
-}
-
 /* 셀 내 다른 요소의 크기 조정 */
-.custom-cell {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr;
-  height: 100%; /* 셀의 높이 조정 */
-  border-radius: 4px;
+.custom_cell {
+  display: flex;
+  flex-direction: column; /* 세로 배치 */
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
 }
 
 .date {
   font-size: 12px; /* 날짜 텍스트 크기 줄이기 */
+  width: 100%;
   font-weight: bold;
-  text-align: center;
+  text-align: right;
+  padding: 5px;
 }
 
 .progress {
@@ -31,9 +29,14 @@
 }
 
 .memo {
-  font-size: 12px; /* 메모 글자 크기 줄이기 */
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around; /* 간격 균등 분배 */
+  width: 100%;
+  height: 75%; /* 날짜 부분을 제외한 나머지 */
+}
+.memo_item {
+  text-align: left;
+  font-size: 0.9em;
+  padding: 2px;
 }

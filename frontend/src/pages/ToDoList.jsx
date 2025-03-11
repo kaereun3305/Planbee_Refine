@@ -12,22 +12,57 @@ const ToDoList = () => {
   const [progress, setProgress] = useState(null);
 
   useEffect(() => {
+    const makeSession = async () => {
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/planbee/todolist/makeSession`,
+          null, // POST 요청 시 body를 전달할 필요 없으면 null
+          {
+            withCredentials: true, // 쿠키 전송을 허용
+          }
+        );
+        console.log("세션 요청 여부:", response.data);
+        checkSession();
+      } catch (error) {
+        console.error("세션 fetching 실패!", error);
+      }
+    };
+
+    const checkSession = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/todolist/checkSession`,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("세션 확인 :", response.data);
+      } catch (error) {
+        console.error("에러", error);
+      }
+    };
     const fetchPercent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/progress/${getFormattedTodayYYMMDD()}`
+          `http://localhost:8080/planbee/todolist/progress/${getFormattedTodayYYMMDD()}`,
+          {
+            withCredentials: true,
+          }
         );
-        setProgress(response.data); // 서버에서 받은 progress 값 설정
+        setProgress(response.data);
+        console.log("진척도", response.data);
       } catch (error) {
-        console.error("진척도 데이터 fetch 에러", error);
+        console.error("에러다", error);
       }
     };
+
+    makeSession();
     fetchPercent();
   }, []);
 
   // progress 값을 기준으로 height와 background-color를 동적으로 설정하는 함수
   const getBarStyle = () => {
-    if (progress === null) return {}; // progress가 null일 때는 스타일 적용하지 않음
+    if (progress === null) return { height: "0%", backgroundColor: "#ff3b3b" }; // progress가 null일 때는 스타일 적용하지 않음
 
     const progressPercentage = progress * 100; // progress를 백분율로 변환
 
@@ -43,6 +78,8 @@ const ToDoList = () => {
     } else {
       barColor = "#4caf50"; // 70% 이상은 녹색
     }
+
+    console.log("적용될 색상:", barColor); // 여기에서 출력되는 색상이 정상적인지 확인
 
     return {
       height: barHeight,
@@ -68,7 +105,7 @@ const ToDoList = () => {
                 <div className="todo_bar_ex" style={getBarStyle()}></div>
               </div>
             </div>
-            <TomorrowCom />
+            {/*<TomorrowCom />*/}
           </div>
         </div>
       </div>

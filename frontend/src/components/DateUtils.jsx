@@ -37,3 +37,15 @@ export const getFormattedTomorrowYYYYMMDD = () => {
   tomorrow.setDate(tomorrow.getDate() + 1);
   return formatYYYYMMDD(tomorrow);
 };
+// yymm 형식으로 포맷
+export const formatYYMM = (date) => {
+  return `${date.getFullYear().toString().slice(2)}${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}`;
+};
+
+// 오늘 날짜 yymm 형식
+export const getFormattedTodayYYMM = () => {
+  const now = new Date();
+  return formatYYMM(now);
+};

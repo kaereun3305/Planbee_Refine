@@ -11,4 +11,6 @@ import org.apache.ibatis.annotations.Param;
 public interface LoginMapper {
 
 	LoginDTO login(Map<String, Object> paramMap);
+	
+	int countUserId(@Param("userId") String userId);
 }

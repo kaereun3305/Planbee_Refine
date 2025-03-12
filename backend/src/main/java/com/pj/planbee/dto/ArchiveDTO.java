@@ -1,10 +1,19 @@
 package com.pj.planbee.dto;
 
+import java.util.List;
+
 public class ArchiveDTO {
+	
 	int archiveId;
+	
 	String archiveDate, archiveMemo;
+	
 	double archiveProgress;
+	
 	String userId;
+	
+	List<ArchDetailDTO> archiveDetails;
+
 	public int getArchiveId() {
 		return archiveId;
 	}
@@ -35,7 +44,11 @@ public class ArchiveDTO {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
-	
+	public List<ArchDetailDTO> getArchiveDetails() {
+		return archiveDetails;
+	}
+	public void setArchiveDetails(List<ArchDetailDTO> archiveDetails) {
+		this.archiveDetails = archiveDetails;
+	}
 	
 }

@@ -20,16 +20,16 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<ArchiveDTO> getArchivesWithDetails(String userId) {
         
-        LocalDate today = LocalDate.now(); // ¿À´Ã
+        LocalDate today = LocalDate.now(); // ï¿½ï¿½ï¿½ï¿½
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-        String endDate = today.minusDays(1).format(formatter);   // ¾îÁ¦ 
-        String startDate = today.minusDays(6).format(formatter); // 6ÀÏ Àü 
+        String endDate = today.minusDays(1).format(formatter);   // ï¿½ï¿½ï¿½ï¿½ 
+        String startDate = today.minusDays(6).format(formatter); // 6ï¿½ï¿½ ï¿½ï¿½ 
         
-        // ¾îÁ¦ ~ 6ÀÏ Àü 
+        // ï¿½ï¿½ï¿½ï¿½ ~ 6ï¿½ï¿½ ï¿½ï¿½ 
         List<ArchiveDTO> archives = mapper.findRecentArchives(
             userId, startDate, endDate);
 
-        // À§°¡ ¾ø´Ù¸é, °¡Àå ÃÖ½ÅÀÇ µ¥ÀÌÅÍ¸¦ Æ÷ÇÔÇÑ 6ÀÏ°£ °¡Á®¿À±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 6ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (archives.isEmpty()) {
             String latestDate = mapper.findLatestDate(userId);
             if (latestDate != null) {
@@ -42,7 +42,7 @@ public class ArchiveServiceImpl implements ArchiveService {
         return archives;
     }
     
-    // Æ¯Á¤ ³¯Â¥ÀÇ µ¥ÀÌÅÍ °¡Á®¿À±â
+    // Æ¯ï¿½ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     @Override
     public List<ArchiveDTO> getArchivesByDate(String userId, String date) {
         return mapper.findArchivesByDate(userId, date);
@@ -51,7 +51,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     
     @Override
     public List<ArchiveDTO> searchArchivesByDate(String userId, String date) {
-        // °Ë»ö ³¯Â¥ ±âÁØÀ¸·Î 3ÀÏ Àü ~ 2ÀÏ ÈÄ µ¥ÀÌÅÍ
+        // ï¿½Ë»ï¿½ ï¿½ï¿½Â¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½ ~ 2ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         return mapper.findArchives(userId, date);
     }
     
@@ -65,25 +65,30 @@ public class ArchiveServiceImpl implements ArchiveService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         LocalDate requestedDate = LocalDate.parse(date, formatter);
 
-        // ¿äÃ»µÈ ³¯Â¥ ±âÁØ µ¥ÀÌÅÍ Á¶È¸
+        // ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
         List<ArchiveDTO> totalData = new ArrayList<>();
         for (int i = 5; i >= 0; i--) { 
             String targetDate = requestedDate.minusDays(i).format(formatter);
 
-            // °³º° ³¯Â¥ Ä³½Ã Á¶È¸
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ Ä³ï¿½ï¿½ ï¿½ï¿½È¸
             List<ArchiveDTO> cachedData = CacheConfig.getCache(userId, targetDate);
             if (cachedData != null) {
-                System.out.println("Ä³½Ã µ¥ÀÌÅÍ ÀÖÀ½ : " + targetDate + " µ¥ÀÌÅÍ ¹ÝÈ¯");
+                System.out.println("Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : " + targetDate + " ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯");
                 totalData.addAll(cachedData);
             } else {
-                //DB¿¡¼­ Ä³½Ì
+                //DBï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½
                 List<ArchiveDTO> archives = mapper.findArchivesByDate(userId, targetDate);
-                System.out.println("Ä³½Ã µ¥ÀÌÅÍ ¾øÀ½ : " + targetDate + " µ¥ÀÌÅÍ Ãß°¡");
+                System.out.println("Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : " + targetDate + " ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½");
                 CacheConfig.putCache(userId, targetDate, archives);
                 totalData.addAll(archives);
             }
         }
         CacheConfig.printCacheStatus();
         return totalData;
+    }
+    
+    @Override
+    public String findLatestDate(String userId) {
+        return mapper.findLatestDate(userId);
     }
 }

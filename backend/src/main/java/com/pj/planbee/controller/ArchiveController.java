@@ -23,73 +23,93 @@ import com.pj.planbee.service.ArchiveService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders= "*", allowCredentials = "true")
-@RequestMapping("/archive") // ¼ø¼­ ¹Ù²Ş
+@RequestMapping("/archive") // ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½
 public class ArchiveController {
 
 	@Autowired ArchiveService as;
 	
-	//¼¼¼Ç »ı¼º ¸Ş¼Òµå(·Î±×ÀÎ ¿¬°á½Ã »èÁ¦ ¿¹Á¤)
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ş¼Òµï¿½(ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8")
 	public String session(HttpSession se) {
 		se.setAttribute("sessionId", "admin");
 		return (String) se.getAttribute("sessionId");
 	}
 	
-	// ·Î±×¾Æ¿ô(·Î±×ÀÎ ¿¬°á½Ã »èÁ¦ ¿¹Á¤)
+	// ï¿½Î±×¾Æ¿ï¿½(ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     @PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
     public int logout(HttpSession se) {
         se.invalidate();
-        return 1; // ·Î±×¾Æ¿ô ¼º°ø
+        return 1; // ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
-    // ·Î±×ÀÎ »óÅÂ È®ÀÎ(·Î±×ÀÎ ¿¬°á½Ã »èÁ¦ ¿¹Á¤)
+    // ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½(ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8")
     public int checkSession(HttpSession se) {
-        return (se.getAttribute("sessionId") != null) ? 1 : 0; // 1: ·Î±×ÀÎµÈ »óÅÂ, 0: ·Î±×ÀÎµÇÁö ¾ÊÀ½
+        return (se.getAttribute("sessionId") != null) ? 1 : 0; // 1: ï¿½Î±ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½, 0: ï¿½Î±ï¿½ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
     
-    //¿©±â°¡ Å×½ºÆ® ½ÃÀÛ
-    // Ã³À½ /archive ÆäÀÌÁö¿¡ Á¢¼ÓÇÏ¸é ¾îÁ¦ ³¯Â¥·Î ¸®´ÙÀÌ·ºÆ®
+    //ï¿½ï¿½ï¿½â°¡ ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+    // Ã³ï¿½ï¿½ /archive ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½Æ®
     @GetMapping(value = "/", produces = "application/json; charset=utf-8")
-    public void redirectToYesterday(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        // ¾îÁ¦ ³¯Â¥ ±¸ÇÏ±â
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-        String yesterdayDate = yesterday.format(formatter);
-        
-        // ¾îÁ¦ ³¯Â¥·Î ¸®´ÙÀÌ·ºÆ®
-        res.sendRedirect(req.getContextPath() + "/archive/" + yesterdayDate);
-    }
-
-    // ¾îÁ¦ ³¯Â¥ ¶Ç´Â °Ë»öÇÑ ³¯Â¥ÀÇ µ¥ÀÌÅÍ °¡Á®¿À±â
-    @GetMapping(value = "/{date}", produces = "application/json; charset=utf-8")
-    public List<ArchiveDTO> getArchivesByDate(@PathVariable String date, HttpSession se) {
-        // ¼¼¼Ç¿¡¼­ userId °¡Á®¿À±â
+    public void redirectToYesterday(HttpSession se, HttpServletRequest req, HttpServletResponse res) throws IOException {
+    	 // ì„¸ì…˜ì—ì„œ userId ê°€ì ¸ì˜¤ê¸°
         String userId = (String) se.getAttribute("sessionId");
 
-        // ¾îÁ¦ ³¯Â¥ ¶Ç´Â °Ë»öÇÑ ³¯Â¥ÀÇ µ¥ÀÌÅÍ °¡Á®¿À±â
+        // ë‚ ì§œ í¬ë§· ì§€ì •
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+        
+        // ì–´ì œ ë‚ ì§œ ê°€ì ¸ì˜¤ê¸°
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        String yesterdayDate = yesterday.format(formatter);
+        
+        // ì–´ì œ ë°ì´í„°ê°€ ìˆëŠ”ì§€ í™•ì¸
+        List<ArchiveDTO> yesterdayArchives = as.getArchivesByDate(userId, yesterdayDate);
+
+        if (!yesterdayArchives.isEmpty()) {
+            // ì–´ì œ ë°ì´í„°ê°€ ìˆìœ¼ë©´ ê¸°ì¡´ì²˜ëŸ¼ ì–´ì œ ë‚ ì§œë¡œ ë¦¬ë‹¤ì´ë ‰íŠ¸
+            res.sendRedirect(req.getContextPath() + "/archive/" + yesterdayDate);
+        } else {
+            // ì–´ì œ ë°ì´í„°ê°€ ì—†ìœ¼ë©´ ê°€ì¥ ìµœì‹  ë‚ ì§œ ì¡°íšŒ
+            String latestDate = as.findLatestDate(userId);
+            if (latestDate != null) {
+                // ìµœì‹  ë°ì´í„°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ 6ì¼ê°„ì˜ ë°ì´í„° ì¡°íšŒ í›„ í•´ë‹¹ ë‚ ì§œë¡œ ë¦¬ë‹¤ì´ë ‰íŠ¸
+                res.sendRedirect(req.getContextPath() + "/archive/" + latestDate);
+            } else {
+                // ìµœì‹  ë°ì´í„°ë„ ì—†ëŠ” ê²½ìš° ê¸°ë³¸ì ìœ¼ë¡œ ì–´ì œ ë‚ ì§œë¡œ ë¦¬ë‹¤ì´ë ‰íŠ¸
+                res.sendRedirect(req.getContextPath() + "/archive/" + yesterdayDate);
+            }
+        }
+    }
+
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½Ç´ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    @GetMapping(value = "/{date}", produces = "application/json; charset=utf-8")
+    public List<ArchiveDTO> getArchivesByDate(@PathVariable String date, HttpSession se) {
+        // ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ userId ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        String userId = (String) se.getAttribute("sessionId");
+
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½Ç´ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         List<ArchiveDTO> archives = as.getArchivesByRange(userId, date);
 
         return archives;
     }
-    //¿©±â°¡ Å×½ºÆ® ¸¶Áö¸·
+    //ï¿½ï¿½ï¿½â°¡ ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    // ³¯Â¥ °Ë»ö
+    // ï¿½ï¿½Â¥ ï¿½Ë»ï¿½
     @GetMapping(value = "/searchDate/{date}", produces = "application/json; charset=utf-8")
     public List<ArchiveDTO> searchArchives(@PathVariable("date") String date, HttpSession se) {
-        // ¼¼¼Ç °¡Á®¿À±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         String userId = (String) se.getAttribute("sessionId"); 
 
-        // °Ë»ö
+        // ï¿½Ë»ï¿½
         List<ArchiveDTO> archives = as.searchArchivesByDate(userId, date);
 
         return archives;
     }
      
-    // ³»¿ë °Ë»ö
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
     @GetMapping(value = "/searchKeyword/{keyword}", produces = "application/json; charset=utf-8")
     public List<ArchiveDTO> searchByDetail(@PathVariable String keyword, HttpSession se) {
-        // ¼¼¼Ç¿¡¼­ userId °¡Á®¿À±â
+        // ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ userId ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         String userId = (String) se.getAttribute("sessionId");
         return as.searchByDetail(userId, keyword);
     }

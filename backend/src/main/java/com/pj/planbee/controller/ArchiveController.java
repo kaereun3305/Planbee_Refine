@@ -48,49 +48,42 @@ public class ArchiveController {
         return (se.getAttribute("sessionId") != null) ? 1 : 0;  // 1: 로그인된 상태, 0: 로그인되지 않음
     }
     
-    //여기가 테스트 시작
-    // 처음 /archive 페이지에 접속하면 어제 날짜로 리다이렉트
-    @GetMapping(value = "/", produces = "application/json; charset=utf-8")
-    public void redirectToYesterday(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    	// 어제 날짜 구하기
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-        String yesterdayDate = yesterday.format(formatter);
-        
-        // 어제 날짜로 리다이렉트
-        res.sendRedirect(req.getContextPath() + "/archive/" + yesterdayDate);
-    }
+    // 페이징 기반으로 아카이브 데이터 조회
+    @GetMapping(produces = "application/json; charset=utf-8")
+    public List<ArchiveDTO> getPagedArchives(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int limit,
+            HttpSession session) {
 
-    // 어제 날짜 또는 검색한 날짜의 데이터 가져오기
-    @GetMapping(value = "/{date}", produces = "application/json; charset=utf-8")
-    public List<ArchiveDTO> getArchivesByDate(@PathVariable String date, HttpSession se) {
-    	// 세션에서 userId 가져오기
-        String userId = (String) se.getAttribute("sessionId");
+        String userId = (String) session.getAttribute("sessionId");
+        if (userId == null) {
+            throw new RuntimeException("로그인이 필요합니다."); // 로그인 체크 추가
+        }
 
-        // 어제 날짜 또는 검색한 날짜의 데이터 가져오기
-        List<ArchiveDTO> archives = as.getArchivesByRange(userId, date);
-
-        return archives;
+        int offset = page * limit;
+        return as.getPagedArchives(userId, offset, limit);
     }
     
     
     // 날짜 검색
     @GetMapping(value = "/searchDate/{date}", produces = "application/json; charset=utf-8")
     public List<ArchiveDTO> searchArchives(@PathVariable("date") String date, HttpSession se) {
-    	// 세션 가져오기
-        String userId = (String) se.getAttribute("sessionId"); 
+    	String userId = (String) se.getAttribute("sessionId");
+        if (userId == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
 
-        // 검색
-        List<ArchiveDTO> archives = as.searchArchivesByDate(userId, date);
-
-        return archives;
+        return as.searchArchivesByDate(userId, date);
     }
      
     // 내용 검색
     @GetMapping(value = "/searchKeyword/{keyword}", produces = "application/json; charset=utf-8")
     public List<ArchiveDTO> searchByDetail(@PathVariable String keyword, HttpSession se) {
-    	  // 세션에서 userId 가져오기
-        String userId = (String) se.getAttribute("sessionId");
-        return as.searchByDetail(userId, keyword);
-    }
+    	  String userId = (String) se.getAttribute("sessionId");
+          if (userId == null) {
+              throw new RuntimeException("로그인이 필요합니다.");
+          }
+
+          return as.searchByDetail(userId, keyword);
+      }
 }

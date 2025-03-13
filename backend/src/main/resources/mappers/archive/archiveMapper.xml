@@ -4,7 +4,7 @@
 
 <mapper namespace="com.pj.planbee.mapper.ArchiveMapper">
 
-	<!-- archive_detail 전용 resultMap -->
+    <!-- archive_detail 전용 resultMap -->
     <resultMap type="com.pj.planbee.dto.ArchDetailDTO" id="archDetailResultMap">
         <id property="archDetailId" column="archivedetail_id" />
         <result property="archDetail" column="archivedetail" />
@@ -19,99 +19,29 @@
         <result property="archiveMemo" column="archive_memo" />
         <result property="archiveProgress" column="archive_progress" />
         <result property="userId" column="user_id" />
-
-        <!-- archiveDetails를 archDetailResultMap과 연결 -->
-        <collection property="archiveDetails"  resultMap="archDetailResultMap" />
+        <collection property="archiveDetails" resultMap="archDetailResultMap" />
     </resultMap>
 
-	<!-- 어제 ~ 6일 전 데이터 가져오기 -->
-	<select id="findRecentArchives" resultMap="archiveResultMap">
-		SELECT
-		a.archive_id,
-		a.archive_date,
-		a.archive_memo,
-		a.archive_progress,
-		a.user_id,
-		ad.archivedetail_id,
-		ad.archivedetail,
-		ad.archivedetail_state,
-		ad.archivedetail_time
-		FROM archive a
-		LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
-		WHERE a.user_id = #{userId}
-		AND a.archive_date BETWEEN #{startDate} AND #{endDate}
-		ORDER BY a.archive_date DESC;
-	</select>
-
-	<!-- 가장 최신 데이터를 포함한 6일간의 데이터 가져오기 -->
-	<select id="findLatestArchives" resultMap="archiveResultMap">
-		SELECT
-		a.archive_id,
-		a.archive_date,
-		a.archive_memo,
-		a.archive_progress,
-		a.user_id,
-		ad.archivedetail_id,
-		ad.archivedetail,
-		ad.archivedetail_state,
-		ad.archivedetail_time
-		FROM archive a
-		LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
-		WHERE a.user_id = #{userId}
-		AND a.archive_date BETWEEN #{sixDaysAgo} AND #{latestDate}
-		ORDER BY a.archive_date DESC;
-	</select>
-
-	<!-- 최신 날짜 가져오기 -->
-	<select id="findLatestDate" resultType="String">
-		SELECT MAX(archive_date)
-		FROM archive
-		WHERE user_id = #{userId}
-	</select>
-	
-	<!-- 날짜 검색 -->
-	<select id="findArchives" resultMap="archiveResultMap">
-    	SELECT 
-        a.archive_id, 
-        a.archive_date, 
-        a.archive_memo, 
-        a.archive_progress, 
+    <!-- 페이징을 적용한 아카이브 데이터 조회 -->
+    <select id="getPagedArchives" resultMap="archiveResultMap">
+        SELECT
+        a.archive_id,
+        a.archive_date,
+        a.archive_memo,
+        a.archive_progress,
         a.user_id,
-        ad.archivedetail_id, 
-        ad.archivedetail, 
-        ad.archivedetail_state, 
+        ad.archivedetail_id,
+        ad.archivedetail,
+        ad.archivedetail_state,
         ad.archivedetail_time
-   	 	FROM archive a
-   	 	LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
-    	WHERE a.user_id = #{userId}
-    	AND a.archive_date BETWEEN DATE_FORMAT(DATE_SUB(STR_TO_DATE(#{searchDate}, '%y%m%d'), INTERVAL 3 DAY), '%y%m%d') 
-        AND DATE_FORMAT(DATE_ADD(STR_TO_DATE(#{searchDate}, '%y%m%d'), INTERVAL 2 DAY), '%y%m%d')
-    	ORDER BY a.archive_date ASC;
-	</select>
-	
-	<!-- archive detail 내용 검색 -->
-	<!-- archive detail 내용 검색 (오늘보다 과거에서 가장 가까운 6개) -->
-	<select id="searchByDetail" resultMap="archiveResultMap">
-    	SELECT 
-        a.archive_id, 
-        a.archive_date, 
-        a.archive_memo, 
-        a.archive_progress, 
-        a.user_id,
-        ad.archivedetail_id, 
-        ad.archivedetail, 
-        ad.archivedetail_state, 
-        ad.archivedetail_time
-    	FROM archive a
-    	LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
-   		WHERE a.user_id = #{userId}
-    	AND ad.archivedetail LIKE CONCAT('%', #{keyword}, '%')
-    	AND STR_TO_DATE(a.archive_date, '%y%m%d') &lt; CURDATE()
-    	ORDER BY STR_TO_DATE(a.archive_date, '%y%m%d') DESC
-    	LIMIT 6;
-	</select>
+        FROM archive a
+        LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
+        WHERE a.user_id = #{userId}
+        ORDER BY STR_TO_DATE(a.archive_date, '%y%m%d') DESC
+        LIMIT #{limit} OFFSET #{offset};
+    </select>
 
- <!-- 특정 날짜의 데이터 가져오기 -->
+    <!-- 날짜 검색 -->
     <select id="findArchivesByDate" resultMap="archiveResultMap">
         SELECT
         a.archive_id,
@@ -127,25 +57,28 @@
         LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
         WHERE a.user_id = #{userId}
         AND a.archive_date = #{date}
-        ORDER BY a.archive_date DESC;
+        ORDER BY STR_TO_DATE(a.archive_date, '%y%m%d') DESC;
     </select>
-    
-      <!-- 특정 날짜 기준 6일간 데이터 가져오기 -->
-    <select id="findArchivesByRange" resultMap="archiveResultMap">
-        SELECT
-        a.archive_id,
-        a.archive_date,
-        a.archive_memo,
-        a.archive_progress,
-        a.user_id,
-        ad.archivedetail_id,
-        ad.archivedetail,
-        ad.archivedetail_state,
-        ad.archivedetail_time
-        FROM archive a
-        LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
-        WHERE a.user_id = #{userId}
-        AND a.archive_date BETWEEN #{startDate} AND #{endDate}
-        ORDER BY a.archive_date DESC;
-    </select>
+
+    <!-- 내용 검색 (가장 최근 데이터 기준 6개) -->
+    <select id="searchByDetail" resultMap="archiveResultMap">
+		SELECT
+		a.archive_id,
+		a.archive_date,
+		a.archive_memo,
+		a.archive_progress,
+		a.user_id,
+		ad.archivedetail_id,
+		ad.archivedetail,
+		ad.archivedetail_state,
+		ad.archivedetail_time
+		FROM archive a
+		LEFT JOIN archive_detail ad ON a.archive_id = ad.archive_id
+		WHERE a.user_id = #{userId}
+		AND ad.archivedetail LIKE CONCAT('%', #{keyword}, '%')
+		AND STR_TO_DATE(a.archive_date, '%y%m%d') &lt; CURDATE()
+		ORDER BY STR_TO_DATE(a.archive_date, '%y%m%d') DESC
+		LIMIT 6;
+	</select>
+
 </mapper>

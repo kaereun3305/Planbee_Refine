@@ -18,20 +18,21 @@ const CalCom = () => {
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth(); // 0(Jan) ~ 11(Dec)
 
+  const getMemo = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/planbee/calendar/memo/${getFormattedTodayYYMM()}`,
+        { withCredentials: true }
+      );
+      console.log("캘린더 데이터", response.data);
+      setCalData(response.data);
+    } catch (error) {
+      console.error("캘린더 메모 fetch 에러", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/calendar/memo/${getFormattedTodayYYMM()}`,
-          { withCredentials: true }
-        );
-        console.log("캘린더 데이터", response.data);
-        setCalData(response.data);
-      } catch (error) {
-        console.error("캘린더 메모 fetch 에러", error);
-      }
-    };
-    fetchData();
+    getMemo();
   }, []);
 
   const handleDateClick = (info) => {
@@ -102,6 +103,7 @@ const CalCom = () => {
             memoData={calData[selectedDateKey]}
             onClose={() => setIsPopUpOpen(false)}
             onUpdate={handleMemoUpdate}
+            getMemo={getMemo}
             isEditMode={isEditMode} // 수정 모드 여부 전달
           />
         )}

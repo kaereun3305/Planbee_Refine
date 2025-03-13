@@ -4,6 +4,7 @@ import axios from "axios";
 import "../css/CalendarMemoForm.css";
 
 const CalendarMemoForm = ({
+  getMemo,
   dateKey,
   onClose,
   memoData,
@@ -50,6 +51,7 @@ const CalendarMemoForm = ({
       );
       console.log("추가 요청 데이터:", requestData);
       onUpdate(response.data);
+      await getMemo(); // 메모 추가 후 getMemo로 최신 상태 가져오기
       onClose(); // 팝업 닫기
     } catch (error) {
       console.error("메모 추가 실패", error);
@@ -72,28 +74,35 @@ const CalendarMemoForm = ({
     try {
       // PUT 요청으로 메모 수정
       const response = await axios.put(
-        `http://localhost:8080/plandbee/calendar/modimemo/${calId}`,
+        `http://localhost:8080/planbee/calendar/modimemo/${calId}`,
         requestData,
         { withCredentials: true }
       );
       console.log("수정 요청 데이터:", requestData);
       onUpdate(response.data);
+      await getMemo();
       onClose(); // 팝업 닫기
     } catch (error) {
       console.error("메모 수정 실패", error);
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (fieldNo) => {
+    const calId = memoData?.calId; // calId 추출
+    if (!calId) {
+      console.error("calId가 없습니다.");
+      return;
+    }
+
     try {
       await axios.delete(
-        `http://localhost:8080/planbee/calendar/memo/${dateKey}`,
-        {
-          withCredentials: true,
-        }
+        `http://localhost:8080/planbee/calendar/delmemo/${calId}/${fieldNo}`,
+        { withCredentials: true }
       );
-      onUpdate(null);
-      onClose();
+      console.log(`${fieldNo}번 메모 삭제 성공`);
+      onUpdate(null); // 메모 삭제 후 업데이트
+      await getMemo();
+      onClose(); // 팝업 닫기
     } catch (error) {
       console.error("메모 삭제 실패", error);
     }
@@ -102,21 +111,30 @@ const CalendarMemoForm = ({
   return (
     <div className="memo_form">
       <h3>{dateKey} 메모</h3>
-      <textarea
-        placeholder="메모 1"
-        value={form.calDetail1}
-        onChange={(e) => handleChange("calDetail1", e.target.value)}
-      />
-      <textarea
-        placeholder="메모 2"
-        value={form.calDetail2}
-        onChange={(e) => handleChange("calDetail2", e.target.value)}
-      />
-      <textarea
-        placeholder="메모 3"
-        value={form.calDetail3}
-        onChange={(e) => handleChange("calDetail3", e.target.value)}
-      />
+      <div>
+        <textarea
+          placeholder="메모 1"
+          value={form.calDetail1}
+          onChange={(e) => handleChange("calDetail1", e.target.value)}
+        />
+        <button onClick={() => handleDelete(1)}>삭제</button>
+      </div>
+      <div>
+        <textarea
+          placeholder="메모 2"
+          value={form.calDetail2}
+          onChange={(e) => handleChange("calDetail2", e.target.value)}
+        />
+        <button onClick={() => handleDelete(2)}>삭제</button>
+      </div>
+      <div>
+        <textarea
+          placeholder="메모 3"
+          value={form.calDetail3}
+          onChange={(e) => handleChange("calDetail3", e.target.value)}
+        />
+        <button onClick={() => handleDelete(3)}>삭제</button>
+      </div>
       <div className="memo_buttons">
         {isEditMode ? (
           // 수정 버튼
@@ -125,7 +143,6 @@ const CalendarMemoForm = ({
           // 추가 버튼
           <button onClick={handleAdd}>추가</button>
         )}
-        <button onClick={handleDelete}>삭제</button>
         <button onClick={onClose}>닫기</button>
       </div>
     </div>

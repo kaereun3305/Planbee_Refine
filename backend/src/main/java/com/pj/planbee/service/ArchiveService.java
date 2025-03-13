@@ -6,20 +6,22 @@ import com.pj.planbee.dto.ArchiveDTO;
 
 public interface ArchiveService {
 
-	//±âº»
+	//ï¿½âº»
 	List<ArchiveDTO> getArchivesWithDetails(String userId);
 
-	//³¯Â¥ °Ë»ö
+	//ï¿½ï¿½Â¥ ï¿½Ë»ï¿½
 	List<ArchiveDTO> searchArchivesByDate(String userId, String date);
 	
-	//³»¿ë °Ë»ö
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
 	List<ArchiveDTO> searchByDetail(String userId, String keyword);
 
-	//Æ¯Á¤ ³¯Â¥ ºÒ·¯¿À±â
+	//Æ¯ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
 	List<ArchiveDTO> getArchivesByDate(String userId, String date);
 
-	//Æ¯Á¤ ³¯Â¥ ¹üÀ§º°·Î ºÒ·¯¿À±â
+	//Æ¯ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
 	List<ArchiveDTO> getArchivesByRange(String userId, String date);
+
+	String findLatestDate(String userId);
 
 	
 }

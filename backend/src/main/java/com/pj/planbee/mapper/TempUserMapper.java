@@ -9,15 +9,15 @@ import com.pj.planbee.dto.TempUserDTO;
 
 @Mapper
 public interface TempUserMapper {
-	public List<TempUserDTO> getTempUser(); //Å×½ºÆ® ±â´É 
-	public List<TempUserDTO> getTempUserData(@Param("tempUserId") String tempUserId); //Å×½ºÆ® ±â´É
-	public int insertTempUser(TempUserDTO dto); //TempUser DB·Î ÀúÀå(insertorupdate°¡ ÀÛµ¿ ½Ã »èÁ¦)
+	public List<TempUserDTO> getTempUser(); //í…ŒìŠ¤íŠ¸ ê¸°ëŠ¥ 
+	public List<TempUserDTO> getTempUserData(@Param("tempUserId") String tempUserId); //í…ŒìŠ¤íŠ¸ ê¸°ëŠ¥
+	public int insertTempUser(TempUserDTO dto); //TempUser DBë¡œ ì €ì¥(insertorupdateê°€ ì‘ë™ ì‹œ ì‚­ì œ)
 	public int deleteTempUser(@Param("tempUserEmail") String tempUserEmail);
-	public String getTempUserCode(String tempUserEmail); //TempUser DB¿¡ ÀÓ½Ã ÀúÀåÇÑ ÆÄÀÏ »èÁ¦
+	public String getTempUserCode(String tempUserEmail); //TempUser DBì— ì„ì‹œ ì €ì¥í•œ íŒŒì¼ ì‚­ì œ
 	public int countUserId(String tempUserId);
 	public int countUserEmail(String tempUserEmail);
 	public TempUserDTO getTempUserByEmail(String tempUserEmail);
-	public int updateVerifyStatus(@Param("tempUserEmail") String tempUserEmail); // ÀÌ¸ŞÀÏ ÀÎÁõ ÈÄ verify_status º¯°æ
+	public int updateVerifyStatus(@Param("tempUserEmail") String tempUserEmail); // ì´ë©”ì¼ ì¸ì¦ í›„ verify_status ë³€ê²½
 	public Integer getVerifyStatus(@Param("tempUserEmail") String tempUserEmail);
 	public Integer checkTempUserExists(String tempUserEmail);
 	public int updateTempUser(TempUserDTO dto);

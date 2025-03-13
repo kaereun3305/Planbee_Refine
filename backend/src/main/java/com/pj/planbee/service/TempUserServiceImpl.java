@@ -25,41 +25,41 @@ public class TempUserServiceImpl implements TempUserService{
         int result = 0;
 
         try {
-        	//»ı¼ºµÈ Áö 5ºĞ Áö³­ µ¥ÀÌÅÍ »èÁ¦
+        	//ìƒì„±ëœ ì§€ 5ë¶„ ì§€ë‚œ ë°ì´í„° ì‚­ì œ
         	mapper.deleteExpiredTempUsers();
         	 
-            // ID Áßº¹ °Ë»ç (Real_User Å×ÀÌºí¿¡¼­ È®ÀÎ)
+            // ID ì¤‘ë³µ ê²€ì‚¬ (Real_User í…Œì´ë¸”ì—ì„œ í™•ì¸)
             if (mapper.countUserId(dto.getTempUserId()) > 0) {
-                return -1; // ÀÌ¹Ì °¡ÀÔµÈ ID
+                return -1; // ì´ë¯¸ ê°€ì…ëœ ID
             }
 
-            // Email Áßº¹ °Ë»ç (Real_User Å×ÀÌºí¿¡¼­ È®ÀÎ)
+            // Email ì¤‘ë³µ ê²€ì‚¬ (Real_User í…Œì´ë¸”ì—ì„œ í™•ì¸)
             if (mapper.countUserEmail(dto.getTempUserEmail()) > 0) {
-                return -2; // ÀÌ¹Ì °¡ÀÔµÈ ÀÌ¸ŞÀÏ
+                return -2; // ì´ë¯¸ ê°€ì…ëœ ì´ë©”ì¼
             }
 
-            // ±âÁ¸ temp_user Å×ÀÌºí¿¡¼­ ÀÌ¸ŞÀÏÀÌ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+            // ê¸°ì¡´ temp_user í…Œì´ë¸”ì—ì„œ ì´ë©”ì¼ì´ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
             Integer existingUser = mapper.checkTempUserExists(dto.getTempUserEmail());
 
-            // 6ÀÚ¸® ÀÎÁõ ÄÚµå »ı¼º
+            // 6ìë¦¬ ì¸ì¦ ì½”ë“œ ìƒì„±
             String verificationCode = generateVerificationCode();
             dto.setTempUserCode(verificationCode);
-            dto.setVerifyStatus(0); // ±âº»°ª: ÀÎÁõ ¹Ì¿Ï·á (false)
+            dto.setVerifyStatus(0); // ê¸°ë³¸ê°’: ì¸ì¦ ë¯¸ì™„ë£Œ (false)
 
-            // ÀÌ¸ŞÀÏ Àü¼Û (ÄÚµå »ı¼º ÈÄ ¹Ù·Î Àü¼Û)
+            // ì´ë©”ì¼ ì „ì†¡ (ì½”ë“œ ìƒì„± í›„ ë°”ë¡œ ì „ì†¡)
             sendCode(dto.getTempUserEmail(), verificationCode);
 
             if (existingUser != null && existingUser > 0) {
-                // ±âÁ¸ µ¥ÀÌÅÍ°¡ ÀÖ´Ù¸é UPDATE ½ÇÇà
+                // ê¸°ì¡´ ë°ì´í„°ê°€ ìˆë‹¤ë©´ UPDATE ì‹¤í–‰
                 result = mapper.updateTempUser(dto);
             } else {
-                // ±âÁ¸ µ¥ÀÌÅÍ°¡ ¾øÀ¸¸é INSERT ½ÇÇà
+                // ê¸°ì¡´ ë°ì´í„°ê°€ ì—†ìœ¼ë©´ INSERT ì‹¤í–‰
                 result = mapper.insertTempUser(dto);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("ÀÌ¸ŞÀÏ ÀÎÁõ ½ÇÆĞ: " + e.getMessage());
+            throw new RuntimeException("ì´ë©”ì¼ ì¸ì¦ ì‹¤íŒ¨: " + e.getMessage());
         }
         return result;
     }
@@ -79,21 +79,21 @@ public class TempUserServiceImpl implements TempUserService{
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(recipientEmail);
-            helper.setSubject("PlanBee È¸¿ø°¡ÀÔ ÀÎÁõ ÄÚµå");
-            helper.setFrom("dlcksry0126@gmail.com", "PlanBee ¸ŞÀÏ ÀÎÁõ");
+            helper.setSubject("PlanBee íšŒì›ê°€ì… ì¸ì¦ ì½”ë“œ");
+            helper.setFrom("dlcksry0126@gmail.com", "PlanBee ë©”ì¼ ì¸ì¦");
 
-            // ÀÌ¸ŞÀÏ º»¹® »ı¼º
+            // ì´ë©”ì¼ ë³¸ë¬¸ ìƒì„±
             String htmlContent = "<html><body style='margin: 0; padding: 0;'>"
                 + "<table role='presentation' width='100%' cellspacing='0' cellpadding='0' border='0' style='background-color: #000000; width: 100%; padding: 20px 0;'>"
                 + "<tr><td align='center'>"
                 + "<table role='presentation' width='500' cellspacing='0' cellpadding='0' border='0' style='background-color: #000000; color: #ffffff; border-radius: 10px; padding: 20px; text-align: center;'>"
                 + "<tr><td>"
-                + "<h1 style='color: #FFD700;'>PlanBee È¸¿ø°¡ÀÔ ÀÎÁõ ÄÚµå</h1>"
-                + "<p style='font-size: 16px; margin-top: 20px;'>¾Æ·¡ÀÇ ÀÎÁõ ÄÚµå¸¦ ÀÔ·ÂÇÏ¿© È¸¿ø°¡ÀÔÀ» ¿Ï·áÇÏ¼¼¿ä.</p>"
+                + "<h1 style='color: #FFD700;'>PlanBee íšŒì›ê°€ì… ì¸ì¦ ì½”ë“œ</h1>"
+                + "<p style='font-size: 16px; margin-top: 20px;'>ì•„ë˜ì˜ ì¸ì¦ ì½”ë“œë¥¼ ì…ë ¥í•˜ì—¬ íšŒì›ê°€ì…ì„ ì™„ë£Œí•˜ì„¸ìš”.</p>"
                 + "<div style='background-color: #FFD700; margin-top:10px; color: #000000; font-size: 24px; font-weight: bold; padding: 10px; border-radius: 5px; display: inline-block; margin: 10px 0;'>"
                 + code + "</div>"
-                + "<p style='margin-top: 20px;'>Àü¼Û ½Ã°£À¸·ÎºÎÅÍ 5ºĞ ÀÌ³»¿¡ Á¤È®È÷ ÀÔ·ÂÇØ ÁÖ¼¼¿ä.</p>"
-                + "<p style='margin-top: 30px; font-size: 12px; color: #aaaaaa;'>ÀÌ ÀÌ¸ŞÀÏÀº ÀÚµ¿ ¹ß¼Û ¸ŞÀÏÀÔ´Ï´Ù. È¸½ÅÇÏÁö ¸¶¼¼¿ä.</p>"
+                + "<p style='margin-top: 20px;'>ì „ì†¡ ì‹œê°„ìœ¼ë¡œë¶€í„° 5ë¶„ ì´ë‚´ì— ì •í™•íˆ ì…ë ¥í•´ ì£¼ì„¸ìš”.</p>"
+                + "<p style='margin-top: 30px; font-size: 12px; color: #aaaaaa;'>ì´ ì´ë©”ì¼ì€ ìë™ ë°œì†¡ ë©”ì¼ì…ë‹ˆë‹¤. íšŒì‹ í•˜ì§€ ë§ˆì„¸ìš”.</p>"
                 + "</td></tr></table>"
                 + "</td></tr></table>"
                 + "</body></html>";
@@ -101,7 +101,7 @@ public class TempUserServiceImpl implements TempUserService{
             helper.setText(htmlContent, true);
             
             mailSender.send(message);
-            result = 1; // ÀÌ¸ŞÀÏ Àü¼Û ¼º°ø
+            result = 1; // ì´ë©”ì¼ ì „ì†¡ ì„±ê³µ
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,7 +150,7 @@ public class TempUserServiceImpl implements TempUserService{
 	@Override
 	public Integer getVerifyStatus(String tempUserEmail) {
 	    Integer status = mapper.getVerifyStatus(tempUserEmail);
-	    return (status != null) ? status : 0; // NULLÀÌ¸é ±âº»°ª 0 ¹İÈ¯
+	    return (status != null) ? status : 0; // NULLì´ë©´ ê¸°ë³¸ê°’ 0 ë°˜í™˜
 	}
 	
 }

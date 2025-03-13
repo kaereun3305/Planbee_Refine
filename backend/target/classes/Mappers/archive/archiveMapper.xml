@@ -4,7 +4,6 @@
 
 <mapper namespace="com.pj.planbee.mapper.ArchiveMapper">
 
-
 	<!-- archive_detail 전용 resultMap -->
     <resultMap type="com.pj.planbee.dto.ArchDetailDTO" id="archDetailResultMap">
         <id property="archDetailId" column="archivedetail_id" />
@@ -24,8 +23,6 @@
         <!-- archiveDetails를 archDetailResultMap과 연결 -->
         <collection property="archiveDetails"  resultMap="archDetailResultMap" />
     </resultMap>
-
-
 
 	<!-- 어제 ~ 6일 전 데이터 가져오기 -->
 	<select id="findRecentArchives" resultMap="archiveResultMap">
@@ -151,5 +148,4 @@
         AND a.archive_date BETWEEN #{startDate} AND #{endDate}
         ORDER BY a.archive_date DESC;
     </select>
-
 </mapper>

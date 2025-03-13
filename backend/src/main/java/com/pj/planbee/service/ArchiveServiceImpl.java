@@ -20,16 +20,16 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     public List<ArchiveDTO> getArchivesWithDetails(String userId) {
         
-        LocalDate today = LocalDate.now(); // ¿À´Ã
+        LocalDate today = LocalDate.now(); // ì˜¤ëŠ˜
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-        String endDate = today.minusDays(1).format(formatter);   // ¾îÁ¦ 
-        String startDate = today.minusDays(6).format(formatter); // 6ÀÏ Àü 
+        String endDate = today.minusDays(1).format(formatter);   // ì–´ì œ 
+        String startDate = today.minusDays(6).format(formatter); // 6ì¼ ì „ 
         
-        // ¾îÁ¦ ~ 6ÀÏ Àü 
+        // ì–´ì œ ~ 6ì¼ ì „ 
         List<ArchiveDTO> archives = mapper.findRecentArchives(
             userId, startDate, endDate);
 
-        // À§°¡ ¾ø´Ù¸é, °¡Àå ÃÖ½ÅÀÇ µ¥ÀÌÅÍ¸¦ Æ÷ÇÔÇÑ 6ÀÏ°£ °¡Á®¿À±â
+        // ìœ„ê°€ ì—†ë‹¤ë©´, ê°€ì¥ ìµœì‹ ì˜ ë°ì´í„°ë¥¼ í¬í•¨í•œ 6ì¼ê°„ ê°€ì ¸ì˜¤ê¸°
         if (archives.isEmpty()) {
             String latestDate = mapper.findLatestDate(userId);
             if (latestDate != null) {
@@ -42,7 +42,7 @@ public class ArchiveServiceImpl implements ArchiveService {
         return archives;
     }
     
-    // Æ¯Á¤ ³¯Â¥ÀÇ µ¥ÀÌÅÍ °¡Á®¿À±â
+    // íŠ¹ì • ë‚ ì§œì˜ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
     @Override
     public List<ArchiveDTO> getArchivesByDate(String userId, String date) {
         return mapper.findArchivesByDate(userId, date);
@@ -51,7 +51,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     
     @Override
     public List<ArchiveDTO> searchArchivesByDate(String userId, String date) {
-        // °Ë»ö ³¯Â¥ ±âÁØÀ¸·Î 3ÀÏ Àü ~ 2ÀÏ ÈÄ µ¥ÀÌÅÍ
+        // ê²€ìƒ‰ ë‚ ì§œ ê¸°ì¤€ìœ¼ë¡œ 3ì¼ ì „ ~ 2ì¼ í›„ ë°ì´í„°
         return mapper.findArchives(userId, date);
     }
     
@@ -65,20 +65,20 @@ public class ArchiveServiceImpl implements ArchiveService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
         LocalDate requestedDate = LocalDate.parse(date, formatter);
 
-        // ¿äÃ»µÈ ³¯Â¥ ±âÁØ µ¥ÀÌÅÍ Á¶È¸
+        // ìš”ì²­ëœ ë‚ ì§œ ê¸°ì¤€ ë°ì´í„° ì¡°íšŒ
         List<ArchiveDTO> totalData = new ArrayList<>();
         for (int i = 5; i >= 0; i--) { 
             String targetDate = requestedDate.minusDays(i).format(formatter);
 
-            // °³º° ³¯Â¥ Ä³½Ã Á¶È¸
+            // ê°œë³„ ë‚ ì§œ ìºì‹œ ì¡°íšŒ
             List<ArchiveDTO> cachedData = CacheConfig.getCache(userId, targetDate);
             if (cachedData != null) {
-                System.out.println("Ä³½Ã µ¥ÀÌÅÍ ÀÖÀ½ : " + targetDate + " µ¥ÀÌÅÍ ¹İÈ¯");
+                System.out.println("ìºì‹œ ë°ì´í„° ìˆìŒ : " + targetDate + " ë°ì´í„° ë°˜í™˜");
                 totalData.addAll(cachedData);
             } else {
-                //DB¿¡¼­ Ä³½Ì
+                //DBì—ì„œ ìºì‹±
                 List<ArchiveDTO> archives = mapper.findArchivesByDate(userId, targetDate);
-                System.out.println("Ä³½Ã µ¥ÀÌÅÍ ¾øÀ½ : " + targetDate + " µ¥ÀÌÅÍ Ãß°¡");
+                System.out.println("ìºì‹œ ë°ì´í„° ì—†ìŒ : " + targetDate + " ë°ì´í„° ì¶”ê°€");
                 CacheConfig.putCache(userId, targetDate, archives);
                 totalData.addAll(archives);
             }

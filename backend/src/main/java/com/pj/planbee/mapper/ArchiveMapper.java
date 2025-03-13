@@ -8,32 +8,32 @@ import com.pj.planbee.dto.ArchiveDTO;
 @Mapper
 public interface ArchiveMapper {
     
-    // ¾îÁ¦ ~ 6ÀÏ Àü
+    // ì–´ì œ ~ 6ì¼ ì „
     List<ArchiveDTO> findRecentArchives(
             @Param("userId") String userId, 
             @Param("startDate") String startDate, 
             @Param("endDate") String endDate);
 
-    // °¡Àå ÃÖ½Å µ¥ÀÌÅÍ¸¦ Æ÷ÇÔÇÑ 6ÀÏ°£ÀÇ µ¥ÀÌÅÍ
+    // ê°€ì¥ ìµœì‹  ë°ì´í„°ë¥¼ í¬í•¨í•œ 6ì¼ê°„ì˜ ë°ì´í„°
     List<ArchiveDTO> findLatestArchives(
             @Param("userId") String userId, 
             @Param("sixDaysAgo") String sixDaysAgo, 
             @Param("latestDate") String latestDate);
 
-    // ÃÖ½Å ³¯Â¥
+    // ìµœì‹  ë‚ ì§œ
     String findLatestDate(@Param("userId") String userId);
     
-    // ³¯Â¥ °Ë»ö
+    // ë‚ ì§œ ê²€ìƒ‰
     List<ArchiveDTO> findArchives(
             @Param("userId") String userId, 
             @Param("searchDate") String searchDate);
     
-    // ³»¿ë °Ë»ö
+    // ë‚´ìš© ê²€ìƒ‰
     List<ArchiveDTO> searchByDetail(
     		@Param("userId") String userId, 
             @Param("keyword") String keyword);
     
- // Æ¯Á¤ ³¯Â¥ÀÇ µ¥ÀÌÅÍ °¡Á®¿À±â
+    // íŠ¹ì • ë‚ ì§œì˜ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
     List<ArchiveDTO> findArchivesByDate(
             @Param("userId") String userId, 
             @Param("date") String date);

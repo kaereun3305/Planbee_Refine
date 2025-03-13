@@ -14,6 +14,7 @@
 		<result property="calDate" column="cal_date" />
 		<result property="userId" column="user_id" />
 	</resultMap>
+	
 	<resultMap type="com.pj.planbee.dto.ProgressDTO" id="proDTO" >
 		<id property="calId" column="cal_id" /> <!-- PK로 지정한 것은 id로 받아준다 -->
 		<result property="calDetail1" column="cal_detail_1" />
@@ -42,7 +43,7 @@
 
 
     <!-- 특정 달(yyMM) 메모 조회 (JOIN) -->
-<select id="getMemo" resultMap="proDTO">
+	<select id="getMemo" resultMap="proDTO">
     SELECT
         c.cal_id,
         c.cal_detail_1,
@@ -57,22 +58,22 @@
         AND c.user_id = t.user_id
     WHERE c.cal_date LIKE CONCAT(#{yyMM}, '%')
       AND c.user_id = #{sessionId}
-</select>
+	</select>
 
 
 
 
 
-<!-- 메모추가 -->
-<insert id="addMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
-    INSERT INTO calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3)
-    VALUES (#{calDate}, #{userId}, #{calDetail1}, #{calDetail2}, #{calDetail3})
-</insert>
+	<!-- 메모추가 -->
+	<insert id="addMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    	INSERT INTO calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3)
+    	VALUES (#{calDate}, #{userId}, #{calDetail1}, #{calDetail2}, #{calDetail3})
+	</insert>
 
-<!-- 메모 수정 -->
-<update id="modiMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
-    UPDATE calendar
-    <set>
+	<!-- 메모 수정 -->
+	<update id="modiMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
+    	UPDATE calendar
+    	<set>
         <if test="calDetail1 != null">
             cal_detail_1 = #{calDetail1},
         </if>
@@ -82,15 +83,15 @@
         <if test="calDetail3 != null">
             cal_detail_3 = #{calDetail3},
         </if>
-    </set>
-    WHERE cal_date = #{calDate} AND user_id = #{userId}
-</update>
-<!-- 메모 삭제 -->
-<update id="delMemo" parameterType="map">
-    UPDATE calendar
-    SET 
-    <choose>
-        <when test="fieldNo == 1">
+    	</set>
+   	 	WHERE cal_date = #{calDate} AND user_id = #{userId}
+	</update>
+	<!-- 메모 삭제 -->
+	<update id="delMemo" parameterType="map">
+    	UPDATE calendar
+    	SET 
+    	<choose>
+       	<when test="fieldNo == 1">
             cal_detail_1 = null
         </when>
         <when test="fieldNo == 2">
@@ -103,12 +104,9 @@
             <!-- fieldNo가 1, 2, 3이 아닌 경우, 아무 업데이트도 하지 않도록 처리하거나 에러를 발생시킬 수 있음 -->
             cal_detail_1 = cal_detail_1
         </otherwise>
-    </choose>
-    WHERE cal_id = #{calId}
-</update>
-
-
-
+    	</choose>
+    	WHERE cal_id = #{calId}
+	</update>
 
     <!-- 특정 월의 데이터 개수 확인 -->
     <select id="countByMonth" resultType="int">
@@ -131,7 +129,6 @@
         WHERE cal_date LIKE #{monthPre} || '%' AND user_id = #{userId}
         ORDER BY cal_date
     </select>
-
 
 	<!-- 기존 메모 수정  -->
 	<update id="updateMemo" parameterType="com.pj.planbee.dto.CalendarDTO">

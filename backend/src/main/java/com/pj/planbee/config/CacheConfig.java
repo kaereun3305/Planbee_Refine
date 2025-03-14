@@ -14,7 +14,7 @@ import com.pj.planbee.dto.ArchiveDTO;
 @Component
 public class CacheConfig {
 
-    public static final int CACHE_SIZE = 100;
+    public static final int CACHE_SIZE = 30;
 
     // 동시성 해결
     private final Map<String, List<ArchiveDTO>> archiveCache = new ConcurrentHashMap<>();

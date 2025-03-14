@@ -5,15 +5,15 @@ import java.util.List;
 import com.pj.planbee.dto.TempUserDTO;
 
 public interface TempUserService {
-	public List<TempUserDTO> getTempUser();	//Å×½ºÆ® ±â´É
+	public List<TempUserDTO> getTempUser();	//í…ŒìŠ¤íŠ¸ ê¸°ëŠ¥
 	
-	public List<TempUserDTO> getTempUserData(String tempUserId); //Å×½ºÆ® ±â´É
+	public List<TempUserDTO> getTempUserData(String tempUserId); //í…ŒìŠ¤íŠ¸ ê¸°ëŠ¥
 	
-	public int insertTempUser(TempUserDTO dto); // DB¿¡ ÀÓ½Ã ÀúÀå ±â´É(insertorupdate°¡ ÀÛµ¿ ½Ã »èÁ¦)
+	public int insertTempUser(TempUserDTO dto); // DBì— ì„ì‹œ ì €ì¥ ê¸°ëŠ¥(insertorupdateê°€ ì‘ë™ ì‹œ ì‚­ì œ)
 	
-	public int deleteTempUser(String tempUserEmail); // DB¿¡ ÀÓ½Ã ÀúÀåÇÑ ÆÄÀÏ »èÁ¦ ±â´É
+	public int deleteTempUser(String tempUserEmail); // DBì— ì„ì‹œ ì €ì¥í•œ íŒŒì¼ ì‚­ì œ ê¸°ëŠ¥
 	
-	public int sendCode(String tempUserEmail, String tempUserCode) throws Exception; // ÄÚµå¸¦ »ı¼ºÇØ ÀÌ¸ŞÀÏ·Î º¸³»´Â ±â´É
+	public int sendCode(String tempUserEmail, String tempUserCode) throws Exception; // ì½”ë“œë¥¼ ìƒì„±í•´ ì´ë©”ì¼ë¡œ ë³´ë‚´ëŠ” ê¸°ëŠ¥
 	
 	public String generateVerificationCode();
 	
@@ -21,9 +21,9 @@ public interface TempUserService {
 	
 	public TempUserDTO getTempUserByEmail(String tempUserEmail);
 	
-	public int insertOrUpdateTempUser(TempUserDTO tempUser); // ÀÌ¸ŞÀÏ Áßº¹ ½Ã ¾÷µ¥ÀÌÆ®
+	public int insertOrUpdateTempUser(TempUserDTO tempUser); // ì´ë©”ì¼ ì¤‘ë³µ ì‹œ ì—…ë°ì´íŠ¸
 	
-	public int updateVerifyStatus(String tempUserEmail); // ÀÌ¸ŞÀÏ ÀÎÁõ ÈÄ verify_status º¯°æ
+	public int updateVerifyStatus(String tempUserEmail); // ì´ë©”ì¼ ì¸ì¦ í›„ verify_status ë³€ê²½
 	
 	public Integer getVerifyStatus(String tempUserEmail);
 }

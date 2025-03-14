@@ -23,7 +23,7 @@ import com.pj.planbee.service.TempUserService;
 import com.pj.planbee.service.UserService;
 
 @RestController
-@CrossOrigin(origins = "*") // CSRÀ» À§ÇÑ CORS Çã¿ë
+@CrossOrigin(origins = "*") // CSRì„ ìœ„í•œ CORS í—ˆìš©
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -35,18 +35,18 @@ public class AuthController {
     
     @Autowired UserMapper usermapper;
 
-    // ÀÌ¸ŞÀÏ ÀÎÁõ ÄÚµå ¹ß¼Û
+    // ì´ë©”ì¼ ì¸ì¦ ì½”ë“œ ë°œì†¡
     @PostMapping(value = "/email/send", produces = "application/json; charset=utf-8")
     public int sendVerificationCode(@RequestBody TempUserDTO dto) {
         int result = tempUserService.insertOrUpdateTempUser(dto);
 
-        if (result == -1) return result; // ÀÌ¹Ì °¡ÀÔµÈ ID
-        else if (result == -2) return result; // ÀÌ¹Ì °¡ÀÔµÈ ÀÌ¸ŞÀÏ
-        else if (result > 0) return result; // ÀÌ¸ŞÀÏ ÀÎÁõ ÄÚµå ¹ß¼Û ¼º°ø
-        else return 0; // ¾Ë ¼ö ¾ø´Â ¿À·ù
+        if (result == -1) return result; // ì´ë¯¸ ê°€ì…ëœ ID
+        else if (result == -2) return result; // ì´ë¯¸ ê°€ì…ëœ ì´ë©”ì¼
+        else if (result > 0) return result; // ì´ë©”ì¼ ì¸ì¦ ì½”ë“œ ë°œì†¡ ì„±ê³µ
+        else return 0; // ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜
     }
 
-    // ÀÌ¸ŞÀÏ ÀÎÁõ ÄÚµå È®ÀÎ
+    // ì´ë©”ì¼ ì¸ì¦ ì½”ë“œ í™•ì¸
     @PostMapping(value = "/email/verify", produces = "application/json; charset=utf-8")
     public int verifyUserCode(@RequestBody TempUserDTO dto) {
     	
@@ -55,54 +55,54 @@ public class AuthController {
         String storedCode = tempUserService.getTempUserCode(dto.getTempUserEmail());
 
         if (storedCode != null && storedCode.equals(dto.getTempUserCode())) {
-            return tempUserService.updateVerifyStatus(dto.getTempUserEmail()); // ÀÎÁõ ¼º°ø
+            return tempUserService.updateVerifyStatus(dto.getTempUserEmail()); // ì¸ì¦ ì„±ê³µ
         } else {
-            return -1; // ÀÎÁõ ÄÚµå ºÒÀÏÄ¡
+            return -1; // ì¸ì¦ ì½”ë“œ ë¶ˆì¼ì¹˜
         }
     }
 
-    // È¸¿ø°¡ÀÔ
+    // íšŒì›ê°€ì…
     @PostMapping(value = "/register", produces = "application/json; charset=utf-8")
     public int registerUser(@RequestBody UserDTO user) {
         int result = userService.regiseterUser(user);
 
-        if (result == -1) return result; // "È¸¿ø°¡ÀÔ ½ÇÆĞ: user_id Áßº¹µÊ"
-        else if (result == -2) return result; // "È¸¿ø°¡ÀÔ ½ÇÆĞ: email Áßº¹µÊ"
-        else if (result == -3) return result; // "È¸¿ø°¡ÀÔ ½ÇÆĞ: ÀÎÁõ ÄÚµå ºÒÀÏÄ¡"
-        else if (result == -4) return result; // "È¸¿ø°¡ÀÔ ½ÇÆĞ: ÀÎÁõ ¿Ï·áµÇÁö ¾ÊÀ½"
-        else if (result > 0) return result; // "È¸¿ø°¡ÀÔ ¼º°ø!"
-        else return 0; // "È¸¿ø°¡ÀÔ ½ÇÆĞ!"
+        if (result == -1) return result; // "íšŒì›ê°€ì… ì‹¤íŒ¨: user_id ì¤‘ë³µë¨"
+        else if (result == -2) return result; // "íšŒì›ê°€ì… ì‹¤íŒ¨: email ì¤‘ë³µë¨"
+        else if (result == -3) return result; // "íšŒì›ê°€ì… ì‹¤íŒ¨: ì¸ì¦ ì½”ë“œ ë¶ˆì¼ì¹˜"
+        else if (result == -4) return result; // "íšŒì›ê°€ì… ì‹¤íŒ¨: ì¸ì¦ ì™„ë£Œë˜ì§€ ì•ŠìŒ"
+        else if (result > 0) return result; // "íšŒì›ê°€ì… ì„±ê³µ!"
+        else return 0; // "íšŒì›ê°€ì… ì‹¤íŒ¨!"
     }
 
-    // (Å×½ºÆ®) Æ¯Á¤ userId°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+    // (í…ŒìŠ¤íŠ¸) íŠ¹ì • userIdê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
     @GetMapping(value = "/check-id/{userId}", produces = "application/json; charset=utf-8")
     public boolean checkUserId(@PathVariable String userId) {
         return userService.isUserIdExists(userId);
     }
 
-    // (Å×½ºÆ®) Æ¯Á¤ emailÀÌ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+    // (í…ŒìŠ¤íŠ¸) íŠ¹ì • emailì´ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
     @GetMapping(value = "/check-email/{email}", produces = "application/json; charset=utf-8")
     public boolean checkEmail(@PathVariable String email) {
         return userService.isEmailExists(email);
     }
 
-    //·Î±×ÀÎ
+    //ë¡œê·¸ì¸
     @PostMapping(value = "/login", produces = "application/json; charset=utf-8")
     public int login(@RequestBody LoginDTO loginDTO, HttpSession session) {
         String userId = loginDTO.getUserId();
         String userPw = loginDTO.getUserPw();
 
         if (userId == null || userPw == null) {
-            return -3; // ÀÔ·Â°ªÀÌ nullÀÌ¸é 
+            return -3; // ì…ë ¥ê°’ì´ nullì´ë©´ 
         }
 
-        // ¾ÆÀÌµğ Á¸Àç ¿©ºÎ È®ÀÎ
+        // ì•„ì´ë”” ì¡´ì¬ ì—¬ë¶€ í™•ì¸
         boolean isUserExists = loginService.isUserExists(userId);
         if (!isUserExists) {
-            return -2; // ¾ÆÀÌµğ°¡ Á¸ÀçÇÏÁö ¾ÊÀ½ 
+            return -2; // ì•„ì´ë””ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŒ 
         }
 
-        // ÆÄ¶ó¹ÌÅÍ¸¦ MapÀ¸·Î Àü´Ş
+        // íŒŒë¼ë¯¸í„°ë¥¼ Mapìœ¼ë¡œ ì „ë‹¬
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("userId", userId);
         paramMap.put("userPw", userPw);
@@ -110,24 +110,24 @@ public class AuthController {
         LoginDTO user = loginService.login(paramMap);
 
         if (user == null) {
-            return -1; // ºñ¹Ğ¹øÈ£ ºÒÀÏÄ¡ 
+            return -1; // ë¹„ë°€ë²ˆí˜¸ ë¶ˆì¼ì¹˜ 
         }
 
-        // ·Î±×ÀÎ ¼º°ø ¡æ ¼¼¼Ç »ı¼º
+        // ë¡œê·¸ì¸ ì„±ê³µ â†’ ì„¸ì…˜ ìƒì„±
         session.setAttribute("user", user);
-        return 1; // ·Î±×ÀÎ ¼º°ø
+        return 1; // ë¡œê·¸ì¸ ì„±ê³µ
     }
 
-    // ·Î±×¾Æ¿ô
+    // ë¡œê·¸ì•„ì›ƒ
     @PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
     public int logout(HttpSession session) {
         session.invalidate();
-        return 1; // ·Î±×¾Æ¿ô ¼º°ø
+        return 1; // ë¡œê·¸ì•„ì›ƒ ì„±ê³µ
     }
 
-    // ·Î±×ÀÎ »óÅÂ È®ÀÎ
+    // ë¡œê·¸ì¸ ìƒíƒœ í™•ì¸
     @GetMapping(value = "/session", produces = "application/json; charset=utf-8")
     public int checkSession(HttpSession session) {
-        return (session.getAttribute("user") != null) ? 1 : 0; // 1: ·Î±×ÀÎµÈ »óÅÂ, 0: ·Î±×ÀÎµÇÁö ¾ÊÀ½
+        return (session.getAttribute("user") != null) ? 1 : 0; // 1: ë¡œê·¸ì¸ëœ ìƒíƒœ, 0: ë¡œê·¸ì¸ë˜ì§€ ì•ŠìŒ
     }
 }

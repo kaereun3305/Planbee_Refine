@@ -29,7 +29,7 @@
     </select>
     
     <insert id="todoWrite"> 
-<!-- 투두디테일 작성하는 부분, 이 자료형으로는 성공
+	<!-- 투두디테일 작성하는 부분, 이 자료형으로는 성공
     자동으로 숫자 올라가는 부분, 날짜자료형 두 가지, 맨마지막 숫자 어떻게 할지 조정이 필요함 -->
     	insert into ToDoList_Detail (tododetail, tododetail_state, tododetail_time, todo_id) 
     	values (#{tdDetail}, 0, #{tdDetailTime}, #{tdId});
@@ -41,7 +41,7 @@
     </update>
     
     <update id="todoModify">
-<!--  수정하는 기능.. 수정필요 -->
+	<!--  수정하는 기능.. 수정필요 -->
     	update ToDoList_Detail set tododetail=#{tdDetail}, tododetail_time=#{tdDetailTime}, tododetail_state=#{tdDetailState} where tododetail_id=#{tdDetailId}
     </update>
     
@@ -62,5 +62,4 @@
     <select id="getTotal">
     	select count(*) from ToDoList_Detail where todo_id=#{todoId}
     </select>
-    
 </mapper>

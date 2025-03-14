@@ -16,46 +16,43 @@ public class CacheConfig {
 
     public static final int CACHE_SIZE = 100;
 
-    // µ¿½Ã¼º ÇØ°á
-    public static final Map<String, List<ArchiveDTO>> archiveCache = new ConcurrentHashMap<>();
+    // ë™ì‹œì„± í•´ê²°
+    private final Map<String, List<ArchiveDTO>> archiveCache = new ConcurrentHashMap<>();
 
-    // ¸ÖÆ¼½º·¹µå È¯°æ¿¡¼­ µ¿±âÈ­ º¸Àå
-    private static final ReentrantLock cacheLock = new ReentrantLock();
+    // ë©€í‹°ìŠ¤ë ˆë“œ í™˜ê²½ì—ì„œ ë™ê¸°í™” ë³´ì¥
+    private final ReentrantLock cacheLock = new ReentrantLock();
 
-    // ³¯Â¥º°·Î Ä³½Ã ÀúÀå (¸ÖÆ¼½º·¹µå È¯°æ ¾ÈÀü)
-    public static void putCache(String userId, String date, List<ArchiveDTO> value) {
-        String cacheKey = userId + "_" + date;
-
-        cacheLock.lock(); // ¶ô È¹µæ
+    // ìºì‹œ ì¶”ê°€ (static ì œê±°)
+    public void putCache(String cacheKey, List<ArchiveDTO> value) {
+        cacheLock.lock();
         try {
             if (archiveCache.size() >= CACHE_SIZE) {
-                // °¡Àå ¿À·¡µÈ Ç×¸ñ »èÁ¦ (LRU ¹æ½Ä)
                 String eldestKey = archiveCache.keySet().iterator().next();
                 archiveCache.remove(eldestKey);
-                System.out.println("Ä³½Ã Á¦°Å: " + eldestKey);
+                System.out.println("ìºì‹œ ì‚­ì œ: " + eldestKey);
             }
             archiveCache.put(cacheKey, value);
-            System.out.println("Ä³½Ã Ãß°¡: " + cacheKey);
+            System.out.println("ìºì‹œ ì¶”ê°€: " + cacheKey);
         } finally {
-            cacheLock.unlock(); // ¶ô ÇØÁ¦
+            cacheLock.unlock();
         }
     }
 
-    // ³¯Â¥º°·Î Ä³½Ã Á¶È¸ (ÀĞ±â ÀÛ¾÷Àº µ¿±âÈ­ ÇÊ¿ä ¾øÀ½)
-    public static List<ArchiveDTO> getCache(String userId, String date) {
-        return archiveCache.get(userId + "_" + date);
+    // ìºì‹œ ì¡°íšŒ (static ì œê±°)
+    public List<ArchiveDTO> getCache(String cacheKey) {
+        return archiveCache.get(cacheKey);
     }
 
-    // Ä³½Ã »óÅÂ Ãâ·Â (¹İº¹ Áß Ä³½Ã°¡ ¼öÁ¤µÇÁö ¾Êµµ·Ï µ¿±âÈ­ Ãß°¡)
-    public static void printCacheStatus() {
+    // ìºì‹œ ìƒíƒœ ì¶œë ¥
+    public void printCacheStatus() {
         cacheLock.lock();
         try {
-            System.out.println("ÇöÀç Ä³½ÃµÈ µ¥ÀÌÅÍ ¸ñ·Ï:");
+            System.out.println("í˜„ì¬ ìºì‹œëœ ë°ì´í„° ëª©ë¡:");
             archiveCache.forEach((key, value) -> 
-                System.out.println(" - " + key + " ÀÇ µ¥ÀÌÅÍ : " + value.size() + " °³")
+                System.out.println(" - " + key + " ì˜ ë°ì´í„° : " + value.size() + " ê°œ")
             );
         } finally {
-            cacheLock.unlock(); // ¶ô ÇØÁ¦
+            cacheLock.unlock();
         }
     }
 }

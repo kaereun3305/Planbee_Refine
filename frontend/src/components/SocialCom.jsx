@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import '../css/SocialList.css';
 import axios from 'axios';
 import GroupJoinPopUp from './GroupJoinPopUp';
-import social from '../social';
+import social from '../social'
 
 const SocialCom = () => {
     const [isJoinOpen, setIsJoinOpen] = useState(false);
@@ -30,9 +30,13 @@ const SocialCom = () => {
         setIsJoinOpen(true);
     };
 
+    const handleCloseModal = () => {
+      setIsJoinOpen(false);
+  };
+
 
     return(<>
-       
+            
             <div className="social_header">
             </div>
   
@@ -48,15 +52,15 @@ const SocialCom = () => {
                     <div className="group_desc">{group.desc}</div>
                     </div>
                     <div className="group_right">
-                    <Link 
-                    to="/join" 
-                    style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                    <button className="join_button" onClick={()=> handleOpenModal(group.title)}>
                     
-                    Join
+                    <button className="join_button" onClick={()=> handleOpenModal(group.title)}>
+                    <div style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }} 
+                      onClick={() => setIsJoinOpen(true)}>
+                        Join
+                    </div>
+                    
                     </button>
-                    </Link>
+                  
                     </div>
                     </div>
                   ))}
@@ -66,7 +70,7 @@ const SocialCom = () => {
               {/* end of group_list */}
             </div>
             {/* end of social_container */}
-        
+            {isJoinOpen && <GroupJoinPopUp groupName={selectedGroup} onClose={handleCloseModal} />}
             </>
   
     )

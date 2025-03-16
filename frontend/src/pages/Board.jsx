@@ -1,13 +1,12 @@
 import React from 'react'
 import Banner from '../components/Banner'
 import SideBar from '../components/SideBar'
-import SocialCom from '../components/SocialCom'
-import BoardListCom  from '../components/BoardListCom';
+import BoardOneCom from '../components/BoardOneCom'
 import axios from 'axios'
 
 
-const Social = () => {
-    const checkIsJoined = null;
+const Board = () => {
+    const checkIsJoined = 1;
     // = async () =>{
     //     try {
     //         const response = await axios.get(
@@ -35,10 +34,7 @@ const Social = () => {
         <SideBar />
         <div className="main_content">
           <div className="social_container">
-            {checkIsJoined === null || checkIsJoined === undefined || checkIsJoined===""?
-            (<SocialCom />) :
-            (<BoardListCom joinedGroup={checkIsJoined} />)
-            }
+            <BoardOneCom />
           </div>
         </div>
       </div>

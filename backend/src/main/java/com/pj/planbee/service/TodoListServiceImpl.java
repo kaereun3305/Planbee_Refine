@@ -51,10 +51,11 @@ public HashMap<String, String> checkToday() { //오늘과 내일 날짜값을 St
 	todayTomo.put("yesterdayStr", yesterdayStr);
 	return todayTomo;
 }
+@Transactional
 public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인하는 메소드
 	//순환문을 돌리면서 값이 있는지 확인한다.
-	List<TDstartDTO> dateId = new ArrayList<TDstartDTO>();
-	dateId = tlMap.getDate(sessionId); //sessionId에 해당하는 todoDate와 todoId를 가져온다
+	List<TDstartDTO> dateId = tlMap.getDate(sessionId); //sessionId에 해당하는 todoDate와 todoId를 가져온다
+	//코드 수정
 	int selectedtdId = 0; //return할 selectedId를 초기화
 	//System.out.println("service" + dateId.get(8).getTodo_date());
 	
@@ -62,19 +63,16 @@ public int checkRow(String tdDate, String sessionId) { //열이 있는지 확인
 		if(dateId.get(i).getTodo_date().equals(tdDate)) {
 			selectedtdId = dateId.get(i).getTodo_Id();
 			break;
-		}else {
-			selectedtdId = 0;
 		}
-	}	
+	}
+	//코드 수정
+	if(selectedtdId == 0) {
+		tlMap.dateWrite(tdDate,sessionId);
+		selectedtdId = tdIdSearch(tdDate, sessionId); 
+	}
 	
 	return selectedtdId;
 }
-@Override
-public void inputRow(String tdDate, String sessionId) { //
-	tlMap.dateWrite(tdDate, sessionId); //열을 작성함	
-	
-}
-
 
 
 public int tdIdSearch(String tdDate, String sessionId) { //날짜와 아이디에 해당하는 tdId를 써치하는 메소드
@@ -143,7 +141,9 @@ public int todoModify(TDdetailDTO dto) { //투두리스트 자체 수정기능
 public int todoDel(int tdDetailId) { //투두리스트 한 개 삭제하는 기능
 	int result = 0;
 	try {
+		System.out.println("service 삭제기능수행");
 		result = tdMap.todoDel(tdDetailId);
+		System.out.println("service"+ result);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}

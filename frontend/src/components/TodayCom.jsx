@@ -94,9 +94,11 @@ const TodayCom = () => {
   };
 
   const handleDeleteClick = (id) => {
+    console.log("삭제버튼 클릭:아이디", todoDetailsToday)
     axios
-      .delete(`http://localhost:8080/planbee/todolist/detail/del`, {
+      .delete(`http://localhost:8080/planbee/todolist/del`, {
         withCredentials: true,
+        data:{id},
       })
       .then(() => {
         setTodoDetailsToday((prev) =>

@@ -1,0 +1,63 @@
+.join_container {
+    width: 80%;
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 30px;
+    padding: 60px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .join_title {
+    margin: 0 0 40px 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .join_button_area {
+    display: flex;
+    gap: 32px;
+  }
+  
+  .join_yes,
+  .join_no,
+  .join_confirm {
+    width: 120px;
+    height: 50px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .join_yes {
+    background-color:#ffe600; /* 녹색 */
+    color: #fff;
+  }
+  .join_yes:hover {
+    background-color: hsl(54, 98%, 47%);
+  }
+  
+  .join_no {
+    background-color: black; /* 빨간색 */
+    color: #fff;
+  }
+  .join_no:hover {
+    background-color: #292828;
+  }
+  
+  /* 확인 버튼 */
+  .join_confirm {
+    background-color: #ffe600; /* 파란색 예시 */
+    color: #fff;
+  }
+  .join_confirm:hover {
+    background-color: hsl(54, 98%, 47%);
+  }
+  

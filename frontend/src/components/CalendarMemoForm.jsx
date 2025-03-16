@@ -72,9 +72,13 @@ const CalendarMemoForm = ({
     try {
       // PUT 요청으로 메모 수정
       const response = await axios.put(
-        `http://localhost:8080/plandbee/calendar/modimemo/${calId}`,
-        requestData,
-        { withCredentials: true }
+        `http://localhost:8080/planbee/calendar/modimemo/${calId}`, JSON.stringify(requestData),
+        //requestData,
+        { 
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          withCredentials: true }
       );
       console.log("수정 요청 데이터:", requestData);
       onUpdate(response.data);

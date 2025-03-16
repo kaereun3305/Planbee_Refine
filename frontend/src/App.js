@@ -3,6 +3,7 @@ import SignIn from "./pages/SignIn";
 import ToDoList from "./pages/ToDoList";
 import Archive from "./pages/Archive";
 import Calendar from "./pages/Calendar";
+import Social from "./pages/Social";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/todolist" element={<ToDoList />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/social" element={<Social />} />
         <Route path="/login" element={<SignIn />} />
       </Routes>
     </Router>

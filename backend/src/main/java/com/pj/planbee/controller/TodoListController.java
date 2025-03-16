@@ -46,7 +46,7 @@ public class TodoListController {
 //	}
 	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
 	public String session(HttpSession se) {
-		se.setAttribute("sessionId", "coffeeNine");
+		se.setAttribute("sessionId", "팥붕");
 		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
 		return (String) se.getAttribute("sessionId");
 
@@ -56,7 +56,7 @@ public class TodoListController {
 	public int checkSession(HttpSession session) { // 세션체크
 		return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
 	}
-
+	@Transactional //트랜젝션 추가
 	@GetMapping(value = "/getTodo/{tdDate}", produces = "application/json; charset=utf-8")
 	public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se) { // 오늘의 투두리스트를 가져오는 기능
 		// input값: yyMMdd 형식의 날짜 데이터
@@ -68,7 +68,6 @@ public class TodoListController {
 		// System.out.println("result" + result);
 
 		if (result == 0) {
-			ts.inputRow(tdDate, sessionId); //
 			todoId = ts.tdIdSearch(tdDate, sessionId);// 추가한 후 todoId 고유번호를 반환하도록 설정
 		} else {
 			todoId = result;
@@ -91,12 +90,14 @@ public class TodoListController {
 		// sessionId와 tdDate를 이용해서 tdId를 가져오는 메소드
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
 //		System.out.println("ctrl,todo:"+ dto.getTdDetailTime());
-//		System.out.println(dto.getTdId());
+//		System.out.println("tdId"+ tdId);
 		dto.setTdId(tdId);
 		Map<String, Integer> response = new HashMap<String, Integer>();
 		int result =0; 
 		result = ts.todoWrite(dto);
+//		System.out.println("결과"+result);
 		int returnTdDetailId = ts.getTdDetailId(dto.getTdDetail(),tdId);
+//		System.out.println("return"+ returnTdDetailId);
 		if(result ==1) {
 			response.put("tdDetailId", returnTdDetailId);
 			double newProgress = ts.todoProgress(tdId);
@@ -112,8 +113,10 @@ public class TodoListController {
 	// 정상작동됨
 	@DeleteMapping(value="/del", produces="application/json; charset=utf-8")
 	public int todoDel(@RequestBody TDdetailDTO dto) { //투두리스트 삭제하는 기능, 시간 지나면 삭제 불가
-		
-		return ts.todoDel(dto.getTdDetailId());
+		System.out.println("ctrl"+ dto.getTdDetailId());
+		int result = ts.todoDel(dto.getTdDetailId());
+		System.out.println("삭제실행결과: "+ result);
+		return result;
 	}
 	
 
@@ -153,11 +156,10 @@ public class TodoListController {
 		String sessionId = (String) se.getAttribute("sessionId");
 		// System.out.println("ctrl:" + sessionId);
 		int tdId = ts.tdIdSearch(tdDate, sessionId);
-		System.out.println("Ctrl " + tdId);
+		System.out.println("Ctrl getMemo? " + tdId);
 		List<SubTodoListDTO> list = ts.getMemo(tdId);
 		
 		if (list.isEmpty()) { // 만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
-			ts.inputRow(tdDate, sessionId);
 			tdId = ts.tdIdSearch(tdDate, sessionId);
 			list = ts.getMemo(tdId);
 		}

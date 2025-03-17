@@ -23,7 +23,7 @@
   text-align: center;
   position: relative;
   transform: translateY(-50%);
-  top: 50%; /* 이 값이 팝업을 수직 중앙에 위치시킴 */
+  top: 10%; /* 이 값이 팝업을 수직 중앙에 위치시킴 */
   opacity: 0;
   scale: 0.9;
   animation: fadeIn 0.3s forwards;

@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Banner from '../components/Banner'
 import SideBar from '../components/SideBar'
 import BoardOneCom from '../components/BoardOneCom'
+import BoardListCom from '../components/BoardListCom'
 import axios from 'axios'
 
 
 const Board = () => {
-    const checkIsJoined = 1;
+    const [selectedPost, setSelectedPost] = useState(null);
+    const checkIsJoined = null;
     // = async () =>{
     //     try {
     //         const response = await axios.get(
@@ -34,7 +36,9 @@ const Board = () => {
         <SideBar />
         <div className="main_content">
           <div className="social_container">
-            <BoardOneCom />
+          <div>
+        <BoardListCom />
+          </div>
           </div>
         </div>
       </div>
@@ -42,4 +46,4 @@ const Board = () => {
   )
 }
 
-export default Social
+export default Board

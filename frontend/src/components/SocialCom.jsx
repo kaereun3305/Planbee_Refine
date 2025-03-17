@@ -1,16 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState, useNavigate } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/SocialList.css';
 import axios from 'axios';
 import GroupJoinPopUp from './GroupJoinPopUp';
 import social from '../social'
+import { select } from 'framer-motion/client';
 
 const SocialCom = () => {
     const [isJoinOpen, setIsJoinOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
     const groups = social.groups();
-    console.log(groups)
+    //console.log(groups)
     // = () => {
 
     //     try {
@@ -26,9 +27,49 @@ const SocialCom = () => {
     //     }
     // }
     const handleOpenModal = (data) =>{
+        console.log("선택된 것", data)
         setSelectedGroup(data);
+        console.log("selectedGroup", selectedGroup)
         setIsJoinOpen(true);
     };
+    useEffect(()=>{
+      console.log("selectedGroup 변경", selectedGroup)
+    },[selectedGroup])
+
+    useEffect(() => {
+      const makeSession = async () => {
+        try {
+          const response = await axios.post(
+            `http://localhost:8080/planbee/board/makeSession`,
+            null, // POST 요청 시 body를 전달할 필요 없으면 null
+            {
+              withCredentials: true, // 쿠키 전송을 허용
+            }
+          );
+          console.log("세션 요청 여부:", response.data);
+          console.log("쿠키확인", document.cookie);
+        } catch (error) {
+          console.error("세션 fetching 실패!", error);
+        }
+      };
+
+      const checkSession = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:8080/planbee/todolist/checkSession`,
+            {
+              withCredentials: true,
+            }
+          );
+          console.log("세션 확인 :", response.data);
+        } catch (error) {
+          console.error("에러", error);
+        }
+      };
+
+      makeSession();
+      checkSession();
+    },[])
 
     const handleCloseModal = () => {
       setIsJoinOpen(false);
@@ -53,9 +94,8 @@ const SocialCom = () => {
                     </div>
                     <div className="group_right">
                     
-                    <button className="join_button" onClick={()=> handleOpenModal(group.title)}>
-                    <div style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }} 
-                      onClick={() => setIsJoinOpen(true)}>
+                    <button className="join_button" onClick={()=>handleOpenModal(group.title)}>
+                    <div style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }} >
                         Join
                     </div>
                     

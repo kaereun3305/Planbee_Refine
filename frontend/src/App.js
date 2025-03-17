@@ -4,7 +4,8 @@ import ToDoList from "./pages/ToDoList";
 import Archive from "./pages/Archive";
 import Calendar from "./pages/Calendar";
 import Social from "./pages/Social";
-import BoardOneCom from "./components/BoardListCom";
+import Board from "./pages/Board"
+import BoardDetail from "./pages/BoardDetail"
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path="/archive" element={<Archive />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/social" element={<Social />} />
-        <Route path="/board/:id" element={<BoardOneCom />} />
+        <Route path="/boardList" element={<Board />} />
+        <Route path="/boardOne/:id" element={<BoardDetail />} />
         <Route path="/login" element={<SignIn />} />
       </Routes>
     </Router>

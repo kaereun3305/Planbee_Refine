@@ -7,7 +7,7 @@ import axios from 'axios'
 
 
 const Social = () => {
-    const checkIsJoined = null;
+    const checkIsJoined = 1;
     // = async () =>{
     //     try {
     //         const response = await axios.get(

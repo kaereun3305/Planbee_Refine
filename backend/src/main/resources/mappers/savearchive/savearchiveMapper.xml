@@ -45,7 +45,7 @@
     </select>
 	
 	<select id="archiveCheck" resultMap = "archive">
-		select * from archive where archive_date=#{yesterday}
+		select * from archive where archive_date=#{yesterday} and user_id=#{sessionId}
 	</select>
 	
     <insert id="toArchive">
@@ -56,16 +56,12 @@
     	select todo_Id from ToDoList where todo_date=#{yesterday}
     </select>
     
-    <select id="getArchId">
-    	select archive_id from archive where archive_date =#{yesterday}
-    </select>
-    
     <select id="todoDetailCheck" resultMap="todoDetail" >
     	select * from ToDoList_Detail where todo_id=#{tdIds}
     </select>
     
     <insert id="toArchiveDetail">
-    	insert into archive_detail (archivedetail, archivedetail_state, archivedetail_time, archive_id, tododetail_id) values (#{tdDetail}, #{tdDetailState}, #{tdDetailTime}, #{tdId}, #{tdDetailId});
+    	insert into archive_detail (archivedetail, archivedetail_state, archivedetail_deadline, archive_id, tododetail_id) values (#{tdDetail}, #{tdDetailState}, #{tdDetailTime}, #{tdId}, #{tdDetailId});
     </insert>
     
     <select id="checkExist">

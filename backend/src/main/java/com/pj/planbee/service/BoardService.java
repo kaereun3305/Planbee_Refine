@@ -20,4 +20,6 @@ public interface BoardService {
 	public int groupSearch(String sessionId); //세션아이디 기반으로 그룹번호 가져오는 기능
 	public List<BoardDTO> contentSearch(int groupId, String content);//content 키로 내용서치
 	public List<BoardDTO> titleSearch(int groupId, String content);//content키로 제목 서치
+	public List<BoardDTO> newestSort(int groupId); //최신 순 정렬
+	public List<BoardDTO> oldestSort(int groupId); //오래된 순 정렬
 }

@@ -123,6 +123,28 @@ public class BoardServiceImpl implements BoardService{
 		}
 		return maxHit;
 	}
+	
+	@Override
+	public List<BoardDTO> newestSort(int groupId){
+		List<BoardDTO> newestSort = new ArrayList<BoardDTO>();
+		try {
+			newestSort = btMap.newestSort(groupId);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return newestSort;
+	}
+	
+	@Override
+	public List<BoardDTO> oldestSort(int groupId){
+		List<BoardDTO> oldestSort = new ArrayList<BoardDTO>();
+		try {
+			oldestSort = btMap.oldestSort(groupId);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return oldestSort;
+	}
 
 	@Override
 	public int groupSearch(String sessionId) {

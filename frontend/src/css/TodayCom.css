@@ -37,7 +37,6 @@
 }
 .todolist_checkbox td:nth-child(2) {
   width: 300px;
-  background-color: aquamarine;
 }
 .todolist_checkbox td:nth-child(3) {
   width: 50px;

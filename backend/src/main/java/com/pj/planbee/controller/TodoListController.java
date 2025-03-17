@@ -46,7 +46,7 @@ public class TodoListController {
 //	}
 	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
 	public String session(HttpSession se) {
-		se.setAttribute("sessionId", "coffeeNine");
+		se.setAttribute("sessionId", "팥붕");
 		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
 		return (String) se.getAttribute("sessionId");
 
@@ -68,7 +68,7 @@ public class TodoListController {
 		// System.out.println("result" + result);
 
 		if (result == 0) {
-			ts.inputRow(tdDate, sessionId); //
+			//ts.inputRow(tdDate, sessionId); //
 			todoId = ts.tdIdSearch(tdDate, sessionId);// 추가한 후 todoId 고유번호를 반환하도록 설정
 		} else {
 			todoId = result;
@@ -157,7 +157,7 @@ public class TodoListController {
 		List<SubTodoListDTO> list = ts.getMemo(tdId);
 		
 		if (list.isEmpty()) { // 만약 todolist에 해당날짜에 대한 열이 입력되어있지 않으면 inputRow를 실행함
-			ts.inputRow(tdDate, sessionId);
+			//ts.inputRow(tdDate, sessionId);
 			tdId = ts.tdIdSearch(tdDate, sessionId);
 			list = ts.getMemo(tdId);
 		}

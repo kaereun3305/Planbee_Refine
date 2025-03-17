@@ -33,7 +33,6 @@
 		<property name="dataSource" ref="ds" />
 		<property name="mapperLocations"
 			value="classpath:/mappers/**/*Mapper.xml" />
-
 	</bean>
 	<!-- JavaMailSender 설정 -->
 	<bean id="mailSender"

@@ -19,14 +19,20 @@
         
         
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+<<<<<<< HEAD
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp"/>
+=======
+>>>>>>> origin/hyesu
                         		
         
         
         <property name="java-output-path" value="target/classes"/>
+<<<<<<< HEAD
                                 
         
         
+=======
+>>>>>>> origin/hyesu
         <property name="context-root" value="planbee"/>
                         	
     

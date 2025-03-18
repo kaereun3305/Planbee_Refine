@@ -17,7 +17,7 @@ function App() {
         <Route path="/archive" element={<Archive />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/social" element={<Social />} />
-        <Route path="/boardList" element={<Board />} />
+        <Route path="/boardList/:group" element={<Board />} />
         <Route path="/boardOne/:id" element={<BoardDetail />} />
         <Route path="/login" element={<SignIn />} />
       </Routes>

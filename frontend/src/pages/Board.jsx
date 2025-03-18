@@ -4,9 +4,11 @@ import SideBar from '../components/SideBar'
 import BoardOneCom from '../components/BoardOneCom'
 import BoardListCom from '../components/BoardListCom'
 import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 
 const Board = () => {
+    const groupName = useParams();
     const [selectedPost, setSelectedPost] = useState(null);
     const checkIsJoined = null;
     // = async () =>{

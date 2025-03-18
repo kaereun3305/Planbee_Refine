@@ -11,7 +11,7 @@ const GroupJoinPopUp = ({groupName, onClose}) => {
     console.log("selectedGroup", groupName)
     const handleYesClick = () => {
         setIsJoined(true);
-        navigate("/boardList");
+        navigate(`/boardList/${groupName}`);
       };
 
       const handleNoClick = () => {

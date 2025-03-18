@@ -10,22 +10,41 @@ import { select } from 'framer-motion/client';
 const SocialCom = () => {
     const [isJoinOpen, setIsJoinOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
-    const groups = social.groups();
-    //console.log(groups)
-    // = () => {
-
-    //     try {
-    //         const response = await axios.get(
-    //             `해당API주소`,
-    //             {
-    //                 withCredentails: true;
-    //             }
-    //         )
-    //     } catch (error) {
-    //         console.log("group리스트 가져오기 실패", error)
+    const [groups, setGroups] = useState([]);
+    
+    
+    useEffect(()=>{
+      const fetchGroupsList = async () => { //모든 그룹 가져오는 api 연결하기
+        
+        
+        // try {
+        //     const response = await axios.get(
+        //         `해당API주소`,
+        //         {
+        //             withCredentials: true
+        //         }
+        //     )
+        // } catch (error) {
+        //     console.log("group리스트 가져오기 실패", error)
             
-    //     }
-    // }
+        // }
+
+        setGroups( [//하드코딩
+          { id: 1, title: "PlanBEE", desc: "PlanBEE만드는 그룹입니다다" },
+          { id: 2, title: "여행", desc: "도시여행하기 좋아하는 그룹입니다" },
+          { id: 3, title: "취업", desc: "취업어렵다는데 할 수 있겠죠?" },
+          { id: 4, title: "dev", desc: "developers" },
+          { id: 5, title: "맛집", desc: "맛집 공유해요!" },
+          { id: 6, title: "요새 고민", desc: "고민상담방, 악플금지!" },
+          { id: 7, title: "아무거나", desc: "아무거나 그룹" },
+          { id: 8, title: "게임", desc: "게임에 대한 심도있는 대화를 합니다" },
+          { id: 9, title: "나무위키", desc: "나무위키 수정하는 사람들" },
+        ])
+    }
+    fetchGroupsList(); //처음 한 번만 실행하게 됨
+    },[])
+   
+
     const handleOpenModal = (data) =>{
         console.log("선택된 것", data)
         setSelectedGroup(data);
@@ -35,41 +54,6 @@ const SocialCom = () => {
     useEffect(()=>{
       console.log("selectedGroup 변경", selectedGroup)
     },[selectedGroup])
-
-    useEffect(() => {
-      const makeSession = async () => {
-        try {
-          const response = await axios.post(
-            `http://localhost:8080/planbee/board/makeSession`,
-            null, // POST 요청 시 body를 전달할 필요 없으면 null
-            {
-              withCredentials: true, // 쿠키 전송을 허용
-            }
-          );
-          console.log("세션 요청 여부:", response.data);
-          console.log("쿠키확인", document.cookie);
-        } catch (error) {
-          console.error("세션 fetching 실패!", error);
-        }
-      };
-
-      const checkSession = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:8080/planbee/todolist/checkSession`,
-            {
-              withCredentials: true,
-            }
-          );
-          console.log("세션 확인 :", response.data);
-        } catch (error) {
-          console.error("에러", error);
-        }
-      };
-
-      makeSession();
-      checkSession();
-    },[])
 
     const handleCloseModal = () => {
       setIsJoinOpen(false);

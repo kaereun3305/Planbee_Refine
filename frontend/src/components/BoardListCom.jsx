@@ -6,10 +6,13 @@ import Banner from './Banner';
 import SideBar from './SideBar';
 
 const BoardListCom = () => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [postTitle, setPostTitle] = useState('');
+    const [postContent, setPostContent] = useState('');
     const navigate = useNavigate();
     const [board, setBoard] = useState([]);
-    useEffect(()=>{
-        
+    
+ 
         const fetchBoardList = async ()=>{
           try {
             const response  = await axios.get( //세션아이디 기반으로 group글 가져오므로 동일한지 확인 필요없음음
@@ -27,32 +30,39 @@ const BoardListCom = () => {
           }
         };
         
+    fetchBoardList();
+    const handleSave = () =>{
+      console.log("제목:", postTitle);
+      console.log("내용:", postContent);
+      axios
+      .post(
+        `http://localhost:8080/planbee/board/boardWrite`,{
+            "postTitle": postTitle,
+            "postContent" : postContent
+      },{
+        withCredentials: true,
+      })
+      .then((response)=>{
+        console.log("글 등록성공", response.data)
+        setIsEditing(false);
+        onclose();
+        setPostTitle("");
+        setPostContent("");
         fetchBoardList();
-        //임시데이터 넣을 경우
-        // const response = [
-        //   { postId: "1", postTitle: "첫글입니다", postContents: "안녕하세요 첫 글 작성해보겠습니다", postDate: "25-03-13 15:28", postHit: "0", userId: "팥붕", groupId: "1" },
-        //   { postId: "2", postTitle: "두번째글입니다", postContents: "점심 뭐드실래요?", postDate: "25-03-13 15:30", postHit: "0", userId: "슈붕", groupId: "1" },
-        //   { postId: "3", postTitle: "세번째글입니다", postContents: "팥붕어빵이요....", postDate: "25-03-13 15:31", postHit: "0", userId: "배즙", groupId: "2" },
-        //   { postId: "4", postTitle: "네번째글입니다", postContents: "아뇨 저는 포케먹고싶어요", postDate: "25-03-13 15:40", postHit: "0", userId: "coffeeNine", groupId: "2" },
-        //   { postId: "5", postTitle: "다섯번째글입니다", postContents: "집에 가고싶다", postDate: "25-03-13 15:50", postHit: "0", userId: "userId", groupId: "1" },
-        //   { postId: "6", postTitle: "하하 수정삭제제", postContents: "왜 되지? 왜 안되지?", postDate: "25-03-13 16:00", postHit: "0", userId: "팥붕", groupId: "1" }
-        // ]
-        //setBoard(response);
-        
-        
-    },[])
+      })
+      .catch((error)=>{
+        console.log("글 등록 실패", error);
+      })
+     
+    }
     
-    
-  // const onePost=(id)=>{ //하나 누르면 id를 전달하면서 그 페이지로 이동함
-  //   navigate(`/board/${id}`)
-  // }
-
 
 
 
   return (
     <>
     <h1 style={{marginBottom:'30px'}}>PlanBEE Group Board</h1>
+    
       {!board ? (
         <div stye={{textAlign:'center', padding:'50px', marginTop:'20px'}}>게시판에 글이 없습니다.</div> // div 태그 닫기
       ) : (
@@ -87,8 +97,30 @@ const BoardListCom = () => {
               </div>
             );
           })}
+          
         </>
       )}
+      <div className="write-box" onClick={() => setIsEditing(true)}>
+                {isEditing ? (
+                    <div className="edit-mode">
+                        <input 
+                            type="text"
+                            placeholder="제목을 입력하세요"
+                            value={postTitle}
+                            onChange={(e) => setPostTitle(e.target.value)}
+                        /><br/>
+                        <textarea 
+                            placeholder="내용을 입력하세요"
+                            value={postContent}
+                            onChange={(e) => setPostContent(e.target.value)}
+                        />
+                        <button onClick={handleSave}>등록</button>
+                        <button onClick={() => setIsEditing(false)}>취소</button>
+                    </div>
+                ) : (
+                    <p className="placeholder">+ 새로운 글을 작성하려면 클릭하세요.</p>
+                )}
+            </div>
     </>
   );
   

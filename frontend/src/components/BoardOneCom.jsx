@@ -29,8 +29,13 @@ const BoardOneCom = () => {
         }
       ).then(response=> {
         console.log("게시글 수정 성공", response);
-        setIsEditing(false);
-        window.location.reload();
+        setThisPost({
+          ...thisPost,
+          postTitle: editedPost.title,
+          postContent: editedPost.contents
+      });
+
+      setIsEditing(false);
       }).catch(error => {
         console.log("게시글 수정 실패", error)
       })

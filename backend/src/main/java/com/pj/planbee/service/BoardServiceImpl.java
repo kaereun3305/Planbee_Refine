@@ -1,13 +1,17 @@
 package com.pj.planbee.service;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pj.planbee.dto.BoardDTO;
+import com.pj.planbee.dto.GroupInfoDTO;
+import com.pj.planbee.dto.PostListDTO;
 import com.pj.planbee.mapper.BoardMapper;
+
 @Service
 public class BoardServiceImpl implements BoardService{
 	@Autowired BoardMapper btMap;
@@ -93,57 +97,119 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public List<BoardDTO> boardGroup(int groupId) {
-		List<BoardDTO> group = new ArrayList<BoardDTO>();
-		try {
-			group = btMap.boardGroup(groupId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return group;
+	public GroupInfoDTO boardGroup(int groupId) {
+	    List<PostListDTO> posts = new ArrayList<>();
+	    String groupName = "";
+	    int groupMemberCount = 0;
+
+	    try {
+	        // 1. 게시글 목록 조회
+	        posts = btMap.boardGroup(groupId);
+	        
+	        // 2. 그룹 이름 조회
+	        groupName = btMap.getGroupName(groupId);
+	        
+	        // 3. 그룹 인원 수 조회
+	        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
+
 	@Override
-	public List<BoardDTO> boardUser(String userId) {
-		List<BoardDTO> user = new ArrayList<BoardDTO>();
-		try {
-			user = btMap.boardUser(userId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return user;
-	}
-	@Override
-	public List<BoardDTO> maxHit(int groupId) {
-		List<BoardDTO> maxHit = new ArrayList<BoardDTO>();
-		try {
-			maxHit = btMap.maxHit(groupId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return maxHit;
-	}
-	
-	@Override
-	public List<BoardDTO> newestSort(int groupId){
-		List<BoardDTO> newestSort = new ArrayList<BoardDTO>();
-		try {
-			newestSort = btMap.newestSort(groupId);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return newestSort;
+	public GroupInfoDTO boardUser(String userId) {
+		List<PostListDTO> posts = new ArrayList<>();
+	    String groupName = "";
+	    int groupMemberCount = 0;
+
+	    try {
+	        // 1. 게시글 목록 조회
+	        posts = btMap.boardUser(userId);
+	        
+	        // 2. 그룹 이름 조회
+	        groupName = btMap.getGroupNameWithUserId(userId);
+	        
+	        // 3. 그룹 인원 수 조회
+	        groupMemberCount = btMap.getGroupMemberCountWithUserId(userId);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 	
 	@Override
-	public List<BoardDTO> oldestSort(int groupId){
-		List<BoardDTO> oldestSort = new ArrayList<BoardDTO>();
-		try {
-			oldestSort = btMap.oldestSort(groupId);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return oldestSort;
+	public GroupInfoDTO maxHit(int groupId) {
+		 List<PostListDTO> posts = new ArrayList<>();
+		    String groupName = "";
+		    int groupMemberCount = 0;
+
+		    try {
+		        // 1. 게시글 목록 조회
+		        posts = btMap.maxHit(groupId);
+		        
+		        // 2. 그룹 이름 조회
+		        groupName = btMap.getGroupName(groupId);
+		        
+		        // 3. 그룹 인원 수 조회
+		        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    return new GroupInfoDTO(groupName, groupMemberCount, posts);
+	}
+	
+	@Override
+	public GroupInfoDTO newestSort(int groupId){
+		 List<PostListDTO> posts = new ArrayList<>();
+		    String groupName = "";
+		    int groupMemberCount = 0;
+
+		    try {
+		        // 1. 게시글 목록 조회
+		        posts = btMap.newestSort(groupId);
+		        
+		        // 2. 그룹 이름 조회
+		        groupName = btMap.getGroupName(groupId);
+		        
+		        // 3. 그룹 인원 수 조회
+		        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    return new GroupInfoDTO(groupName, groupMemberCount, posts);
+	}
+	
+	@Override
+	public GroupInfoDTO oldestSort(int groupId){
+		 List<PostListDTO> posts = new ArrayList<>();
+		    String groupName = "";
+		    int groupMemberCount = 0;
+
+		    try {
+		        // 1. 게시글 목록 조회
+		        posts = btMap.oldestSort(groupId);
+		        
+		        // 2. 그룹 이름 조회
+		        groupName = btMap.getGroupName(groupId);
+		        
+		        // 3. 그룹 인원 수 조회
+		        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
 	@Override
@@ -153,25 +219,49 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public List<BoardDTO> contentSearch(int groupId, String content) {
-		List<BoardDTO> contents = new ArrayList<BoardDTO>();
-		try {
-			contents = btMap.contentSearch(groupId, content);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return contents;
+	public GroupInfoDTO contentSearch(int groupId, String content) {
+		List<PostListDTO> posts = new ArrayList<>();
+	    String groupName = "";
+	    int groupMemberCount = 0;
+
+	    try {
+	        // 1. 게시글 목록 조회
+	        posts = btMap.contentSearch(groupId, content);
+	        
+	        // 2. 그룹 이름 조회
+	        groupName = btMap.getGroupName(groupId);
+	        
+	        // 3. 그룹 인원 수 조회
+	        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
 	@Override
-	public List<BoardDTO> titleSearch(int groupId, String content) {
-		List<BoardDTO> contents = new ArrayList<BoardDTO>();
-		try {
-			contents = btMap.titleSearch(groupId, content);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return contents;
+	public GroupInfoDTO titleSearch(int groupId, String content) {
+		List<PostListDTO> posts = new ArrayList<>();
+	    String groupName = "";
+	    int groupMemberCount = 0;
+
+	    try {
+	        // 1. 게시글 목록 조회
+	        posts = btMap.titleSearch(groupId, content);
+	        
+	        // 2. 그룹 이름 조회
+	        groupName = btMap.getGroupName(groupId);
+	        
+	        // 3. 그룹 인원 수 조회
+	        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
 }

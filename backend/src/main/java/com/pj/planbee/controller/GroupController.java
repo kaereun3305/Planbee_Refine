@@ -23,34 +23,35 @@ import com.pj.planbee.service.GroupService;
 @RequestMapping("/group")
 public class GroupController {
 	
-    @Autowired  GroupService gs;
+    @Autowired GroupService gs;
+    @Autowired HttpSession se;
     
     //세션 생성 메소드(로그인 연결시 삭제 예정)
   	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8")
-  	public String session(HttpSession se) {
+  	public String session() {
   		se.setAttribute("sessionId", "admin");
   		return (String) se.getAttribute("sessionId");
   	}
   	
   	// 로그아웃(로그인 연결시 삭제 예정)
   	@PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
-  	public int logout(HttpSession se) {
+  	public int logout() {
   		se.invalidate();
   		return 1; // 로그아웃 성공
   	}
   	
   	// 로그인 상태 확인(로그인 연결시 삭제 예정)
   	@GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8")
-  	public int checkSession(HttpSession se) {
+  	public int checkSession() {
   		return (se.getAttribute("sessionId") != null) ? 1 : 0;  // 1: 로그인된 상태, 0: 로그인되지 않음
   	}
 
   	// 사용자가 가입한 그룹 확인 후 리다이렉트
   	@GetMapping(value="", produces = "application/json; charset=utf-8")
-  	public RedirectView checkUserGroup(HttpSession se) {
+  	public RedirectView checkUserGroup() {
   		String userId = (String) se.getAttribute("sessionId");
   		
-  		 Integer groupId = gs.getUserGroupId(userId);
+  		Integer groupId = gs.getUserGroupId(userId);
 
   	    // 가입된 그룹이 없으면 그룹 목록 페이지로 이동
   	    if (groupId == null || groupId == 0) {
@@ -69,7 +70,7 @@ public class GroupController {
 
     // 그룹 가입 (가입 후 바로 그룹 게시판으로 이동)
     @PostMapping(value="/join", produces = "application/json; charset=utf-8")
-    public RedirectView joinGroup(@RequestParam int groupId, HttpSession se) {
+    public RedirectView joinGroup(@RequestParam int groupId) {
     	String userId = (String) se.getAttribute("sessionId");
        
         int success = gs.joinGroup(userId, groupId);
@@ -82,31 +83,14 @@ public class GroupController {
         return new RedirectView("http://localhost:8080/planbee/group/list");
     }
     
-    /*
+    /*  
     @GetMapping("/{groupId}")
     public String groupPage(@PathVariable int groupId) {
         return "groupPage"; // 해당 그룹의 게시판 페이지 반환 (ViewResolver 필요)
-    }*/
+    }
     
     @GetMapping(value="/{groupId}", produces="application/json; charset=utf-8")
     public ResponseEntity<String> groupPage(@PathVariable int groupId) {
         return ResponseEntity.ok("그룹 " + groupId + " 게시판 페이지가 아직 구현되지 않았습니다.");
-    }
-
-
-    // 그룹 탈퇴 (탈퇴 후 그룹 목록으로 이동)
-    @PostMapping(value="/leave", produces = "application/json; charset=utf-8")
-    public RedirectView leaveGroup(HttpSession se) {
-        String userId = (String) se.getAttribute("sessionId");
-        
-        int groupId = gs.getUserGroupId(userId);
-        int success = gs.leaveGroup(userId, groupId);
-        
-        if(success == 1) {
-        	return new RedirectView("http://localhost:8080/planbee/group/list");
-        }
-        
-        System.out.println("탈퇴 실패");
-        return new RedirectView("http://localhost:8080/planbee/group/"+groupId);
-    }
+    }*/
 }

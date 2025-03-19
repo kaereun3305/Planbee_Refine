@@ -1,11 +1,9 @@
 package com.pj.planbee.dto;
 
-
 public class BoardDTO {
 	int postId, postHit, groupId;
 	String postTitle, postContent, userId;
 	String postDate;
-	
 	
 	public String getPostDate() {
 		return postDate;

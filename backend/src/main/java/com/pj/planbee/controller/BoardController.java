@@ -14,40 +14,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.pj.planbee.dto.BoardDTO;
+import com.pj.planbee.dto.GroupInfoDTO;
+import com.pj.planbee.dto.PostListDTO;
 import com.pj.planbee.service.BoardService;
+import com.pj.planbee.service.GroupService;
 
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/group")
 @CrossOrigin(origins = "*", allowedHeaders="*", allowCredentials ="true")
 public class BoardController {
 	@Autowired BoardService bs;
+	@Autowired GroupService gs;
+	@Autowired HttpSession se;
 	
-	
-	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
-	public String session(HttpSession se) {
-		se.setAttribute("sessionId", "팥붕");
-		//세션 두 개 사용해서 매일 테스트 할 것
-		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
-		return (String) se.getAttribute("sessionId");
-
+	// 그룹 이름, 인원 수, 게시글 : { ... } 
+	@GetMapping(value="/{groupId}", produces="application/json; charset=utf-8")
+	public GroupInfoDTO boardGroup(@PathVariable int groupId) {
+	    return bs.boardGroup(groupId);
 	}
-	
-	//팀별 게시글 검색 기능
-		@GetMapping(value="/boardGroup", produces="application/json; charset=utf-8")
-		public List<BoardDTO> boardGroup(HttpSession se){
-			String sessionId = (String) se.getAttribute("sessionId");
-			int groupId = bs.groupSearch(sessionId);
-			//로그인 된 세션아이디 기반으로 그룹 번호 가져와서
-			List<BoardDTO> boardGroup = new ArrayList<BoardDTO>();
-			boardGroup = bs.boardGroup(groupId);
-			//그룹번호에 해당하는 글을 가져옴
-			
-			return boardGroup;
-		}
 	
 	//get board list 전체를 가져오는 기능은 테스트기능
 //	@GetMapping(value="/boardList", produces = "application/json; charset=utf-8")
@@ -60,7 +50,7 @@ public class BoardController {
 //	}
 	
 	//get 게시글 한 개를 가져오는 기능
-	@GetMapping(value="/viewOne/{postId}", produces = "application/json; charset=utf-8")
+	@GetMapping(value="/{groupId}/board/{postId}", produces = "application/json; charset=utf-8")
 	public BoardDTO getView(@PathVariable int postId) {
 		//postId가 pk역할을 하므로 따로 groupId로 식별하지 않았음
 		BoardDTO dto = bs.getView(postId);
@@ -69,8 +59,8 @@ public class BoardController {
 	}
 	
 	//post board 입력하는 기능
-	@PostMapping(value="/boardWrite", produces = "application/json; charset=utf-8")
-	public int boardWrite(@RequestBody BoardDTO dto, HttpSession se) {
+	@PostMapping(value="/{groupId}/board/boardWrite", produces = "application/json; charset=utf-8")
+	public int boardWrite(@RequestBody BoardDTO dto) {
 		String sessionId = (String) se.getAttribute("sessionId");
 		dto.setUserId(sessionId);
 		int groupId = bs.groupSearch(sessionId);
@@ -85,8 +75,8 @@ public class BoardController {
 	
 
 	//put board 수정하는 기능
-	@PutMapping(value="/boardModi/{postId}", produces = "application/json; charset=utf-8")
-	public int boardModify(@RequestBody BoardDTO dto, HttpSession se, @PathVariable int postId) {
+	@PutMapping(value="/{groupId}/board/boardModi/{postId}", produces = "application/json; charset=utf-8")
+	public int boardModify(@RequestBody BoardDTO dto, @PathVariable int postId) {
 		String sessionId = (String) se.getAttribute("sessionId");
 		dto.setUserId(sessionId);
 		int groupId = bs.groupSearch(sessionId);
@@ -96,8 +86,8 @@ public class BoardController {
 	}
 	
 	//del board 삭제하는 기능
-	@DeleteMapping(value="/boardDel/{postId}", produces = "application/json; charset=utf-8")
-	public int boardDel(@PathVariable int postId, HttpSession se) {
+	@DeleteMapping(value="/{groupId}/board/boardDel/{postId}", produces = "application/json; charset=utf-8")
+	public int boardDel(@PathVariable int postId) {
 		String sessionId = (String) se.getAttribute("sessionId");
 		//postId는 pk이므로 따로 그룹설정 하지 않음
 		int result = bs.boardDel(postId, sessionId);
@@ -106,7 +96,7 @@ public class BoardController {
 	}
 	
 	//게시글 클릭하면 조회수 +1 되는 기능
-	@PutMapping(value="/boardHit/{postId}", produces = "application/json; charset=utf-8")
+	@PutMapping(value="/{groupId}/board/boardHit/{postId}", produces = "application/json; charset=utf-8")
 	public int boardHit(@PathVariable int postId) {
 		//postId는 pk이므로 따로 그룹설정 하지않음
 		int result = bs.boardHit(postId);
@@ -129,76 +119,51 @@ public class BoardController {
 //		return myPost;
 //	}
 	
-	@GetMapping(value="/boardUser/{userId}", produces="application/json; charset=utf-8")
-	public List<BoardDTO> byUser(@PathVariable String userId){
-		//유저가 하나의 그룹에만 가입할 수 있다면, 유저아이디가 그룹을 식별할 수 있게 해주므로
-		//따로 그룹설정 하지 않음
-		List<BoardDTO> byUser = new ArrayList<BoardDTO>();
-		byUser = bs.boardUser(userId);
-		
-		return byUser;
+	@GetMapping(value="/{groupId}/board/boardUser/{userId}", produces="application/json; charset=utf-8")
+	public GroupInfoDTO byUser(@PathVariable String userId){
+		return bs.boardUser(userId);
 	}
 	
-	@GetMapping(value="/maxHit", produces="application/json; charset=utf-8")
-	public List<BoardDTO> maxHit(HttpSession se){
-		String sessionId = (String) se.getAttribute("sessionId");
-		int groupId = bs.groupSearch(sessionId);
-		//로그인된 세션아이디 바탕으로 그룹아이디 추적
-		List<BoardDTO> max = new ArrayList<BoardDTO>();
-		max = bs.maxHit(groupId);
-		//해당 그룹 중에서 가장 조회수가 높은 글을 검색함
-		
-		return max;
+	@GetMapping(value="/{groupId}/board/maxHit", produces="application/json; charset=utf-8")
+	public GroupInfoDTO maxHit(@PathVariable int groupId){
+		return bs.maxHit(groupId);
 	}
 	
 	//내용으로 서치하는 기능
-	@GetMapping(value="/contentSearch/{content}", produces="application/json; charset=utf-8")
-	public List<BoardDTO> contentSearch(HttpSession se, @PathVariable String content){
-		String sessionId = (String) se.getAttribute("sessionId");
-		int groupId = bs.groupSearch(sessionId);
-		//로그인된 세션아이디를 바탕으로 그룹아이디를 추적
-		List<BoardDTO> contents = new ArrayList<BoardDTO>();
-		contents = bs.contentSearch(groupId, content);
-		//해당 그룹에 있는 글 중에서 content에 쓴 글 내용과 비슷한 내용이 있는 경우 검색됨
-		
-		return contents;
+	@GetMapping(value="/{groupId}/board/contentSearch/{content}", produces="application/json; charset=utf-8")
+	public GroupInfoDTO contentSearch(@PathVariable int groupId, @PathVariable String content){
+		return bs.contentSearch(groupId, content);
 	}
 	
 	//제목으로 서치하는 기능
-	@GetMapping(value="/titleSearch/{content}", produces="application/json; charset=utf-8")
-	public List<BoardDTO> titleSearch(HttpSession se, @PathVariable String content){
-		String sessionId = (String) se.getAttribute("sessionId");
-		int groupId = bs.groupSearch(sessionId);
-		//로그인된 세션아이디를 바탕으로 그룹아이디를 추적
-		List<BoardDTO> contents = new ArrayList<BoardDTO>();
-		contents = bs.titleSearch(groupId, content);
-		//해당 그룹에 있는 글 중에서 content에 쓴 글 내용과 비슷한 내용이 있는 경우 검색됨
-		
-		return contents;
+	@GetMapping(value="/{groupId}/board/titleSearch/{content}", produces="application/json; charset=utf-8")
+	public GroupInfoDTO titleSearch(@PathVariable int groupId, @PathVariable String content){
+		return bs.titleSearch(groupId, content);
 	}
 
-	@GetMapping(value="/newestSort", produces="application/json; charset=utf-8")
-	public List<BoardDTO> newestSort(HttpSession se){
-		String sessionId = (String) se.getAttribute("sessionId");
-		int groupId = bs.groupSearch(sessionId);
-		//로그인된 세션아이디 바탕으로 그룹아이디 추적
-		List<BoardDTO> newest = new ArrayList<BoardDTO>();
-		newest = bs.newestSort(groupId);
-		//해당 그룹 중에서 최신순 글 검색
-		
-		return newest;
+	@GetMapping(value="/{groupId}/board/newestSort", produces="application/json; charset=utf-8")
+	public GroupInfoDTO newestSort(@PathVariable int groupId){
+		return bs.newestSort(groupId);
 	}
 	
-	@GetMapping(value="/oldestSort", produces="application/json; charset=utf-8")
-	public List<BoardDTO> oldestSort(HttpSession se){
-		String sessionId = (String) se.getAttribute("sessionId");
-		int groupId = bs.groupSearch(sessionId);
-		//로그인된 세션아이디 바탕으로 그룹아이디 추적
-		List<BoardDTO> oldest = new ArrayList<BoardDTO>();
-		oldest = bs.oldestSort(groupId);
-		//해당 그룹 중에서 최신순 글 검색
-		
-		return oldest;
+	@GetMapping(value="/{groupId}/board/oldestSort", produces="application/json; charset=utf-8")
+	public GroupInfoDTO oldestSort(@PathVariable int groupId){
+		return bs.oldestSort(groupId);
 	}
+	
+	 // 그룹 탈퇴 (탈퇴 후 그룹 목록으로 이동)
+    @PostMapping(value="/{groupId}/leave", produces = "application/json; charset=utf-8")
+    public RedirectView leaveGroup(@PathVariable int groupId) {
+        String userId = (String) se.getAttribute("sessionId");
+       
+        int success = gs.leaveGroup(userId, groupId);
+        
+        if(success == 1) {
+        	return new RedirectView("http://localhost:8080/planbee/group/list");
+        }
+        
+        System.out.println("탈퇴 실패");
+        return new RedirectView("http://localhost:8080/planbee/group/"+groupId);
+    }
 	
 }

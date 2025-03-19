@@ -2,16 +2,33 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../css/GroupJoin.css';
 import { select } from 'framer-motion/client';
+import axios from 'axios';
 
-const GroupJoinPopUp = ({groupName, onClose}) => {
-
+const GroupJoinPopUp = ({groupName, onClose, groupId}) => {
+    console.log("GroupId", groupId);
     const [isJoined, setIsJoined] = useState(false);
     const [isJoinOpen, setIsJoinOpen] = useState(true)
     const navigate = useNavigate(); 
-    console.log("selectedGroup", groupName)
-    const handleYesClick = () => {
-        setIsJoined(true);
-        navigate(`/boardList/${groupName}`);
+    //console.log("selectedGroup", groupName)
+    const handleJoinGroup = async () => {
+        try {
+            const response = await axios.post(
+                `http://localhost:8080/planbee/group/join?groupId=${groupId}`,
+                {},
+                {
+                    withCredentials:true,
+                }
+            )
+            console.log("실행결과 확인", response.data)
+            if(response.status===200){
+                setIsJoined(true);
+            }
+        } catch (error) {
+            console.log("그룹가입 중 에러 발생")
+            navigate("/social");
+        }
+        
+        
       };
 
       const handleNoClick = () => {
@@ -30,10 +47,10 @@ const GroupJoinPopUp = ({groupName, onClose}) => {
                 {groupName}에 가입하시겠습니까?
             </h2>
             <div className="join_button_area">
-                <button className="join_yes" onClick={()=>handleYesClick()}>
+                <button className="join_yes" onClick={handleJoinGroup}>
                     YES
                 </button>
-                <button className="join_no" onClick={() => handleNoClick()}>
+                <button className="join_no" onClick={onClose}>
                     NO
                 </button>
             </div>

@@ -1,14 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Banner from './Banner';
 import SideBar from './SideBar';
 
 const BoardOneCom = () => {
-    const sessionId = "팥붕"; // TODO: 실제 로그인 정보에서 가져오도록 변경
+    const location = useLocation();
     const navigate = useNavigate(); 
     const {id} = useParams();
-    
+    console.log("boardOne COm", {id}.id)
+    const {sessionId} = location.state || {};
 
     const [thisPost, setThisPost] = useState({});
     const [reply, setReply] = useState([]);
@@ -18,7 +19,7 @@ const BoardOneCom = () => {
     const handleHit = () =>{
       try {
         axios.put(
-          `http://localhost:8080/planbee/board/boardHit/${id}`,{
+          `http://localhost:8080/planbee/board/boardHit/${id.id}`,{
             withCredentials: true,
           }
         )
@@ -95,22 +96,22 @@ const BoardOneCom = () => {
     
     
 
-    useEffect(() => {
-        const fetchThisPost = async () => {
-            try {
-                const response = await axios.get(
-                    `http://localhost:8080/planbee/board/viewOne/${id}`,
-                    { withCredentials: true }
-                );
-                setThisPost(response.data);
-                console.log("thisPost", response.data);
-            } catch (error) {
-                console.log("이 게시글 로딩 에러", error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchThisPost = async () => {
+    //         try {
+    //             const response = await axios.get(
+    //                 `http://localhost:8080/planbee/board/${groupId}/viewOne/${id}`,
+    //                 { withCredentials: true }
+    //             );
+    //             setThisPost(response.data);
+    //             console.log("thisPost", response.data);
+    //         } catch (error) {
+    //             console.log("이 게시글 로딩 에러", error);
+    //         }
+    //     };
 
-        fetchThisPost(); // useEffect 내부에서 실행
-    }, [id]);
+    //     fetchThisPost(); // useEffect 내부에서 실행
+    // }, [id]);
 
     useEffect(() => {
         if (thisPost.postTitle && thisPost.postContent) { 
@@ -168,7 +169,7 @@ const BoardOneCom = () => {
                     <p>{thisPost.postContent}</p>
                     <p style={{ textAlign: 'right' }}>
                       <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleGoBack}>목록보기</a>
-                      {thisPost?.userId && thisPost.userId === sessionId && (
+                      {thisPost?.userId && thisPost.userId == {sessionId} && (
                         <>
                           <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleModify}>수정</a>
                           <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={() => handleDel(thisPost.postId)}>삭제</a>

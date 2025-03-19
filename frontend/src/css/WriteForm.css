@@ -1,0 +1,252 @@
+/* 메인 영역 */
+.main_content {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+  
+  /* 글쓰기 박스 (흰 박스) */
+  .white_box_writeform {
+    width: 1500px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    box-sizing: border-box;
+  }
+  
+  /* 입력 그룹 (제목, 내용) */
+  .input-group-writeform {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .input-group-writeform label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .title-input-writeform,
+  .content-input-writeform {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .content-input-writeform {
+    min-height: 80px;
+  }
+  
+  /* 진척도 가져오기 버튼 */
+  .progress-button-writeform {
+    background-color: #ffe600;
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  .progress-button-writeform:hover {
+    background-color: #ffdb3a;
+  }
+  
+  /* 검은 박스 (진척도) */
+  .progress_box_writeform {
+    background: #121212;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    margin: 20px auto;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .progress_title_writeform {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .progress_date_writeform {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .progress_subtitle_writeform {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 5px;
+  }
+  .progress_count_writeform {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  /* 녹색 바 */
+  .progress_bar_outer_writeform {
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  .progress_bar_inner_writeform {
+    background: #2bb51f;
+    border-radius: 10px;
+    padding: 10px;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* 닫기 버튼 */
+  .close_button_writeform {
+    background-color: black;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .close_button_writeform:hover {
+    background-color: #4b4b4b;
+  }
+  
+  /* Post 버튼 */
+  .post_button_writeform {
+    background-color: #ffe600;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  .post_button_writeform:hover {
+    background-color: #fff16f;
+  }
+
+  /* 주간 진척도 박스 */
+.weekly_progress_box_writeform {
+    background: #121212;
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 600px;
+  }
+  
+  /* 주간 진척도 리스트 */
+  .weekly_progress_list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* 개별 주간 진척도 항목 */
+  .weekly_progress_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  /* 날짜 텍스트 스타일 */
+  .weekly_progress_item span {
+    width: 50px;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+  }
+  
+  /* 전체 바 스타일 */
+  .progress_bar_outer {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    padding: 5px;
+    position: relative;
+  }
+  
+  /* 채워지는 바 스타일 */
+  .progress_bar_inner {
+    border-radius: 15px;
+    height: 25px;
+    text-align: center;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 색상 설정 */
+  .red {
+    background: #F35C41;
+  }
+  
+  .yellow {
+    background: #F4CC3A;
+  }
+  
+  .green {
+    background: #2BB51F;
+  }
+/* 버튼을 감싸는 컨테이너 */
+.button_container_writeform {
+    display: flex;
+    justify-content: center; /* 버튼을 가로 중앙 정렬 */
+    align-items: center; /* 버튼을 세로 중앙 정렬 */
+    gap: 10px; /* 버튼 사이 간격 */
+    margin-top: 20px;
+}
+
+/* 닫기 & Post 버튼 크기 통일 */
+.close_button_writeform,
+.post_button_writeform {
+    width: 120px; /* 동일한 너비 */
+    height: 50px; /* 동일한 높이 */
+    font-size: 16px; /* 글자 크기 통일 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px; /* 둥근 모서리 */
+    font-weight: bold;
+    border: none;
+    margin: 0; /* 버튼 간 간격 조절 */
+    padding: 0;
+}
+
+/* 닫기 버튼 스타일 */
+.close_button_writeform {
+    background-color: black;
+    color: white;
+}
+
+/* Post 버튼 스타일 */
+.post_button_writeform {
+    background-color: #ffdb3a;
+    color: black;
+}
+
+
+/* 버튼 hover 효과 */
+.close_button_writeform:hover,
+.post_button_writeform:hover {
+    opacity: 0.8;
+}

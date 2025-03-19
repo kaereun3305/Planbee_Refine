@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import social from '../social';
 import axios from 'axios';
 import Banner from './Banner';
 import SideBar from './SideBar';
 import { option } from 'framer-motion/client';
 
-const BoardListCom = ({joinedGroup}) => {
-    const navigate = useNavigate();  
+const BoardListCom = ({joinedGroup, groupData, sessionId}) => {
+
+    console.log("BoardListCom social에서 받아온 글 정보들", groupData)
+    const navigate = useNavigate();
+    const [currentView, setCurrentTeam] = useState("list");
 
     const [currentTeam, SetCurrentTeam] = useState("joinedGroup");
     const [isEditing, setIsEditing] = useState(false); //수정 상태 변경
@@ -20,6 +22,13 @@ const BoardListCom = ({joinedGroup}) => {
     const [board, setBoard] = useState([]); //게시글 지정
     const [searchTerm, setSearchTerm] = useState(""); //검색키워드 지정
     const [isOpen, setIsOpen] = useState(false);
+
+    const postData = groupData.posts.map(post=>({//받아온 정보 중에서 게시글 관련 정보만 postData에 정리리
+      postId: post.postId,
+      postTitle: post.postTitle,
+      userId: post.userId,
+      postDate: post.postDate,
+    }))
     
     const handleToggle = () => setIsOpen(!isOpen); //드롭다운 열기,닫기 상태변경
     const handleOptionClick = (option) => {
@@ -39,25 +48,25 @@ const BoardListCom = ({joinedGroup}) => {
 
 
    
-    const fetchBoardList = async ()=>{ //게시판 글 가져오는 
-      try {
-        const response  = await axios.get( //세션아이디 기반으로 group글 가져오므로 동일한지 확인 필요없음
-          `http://localhost:8080/planbee/board/boardGroup`,
-          {
-            withCredentials: true,
-          }
-          );
-          console.log("게시글목록", response.data);
-          setBoard(response.data); //결과를 보드에 등록
-          console.log("MListCom board 길이 확인", board.length)
-          } catch (error) {
-            console.log("게시판 글가져오기 실패",error)
-          }
-        };
+    // const fetchBoardList = async ()=>{ //게시판 글 가져오는 
+    //   try {
+    //     const response  = await axios.get( //세션아이디 기반으로 group글 가져오므로 동일한지 확인 필요없음
+    //       `http://localhost:8080/planbee/group/${groupId}`,
+    //       {
+    //         withCredentials: true,
+    //       }
+    //       );
+    //       console.log("게시글목록", response.data);
+    //       setBoard(response.data); //결과를 보드에 등록
+    //       console.log("MListCom board 길이 확인", board.length)
+    //       } catch (error) {
+    //         console.log("게시판 글가져오기 실패",error)
+    //       }
+    //     };
 
-  useEffect(()=>{
-          fetchBoardList();
-  },[])
+  // useEffect(()=>{
+  //         fetchBoardList();
+  // },[])
 
   
     const handleSave = () =>{ //글 수정 후 저장하는 기능
@@ -76,7 +85,6 @@ const BoardListCom = ({joinedGroup}) => {
         setIsEditing(false);
         setPostTitle("");
         setPostContent("");
-        fetchBoardList();
       })
       .catch((error)=>{
         console.log("글 등록 실패", error);
@@ -136,20 +144,7 @@ const BoardListCom = ({joinedGroup}) => {
 
     }
     const writePost = async () => {
-      try {
-        const response = await axios.post(
-          `http://localhost:8080/planbee/board/boardWrite`,
-            {
-              "postTitle": postTitle,
-             "postContent": postContent
-           }
-          ,{
-            withCredentials: true,
-          }
-        )
-      } catch (error) {
-        
-      }
+      navigate()
 
     }
     
@@ -161,10 +156,10 @@ const BoardListCom = ({joinedGroup}) => {
         <div className="main_content group_container">
           <div className="white_box">
             <div className="group_top_bar">
-              <h2 className="group_name">Group name</h2>
+              <h2 className="group_name">{groupData.groupName}</h2>
     
               <div className="group_top_right">
-                <span className="group_member_count">현재 인원 : 30</span>
+                <span className="group_member_count">현재 인원 : {groupData.groupMemberCount}</span>
                 <button className="leave_icon" onClick={() => exitGroup()}>
                   탈퇴하기
                 </button>
@@ -204,16 +199,16 @@ const BoardListCom = ({joinedGroup}) => {
     
             <hr className="group_black_line" />
     
-            {board.length === 0 ? (
+            {postData.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '50px', marginTop: '20px' }}>
                 게시판에 글이 없습니다.
               </div>
             ) : (
               <>
-                {board.map((item) => {
+                {postData.map((item) => {
                   return (
                     <div
-                      key={item.id}
+                      key={item.postId}
                       style={{
                         border: '1px solid #ccc',
                         padding: '10px',
@@ -222,7 +217,7 @@ const BoardListCom = ({joinedGroup}) => {
                         overflowY: 'auto',
                       }}
                     >
-                      <Link to={`/boardOne/${item.postId}`} style={{ cursor: 'pointer' }}>
+                      <Link to={`/boardOne/${item.postId}`} state={{sessionId : sessionId}} style={{ cursor: 'pointer' }}>
                         {item.postTitle}
                       </Link>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -231,7 +226,7 @@ const BoardListCom = ({joinedGroup}) => {
                           <span>{item.userId}</span>
                         </div>
                         <div>
-                          <span>{item.postHit}</span>
+                          <span>조회수0</span> {/*{item.postHit} */}
                           <span>{item.postDate}</span>
                         </div>
                       </div>

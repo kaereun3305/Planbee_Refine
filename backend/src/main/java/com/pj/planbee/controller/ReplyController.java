@@ -41,30 +41,46 @@ public class ReplyController {
         return ResponseEntity.ok(result);
     }
 
-    //댓글 수정
-    @PutMapping(value="/{commentId}", produces = "application/json; charset=utf-8")
-    public ResponseEntity<Integer> updateReply(@PathVariable int postId, @PathVariable int commentId, @RequestBody ReplyDTO reply) {
+    // 대댓글 작성 (부모 댓글의 ID를 받아서 저장)
+    @PostMapping(value = "/{repReplyId}", produces = "application/json; charset=utf-8")
+    public ResponseEntity<Integer> createReply(@PathVariable int postId, @PathVariable int repReplyId, @RequestBody ReplyDTO reply) {
 
-    	    String userId = (String) se.getAttribute("sessionId");
+        String userId = (String) se.getAttribute("sessionId"); // 현재 로그인한 사용자의 ID 가져오기
+        
+        if (userId == null) {
+            return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패 (0 반환)
+        }
 
-    	    if (userId == null) {
-    	        return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패
-    	    }
+        reply.setPostId(postId);
+        reply.setUserId(userId);
+        reply.setRepReplyId(repReplyId); // 부모 댓글 ID 설정
 
-    	    reply.setReplyId(commentId);
-    	    reply.setPostId(postId);  // postId 설정 추가!
-    	    reply.setUserId(userId);
+        int result = rs.addReply(reply);
+        return ResponseEntity.ok(result);
+    }
 
-    	    int result = rs.updateReply(reply);
+    // 댓글/대댓글 수정
+    @PutMapping(value="/{replyId}", produces = "application/json; charset=utf-8")
+    public ResponseEntity<Integer> updateReply(@PathVariable int postId, @PathVariable int replyId, @RequestBody ReplyDTO reply) {
 
-    	    return ResponseEntity.ok(result);
-    	}
+        String userId = (String) se.getAttribute("sessionId");
 
+        if (userId == null) {
+            return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패
+        }
 
+        reply.setReplyId(replyId);
+        reply.setPostId(postId);  // postId 설정 추가!
+        reply.setUserId(userId);
 
-    // 댓글 삭제 (commentId를 URL에서 받아서 삭제)
-    @DeleteMapping(value="/{commentId}", produces = "application/json; charset=utf-8")
-    public ResponseEntity<Integer> deleteReply(@PathVariable int postId, @PathVariable int commentId) {
+        int result = rs.updateReply(reply);
+
+        return ResponseEntity.ok(result);
+    }
+
+    // 댓글/대댓글 삭제
+    @DeleteMapping(value="/{replyId}", produces = "application/json; charset=utf-8")
+    public ResponseEntity<Integer> deleteReply(@PathVariable int postId, @PathVariable int replyId) {
 
         String userId = (String) se.getAttribute("sessionId");
       
@@ -72,9 +88,8 @@ public class ReplyController {
             return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패
         }
 
-        int result = rs.deleteReply(commentId, postId, userId);  // postId와 userId 추가
+        int result = rs.deleteReply(replyId, postId, userId);  // postId와 userId 추가
 
         return ResponseEntity.ok(result);
     }
-
 }

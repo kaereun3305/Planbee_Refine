@@ -9,4 +9,5 @@ public interface ReplyService {
     List<ReplyDTO> getReplies(int postId);
     int updateReply(ReplyDTO reply);
     int deleteReply(int replyId, int postId, String userId);
+	List<ReplyDTO> getReplysWithReplies(int postId);
 }

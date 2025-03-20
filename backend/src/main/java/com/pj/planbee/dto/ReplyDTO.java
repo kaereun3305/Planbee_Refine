@@ -1,10 +1,13 @@
 package com.pj.planbee.dto;
 
+import java.util.List;
+
 public class ReplyDTO {
 	
 	int replyId, postId;
     String userId, replyContent, replyDate;
     Integer repReplyId;  // 부모 댓글 ID (null 가능)
+    List<ReplyDTO> replies;
 
     public ReplyDTO() {}
 
@@ -64,5 +67,8 @@ public class ReplyDTO {
 	public void setRepReplyId(Integer repReplyId) {
 		this.repReplyId = repReplyId;
 	}
+	
+	public List<ReplyDTO> getReplies() { return replies; }
+    public void setReplies(List<ReplyDTO> replies) { this.replies = replies; }
     
 }

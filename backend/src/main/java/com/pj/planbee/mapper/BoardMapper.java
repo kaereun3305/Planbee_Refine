@@ -9,6 +9,7 @@ import com.pj.planbee.dto.PostListDTO;
 
 public interface BoardMapper {
 	public List<BoardDTO> getAllList();
+	public List<PostListDTO> getAllPost(int groupId);
 	public BoardDTO getView(int postId);
 	public int writePost(BoardDTO dto);
 	public int boardModify(BoardDTO dto);

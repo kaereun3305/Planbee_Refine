@@ -22,4 +22,5 @@ public interface BoardService {
 	public GroupInfoDTO titleSearch(int groupId, String content);//content키로 제목 서치
 	public GroupInfoDTO newestSort(int groupId); //최신 순 정렬
 	public GroupInfoDTO oldestSort(int groupId); //오래된 순 정렬
+	GroupInfoDTO getSortedOrFilteredBoards(int groupId, String searchType, String query, String sort);
 }

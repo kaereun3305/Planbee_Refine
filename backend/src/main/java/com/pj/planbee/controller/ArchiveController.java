@@ -1,15 +1,9 @@
 package com.pj.planbee.controller;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,25 +59,24 @@ public class ArchiveController {
     }
     
     
-    // 날짜 검색
-    @GetMapping(value = "/searchDate/{date}", produces = "application/json; charset=utf-8")
-    public List<ArchiveDTO> searchArchives(@PathVariable("date") String date, HttpSession se) {
-    	String userId = (String) se.getAttribute("sessionId");
+    // 검색 API (searchType에 따라 동작)
+    @GetMapping(value = "/search", produces = "application/json; charset=utf-8")
+    public List<ArchiveDTO> searchArchives(
+            @RequestParam(name = "searchType", required = false) String searchType,
+            @RequestParam(name = "query", required = false) String query,
+            HttpSession session) {
+
+        String userId = (String) session.getAttribute("sessionId");
         if (userId == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        return as.searchArchivesByDate(userId, date);
+        if ("date".equalsIgnoreCase(searchType)) {
+            return as.searchArchivesByDate(userId, query);
+        } else if ("content".equalsIgnoreCase(searchType)) {
+            return as.searchByDetail(userId, query);
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 searchType 입니다. 'date' 또는 'content'를 사용하세요.");
+        }
     }
-     
-    // 내용 검색
-    @GetMapping(value = "/searchKeyword/{keyword}", produces = "application/json; charset=utf-8")
-    public List<ArchiveDTO> searchByDetail(@PathVariable String keyword, HttpSession se) {
-    	  String userId = (String) se.getAttribute("sessionId");
-          if (userId == null) {
-              throw new RuntimeException("로그인이 필요합니다.");
-          }
-
-          return as.searchByDetail(userId, keyword);
-      }
 }

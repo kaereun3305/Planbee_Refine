@@ -263,5 +263,41 @@ public class BoardServiceImpl implements BoardService{
 
 	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
+	
+	@Override
+	public GroupInfoDTO getSortedOrFilteredBoards(int groupId, String searchType, String query, String sort) {
+	    List<PostListDTO> posts = new ArrayList<>();
+	    String groupName = "";
+	    int groupMemberCount = 0;
+
+	    try {
+	        // 검색 적용 (searchType과 query가 있을 경우)
+	        if ("content".equalsIgnoreCase(searchType)) {
+	            posts = btMap.contentSearch(groupId, query);
+	        } else if ("title".equalsIgnoreCase(searchType)) {
+	            posts = btMap.titleSearch(groupId, query);
+	        } else {
+	            posts = btMap.getAllPost(groupId); // groupId 기반으로 전체 게시글 조회
+	        }
+
+	        // 정렬 적용 (sort가 있을 경우)
+	        if ("hit".equalsIgnoreCase(sort)) {
+	            posts = btMap.maxHit(groupId);
+	        } else if ("newest".equalsIgnoreCase(sort)) {
+	            posts = btMap.newestSort(groupId);
+	        } else if ("oldest".equalsIgnoreCase(sort)) {
+	            posts = btMap.oldestSort(groupId);
+	        }
+
+	        // 그룹 정보 조회
+	        groupName = btMap.getGroupName(groupId);
+	        groupMemberCount = btMap.getGroupMemberCount(groupId);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
+	}
 
 }

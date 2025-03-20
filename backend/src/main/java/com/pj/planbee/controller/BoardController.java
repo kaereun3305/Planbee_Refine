@@ -24,9 +24,10 @@ import com.pj.planbee.service.BoardService;
 import com.pj.planbee.service.GroupService;
 
 @RestController
-@RequestMapping("/groups") //  group → groups로 RESTful하게 변경
+@RequestMapping("/groups") //
 @CrossOrigin(origins = "*", allowedHeaders="*", allowCredentials ="true")
 public class BoardController {
+	
 	@Autowired BoardService bs;
 	@Autowired GroupService gs;
 	@Autowired HttpSession se;
@@ -41,7 +42,7 @@ public class BoardController {
 	@GetMapping(value="/{groupId}/boards/{postId}", produces = "application/json; charset=utf-8")
 	public BoardDTO getPost(@PathVariable int postId) {
 		BoardDTO dto = bs.getView(postId);
-		System.out.println("ctrl"+ dto.getPostContent());
+		//System.out.println("ctrl"+ dto.getPostContent());
 		return dto;
 	}
 	
@@ -89,34 +90,18 @@ public class BoardController {
 		return bs.boardUser(userId);
 	}
 
-	//  게시글 조회수 순 정렬
+	// 검색과 정렬 동시 진행 가능
 	@GetMapping(value="/{groupId}/boards", produces="application/json; charset=utf-8")
-	public GroupInfoDTO getSortedOrFilteredBoards(
+	public ResponseEntity<GroupInfoDTO> getSortedOrFilteredBoards(
 	    @PathVariable int groupId, 
 	    @RequestParam(required = false) String searchType, 
 	    @RequestParam(required = false) String query, 
 	    @RequestParam(required = false) String sort) {
-	    
-	    // 검색 우선
-	    if ("content".equalsIgnoreCase(searchType)) {
-	        return bs.contentSearch(groupId, query);
-	    } else if ("title".equalsIgnoreCase(searchType)) {
-	        return bs.titleSearch(groupId, query);
-	    }
-	    
-	    // 정렬 적용
-	    if ("hit".equalsIgnoreCase(sort)) {
-	        return bs.maxHit(groupId);
-	    } else if ("newest".equalsIgnoreCase(sort)) {
-	        return bs.newestSort(groupId);
-	    } else if ("oldest".equalsIgnoreCase(sort)) {
-	        return bs.oldestSort(groupId);
-	    }
-	    
-	    return bs.boardGroup(groupId);
+
+	    GroupInfoDTO result = bs.getSortedOrFilteredBoards(groupId, searchType, query, sort);
+	    return ResponseEntity.ok(result);
 	}
 
-	
 	//  그룹 탈퇴
 	@PostMapping(value="/{groupId}/leave", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Map<String, Object>> leaveGroup(@PathVariable int groupId) {

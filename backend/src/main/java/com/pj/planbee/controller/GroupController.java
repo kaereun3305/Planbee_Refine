@@ -29,7 +29,7 @@ public class GroupController {
     //세션 생성 메소드(로그인 연결시 삭제 예정)
   	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8")
   	public String session() {
-  		se.setAttribute("sessionId", "admin");
+  		se.setAttribute("sessionId", "슈붕");
   		return (String) se.getAttribute("sessionId");
   	}
   	

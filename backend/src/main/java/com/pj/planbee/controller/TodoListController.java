@@ -46,7 +46,7 @@ public class TodoListController {
 //	}
 	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
 	public String session(HttpSession se) {
-		se.setAttribute("sessionId", "coffeeNine");
+		se.setAttribute("sessionId", "팥붕");
 		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
 		return (String) se.getAttribute("sessionId");
 

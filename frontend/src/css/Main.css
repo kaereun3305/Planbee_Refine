@@ -5,7 +5,7 @@
 }
 .main_container {
   height: 100vh;
-  width: 100vw;
+  width: 105w;
   display: flex;
   flex-direction: column;
   background-color: #f4cc3a;

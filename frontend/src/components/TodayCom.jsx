@@ -27,6 +27,7 @@ const TodayCom = () => {
           }
         );
         if (Array.isArray(response.data)) {
+          console.log(response.data);
           setTodoDetailsToday(response.data);
           setTodayTdId(response.data[0].tdId);
         } else {

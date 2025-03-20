@@ -105,7 +105,7 @@ const ToDoList = () => {
                 <div className="todo_bar_ex" style={getBarStyle()}></div>
               </div>
             </div>
-            <TomorrowCom />
+            {/* <TomorrowCom /> */}
           </div>
         </div>
       </div>

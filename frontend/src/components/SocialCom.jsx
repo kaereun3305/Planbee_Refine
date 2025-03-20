@@ -6,24 +6,47 @@ import axios from 'axios';
 import GroupJoinPopUp from './GroupJoinPopUp';
 import { select } from 'framer-motion/client';
 
-const SocialCom = ( {groups} ) => {
+const SocialCom = ( {Info} ) => {
     const [isJoinOpen, setIsJoinOpen] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState(null);
-    
-    const handleOpenModal = (data) =>{
-        console.log("선택된 것", data)
-        setSelectedGroup(data); //selectedGroup에 저장함
-        console.log("selectedGroup", selectedGroup)
-        setIsJoinOpen(true);
-    };
+    const [selectedGId, setSelectedGId] = useState(null);
+    const [requestUrl, setRequestUrl] = useState(Info.redirectUrl) //소셜에서 받아온 url을 저장한다
+    const [groups, setGroups] = useState(null); //그룹들펼치기 위해 groups에 그룹에 대한 객체체 정보를 저장한다
 
-    const handleCloseModal = () => {
-      setIsJoinOpen(false);
+    
+   const fetchGroups = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/${requestUrl}`,
+        {
+          withCredentials:true,
+        }
+      )
+      console.log("SocialCom 그룹정보가져오기 실행:", response.data);
+      setGroups(response.data)
+    } catch (error) {
+      console.log("게시판 정보 가져오기 실패", error)
+    }
+   }
+  useEffect(()=>{                                                                                                                                                                            
+    fetchGroups();
+  },[])
+
+  const handleOpenModal = (groupName, groupId) =>{
+    console.log("선택된 groupName:", groupName)
+    setSelectedGroup(groupName); //selectedGroup에 저장함
+    setSelectedGId(groupId)
+    console.log("selectedGroup 저장완료?", selectedGroup)
+    setIsJoinOpen(true);
+};
+
+  const handleCloseModal = () => {
+  setIsJoinOpen(false);
   };
   
- if(!groups){
+  if(!groups){
   return <div>Loading...</div>
- }
+  }
    
   
 
@@ -46,7 +69,7 @@ const SocialCom = ( {groups} ) => {
                     </div>
                     <div className="group_right">
                     
-                    <button className="join_button" onClick={()=>handleOpenModal(group)}>
+                    <button className="join_button" onClick={()=>handleOpenModal(group.groupName, group.groupId)}>
                     <div style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }} >
                         Join
                     </div>
@@ -62,10 +85,10 @@ const SocialCom = ( {groups} ) => {
               {/* end of group_list */}
             </div>
             {/* end of social_container */}
-            {console.log("social컴포넌트", selectedGroup.groupName)}
-            {console.log("social컴포넌트id", selectedGroup.groupId)}
-            {isJoinOpen && <GroupJoinPopUp groupName={selectedGroup.groupName} 
-            groupId= {selectedGroup.groupId}
+            {/* {selectedGroup && console.log("social컴포넌트", selectedGroup.groupName)}
+            {selectedGroup && console.log("social컴포넌트id", selectedGroup.groupId)} */}
+            {isJoinOpen && <GroupJoinPopUp groupName={selectedGroup} 
+            groupId= {selectedGId}
             onClose={handleCloseModal} />}
             </>
   

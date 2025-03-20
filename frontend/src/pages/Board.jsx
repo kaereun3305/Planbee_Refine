@@ -4,32 +4,15 @@ import SideBar from '../components/SideBar'
 import BoardOneCom from '../components/BoardOneCom'
 import BoardListCom from '../components/BoardListCom'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 
 const Board = () => {
-    const groupName = useParams();
-    const [selectedPost, setSelectedPost] = useState(null);
-    const checkIsJoined = null;
-    // = async () =>{
-    //     try {
-    //         const response = await axios.get(
-    //             `해당 주소가 들어갑니다`, 
-    //             {
-    //                 withCredentials: true,
-    //             }
-    //         )
+    const location = useLocation();
+    const { posts } = location.state || {};
 
-    //     } catch (error) {
-    //         console.log("가입되었는지 확인불가", error)
-    //     }
-    //}
-
-//세션확인해서 그룹아이디 있는지 체크
-//값이 없을 경우에 소셜 컴포넌넌 띄우고,
-//값이 있는 경우 바로 board 컴포넌트를 띄운다.
-
-//가져온다
+    console.log("board 받은데이터 처리", posts);
+    
 
   return (
       <div className="main_container">
@@ -39,7 +22,7 @@ const Board = () => {
         <div className="main_content">
           <div className="social_container">
           <div>
-        <BoardListCom />
+        <BoardListCom posts={posts}/>
           </div>
           </div>
         </div>

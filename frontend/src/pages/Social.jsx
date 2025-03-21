@@ -50,7 +50,7 @@ const Social = () => {
                     withCredentials: true,
                 }
             )
-        //console.log("Social jsx api 실행결과:", response.data.redirectUrl)
+        console.log("Social jsx api 실행결과:", response.data.redirectUrl)
         setdata(response.data); //결과값을 저장함
         } catch (error) {
             console.log("api실행 실패", error)
@@ -77,10 +77,12 @@ const Social = () => {
       <div className="sidebar_and_content">
         <SideBar />
         <div className="main_content">
-          {data.groupId == null?(
-            <SocialCom Info={data} sessionId={sessionId}/> //groupId가 null일 경우
-          ) : (
-            <BoardListCom Info={data} sessionId={sessionId}/> //groupId가 있을 경우
+          {data.groupId == null ? (
+            <SocialCom Info={data} sessionId={sessionId}/> //groupId가 null일 경우, url과  groupId:null을 전송
+            //{"redirectUrl:"/planbee/groups/list", "groupId:null"}
+          ) : ( 
+            <BoardListCom Info={data} sessionId={sessionId}/> //groupId가 있을 경우, url과 groupId:1을 전송
+            //{"redirectUrl:"/planbee/groups/list", "groupId:1"}
           )}
         </div>
       </div>

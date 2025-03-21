@@ -5,10 +5,17 @@ import { select } from 'framer-motion/client';
 import axios from 'axios';
 
 const GroupJoinPopUp = ({groupName, onClose, groupId}) => {
-    console.log("GroupId", groupId);
-    const [isJoined, setIsJoined] = useState(false);
-    const [isJoinOpen, setIsJoinOpen] = useState(true)
+    //사용자가 선택한 groupName과 groupId를 props로 받음
+    //예를 누르면 해당 그룹에 가입하는 api 실행
+    //실행결과 {"redirectUrl:/planbee/groups/1", "groupId":1, "message":"그룹 가입 성공" 혹은 실패}
+    
     const navigate = useNavigate(); 
+    console.log("GroupId", groupId);
+
+    const [isJoined, setIsJoined] = useState(false); //조인된 상태인지 확인
+    const [isJoinOpen, setIsJoinOpen] = useState(true)
+    const [Info, setInfo] = useState(null);
+    
     console.log("Group Join popup selectedGroup", groupId)
 
     const handleJoinGroup = async () => {
@@ -20,25 +27,21 @@ const GroupJoinPopUp = ({groupName, onClose, groupId}) => {
                     withCredentials:true,
                 }
             )
-            console.log("실행결과 확인", response.data)
-            if(response.data.message =="그룹 가입 완료"){
+            console.log("가입 실행결과 확인", response.data)
+            if(response.data.message =='그룹 가입 완료'){
                 setIsJoined(true);
+                const infoObj = {redirectUrl :response.data.redirectUrl, groupId: groupId};
+                setInfo(infoObj);
                 
-                const postsResponse = await axios.get(
-                    `http://localhost:8080/planbee/groups/${groupId}`,{
-                        withCredentials: true,
-                    }
-                )
-                console.log("popup에서 게시글정보", postsResponse);
-                navigate(`/boardList/${groupId}`,{//그룹게시판 페이지로 이동
-                    state: {posts: postsResponse.data}, 
-                }
-
-                ); 
+            }
+            
+            else if (response.data.message == "그룹 가입 실패"){
+                console.log("서버에서 그룹가입 실패")
+                onClose();
             }
         } catch (error) {
-            console.log("그룹가입 중 에러 발생")
-            navigate("/social");
+            console.log("그룹가입 중 axios 에러발생생")
+            onClose();
         }
         
         
@@ -46,11 +49,9 @@ const GroupJoinPopUp = ({groupName, onClose, groupId}) => {
 
       const handleConfirm = async () => {
         try {
-            const {data}= await axios.get(
-
-            )
+            navigate(`/boardList/${Info.groupId}`, {state: Info})
         } catch (error) {
-            
+            console.log("가입 후 페이지 이동 실패")
         }
       }
 

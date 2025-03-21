@@ -5,21 +5,33 @@ import Banner from './Banner';
 import SideBar from './SideBar';
 
 const BoardOneCom = () => {
+    const sessionId = "팥붕"; //일단 하드코딩해둠
     const location = useLocation();
     const navigate = useNavigate(); 
-    const {id} = useParams();
-    console.log("boardOne COm", {id}.id)
-    const {sessionId} = location.state || {};
-
+    const {postId} = useParams(); //postId는 useParams에서 받아서 저장해둔다
+    const thisGroupId = location.state; //groupId를 저장해두자.
     const [thisPost, setThisPost] = useState({});
     const [reply, setReply] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
 
+    const fetchThisPost = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${postId}`,
+          {
+            withCredentials:true,
+          }
+        )
+        console.log("글 하나 불러오기결과", response.data)
+      } catch (error) {
+        
+      }
+    }
     const handleHit = () =>{
       try {
         axios.put(
-          `http://localhost:8080/planbee/board/boardHit/${id.id}`,{
+          `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${postId}/hit`,{
             withCredentials: true,
           }
         )
@@ -28,22 +40,8 @@ const BoardOneCom = () => {
       }
       
     }
-
-    const fetchReply = async () => {
-      try {
-        const response = await axios.get(
-          `댓글 가져오는 api`,
-          {
-            withCredentials:true
-          }
-        )
-        setReply(response.data);
-      } catch (error) {
-        console.log("댓글 가져오기 실패", error)
-      }
-    }
+    
     useEffect(()=>{
-      fetchReply();
       handleHit();
 
     },[])
@@ -53,7 +51,7 @@ const BoardOneCom = () => {
     
     const handleSave = () => {
       axios.put(
-        `http://localhost:8080/planbee/board/boardModi/${id}`,{
+        `http://localhost:8080/planbee/board/boardModi/${postId}`,{
           postTitle: editedPost.title,
           postContent: editedPost.contents,
         },
@@ -82,13 +80,13 @@ const BoardOneCom = () => {
     const handleDel = (id) => {
       console.log("삭제버튼 클릭: 번호", id)
         if (window.confirm("삭제하시겠습니까?")) {
-          axios.delete(`http://localhost:8080/planbee/board/boardDel/${id}`,{
+          axios.delete(`http://localhost:8080/planbee/groups/${thisGroupId}/${postId}`,{
             withCredentials:true,
             
           })
           setThisPost({});
-            console.log({id}, "번 글 삭제되었습니다");
-           navigate(`/boardList/${id}`);
+            console.log({postId}, "번 글 삭제되었습니다");
+           navigate(`/boardList/${thisGroupId}`);
         } else {
             console.log("삭제 취소");
         }
@@ -171,7 +169,7 @@ const BoardOneCom = () => {
                       <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleGoBack}>목록보기</a>
                       {thisPost?.userId && thisPost.userId == {sessionId} && (
                         <>
-                          <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleModify}>수정</a>
+                          <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={() => handleModify(thisPost.postId)}>수정</a>
                           <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={() => handleDel(thisPost.postId)}>삭제</a>
                         </>
                       )}

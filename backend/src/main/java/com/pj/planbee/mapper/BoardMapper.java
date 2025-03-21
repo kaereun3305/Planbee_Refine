@@ -23,10 +23,12 @@ public interface BoardMapper {
 	public int groupSearch(String sessionId); 
 	public List<PostListDTO> contentSearch(@Param("groupId") int groupId,@Param("content") String content);
 	public List<PostListDTO> titleSearch(@Param("groupId") int groupId,@Param("content") String content);
+	public List<PostListDTO> titleAndContentSearch(@Param("groupId") int groupId, @Param("content") String content);
 	public List<PostListDTO> newestSort(int groupId); // 최신 순 정렬
 	public List<PostListDTO> oldestSort(int groupId); // 오래된 순 정렬
 	public String getGroupName(int groupId);
 	public int getGroupMemberCount(int groupId);
 	public String getGroupNameWithUserId(String userId);
 	public int getGroupMemberCountWithUserId(String userId);
+	public int insertPost(BoardDTO dto);
 }

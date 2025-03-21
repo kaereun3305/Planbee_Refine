@@ -22,4 +22,6 @@ public interface GroupMapper {
     public int leaveGroup(@Param("user_id") String userId, @Param("group_id") int groupId);
     
     public Integer getUserGroupId(@Param("userId") String userId);  // 사용자의 그룹 ID 조회
+    
+    public String getGroupName(@Param("groupId") int groupId);
 }

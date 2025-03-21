@@ -45,4 +45,8 @@
     <select id="getUserGroupId" resultType="Integer">
         SELECT group_id FROM Group_Members WHERE user_id = #{userId} LIMIT 1
     </select>
+    
+    <select id="getGroupName">
+    	SELECT group_name FROM `group` WHERE group_id = #{groupId}
+    </select>
 </mapper>

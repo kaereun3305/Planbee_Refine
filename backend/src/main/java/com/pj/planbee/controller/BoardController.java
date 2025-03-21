@@ -1,6 +1,7 @@
 package com.pj.planbee.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -20,16 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pj.planbee.dto.BoardDTO;
 import com.pj.planbee.dto.GroupInfoDTO;
+import com.pj.planbee.dto.PostWithReplyDTO;
+import com.pj.planbee.dto.ReplyDTO;
 import com.pj.planbee.service.BoardService;
 import com.pj.planbee.service.GroupService;
+import com.pj.planbee.service.ReplyService;
 
 @RestController
-@RequestMapping("/groups") //  group → groups로 RESTful하게 변경
+@RequestMapping("/groups") //
 @CrossOrigin(origins = "*", allowedHeaders="*", allowCredentials ="true")
 public class BoardController {
+	
 	@Autowired BoardService bs;
 	@Autowired GroupService gs;
 	@Autowired HttpSession se;
+	@Autowired ReplyService rs;
 	
 	//  그룹 정보 조회
 	@GetMapping(value="/{groupId}", produces="application/json; charset=utf-8")
@@ -37,13 +43,21 @@ public class BoardController {
 	    return bs.boardGroup(groupId);
 	}
 
-	//  게시글 단일 조회
-	@GetMapping(value="/{groupId}/boards/{postId}", produces = "application/json; charset=utf-8")
-	public BoardDTO getPost(@PathVariable int postId) {
-		BoardDTO dto = bs.getView(postId);
-		System.out.println("ctrl"+ dto.getPostContent());
-		return dto;
-	}
+	// 단일 게시글 + 댓글 + 대댓글
+    @GetMapping(value = "/{groupId}/boards/{postId}", produces = "application/json; charset=utf-8")
+    public PostWithReplyDTO getPostWithReplies(@PathVariable int postId) {
+        // 1. 게시글 조회
+        BoardDTO post = bs.getView(postId);
+
+        // 2. 댓글 및 대댓글 조회 (계층 구조로 반환)
+        List<ReplyDTO> replies = rs.getReplysWithReplies(postId);
+
+        // 3. DTO에 게시글과 댓글 + 대댓글 저장
+        PostWithReplyDTO response = new PostWithReplyDTO(post, replies);
+
+        return response;
+    }
+
 	
 	//  게시글 작성
 	@PostMapping(value="/{groupId}/boards", produces = "application/json; charset=utf-8")
@@ -89,34 +103,18 @@ public class BoardController {
 		return bs.boardUser(userId);
 	}
 
-	//  게시글 조회수 순 정렬
+	// 검색과 정렬 동시 진행 가능
 	@GetMapping(value="/{groupId}/boards", produces="application/json; charset=utf-8")
-	public GroupInfoDTO getSortedOrFilteredBoards(
+	public ResponseEntity<GroupInfoDTO> getSortedOrFilteredBoards(
 	    @PathVariable int groupId, 
 	    @RequestParam(required = false) String searchType, 
 	    @RequestParam(required = false) String query, 
 	    @RequestParam(required = false) String sort) {
-	    
-	    // 검색 우선
-	    if ("content".equalsIgnoreCase(searchType)) {
-	        return bs.contentSearch(groupId, query);
-	    } else if ("title".equalsIgnoreCase(searchType)) {
-	        return bs.titleSearch(groupId, query);
-	    }
-	    
-	    // 정렬 적용
-	    if ("hit".equalsIgnoreCase(sort)) {
-	        return bs.maxHit(groupId);
-	    } else if ("newest".equalsIgnoreCase(sort)) {
-	        return bs.newestSort(groupId);
-	    } else if ("oldest".equalsIgnoreCase(sort)) {
-	        return bs.oldestSort(groupId);
-	    }
-	    
-	    return bs.boardGroup(groupId);
+
+	    GroupInfoDTO result = bs.getSortedOrFilteredBoards(groupId, searchType, query, sort);
+	    return ResponseEntity.ok(result);
 	}
 
-	
 	//  그룹 탈퇴
 	@PostMapping(value="/{groupId}/leave", produces = "application/json; charset=utf-8")
 	public ResponseEntity<Map<String, Object>> leaveGroup(@PathVariable int groupId) {

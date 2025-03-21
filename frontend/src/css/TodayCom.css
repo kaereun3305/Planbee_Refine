@@ -46,21 +46,87 @@
   text-align: end;
   position: relative;
 }
+/* 드롭다운 메뉴 */
 .dropdown-menu {
+  display: none; /* 기본적으로 숨겨둡니다 */
   position: absolute;
-  top: 0; /* 수정 아이콘과 같은 위치 */
-  left: -20px; /* 적절한 위치로 조정 */
+  top: 100%; /* 버튼 바로 아래로 위치 */
+  left: 0;
   background-color: white;
-  border: 1px solid #ccc;
-  padding: 5px;
-  display: flex;
-  gap: 5px;
-  z-index: 10; /* 다른 요소보다 위에 위치하도록 설정 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-width: 60px;
+  border-radius: 5px;
+  z-index: 1000;
+  list-style-type: none;
+  padding: 0; /* 여백 제거 */
 }
+
+td .dropdown-menu {
+  display: block; /* 클릭 시 메뉴가 보이도록 */
+}
+
+/* 드롭다운 항목 스타일 */
+.dropdown-menu button {
+  width: 100%; /* 버튼을 가로로 확장 */
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f1f1f1;
+}
+
 .todolist_memo {
   height: 200px;
   width: 580px;
   border-radius: 30px;
   background-color: #efefef;
   padding: 20px;
+}
+.tdMemo_textarea {
+  width: 530px;
+  height: 100px;
+  padding: 10px;
+  resize: none;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.tdMemo_btn_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+.add_tdDetail {
+  width: 100%;
+  height: 40px;
+  background-color: #efefef;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.add-schedule-btn:hover {
+  background-color: darkgray;
+}
+.plus_btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #cccccc;
+  color: white;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
 }

@@ -16,6 +16,13 @@ const TomorrowCom = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [tomorrowTdId, setTomorrowTdId] = useState(null);
   const [editItem, setEditItem] = useState(null);
+  const formatTime = (time) => {
+    const strTime = time.toString();
+    const hour = strTime.slice(0, -2);
+    const minute = strTime.slice(-2);
+
+    return `${hour}:${minute}`;
+  };
 
   useEffect(() => {
     //checklist 불러오는 함수 -> 세션연결 성공, 테스트완료
@@ -72,7 +79,7 @@ const TomorrowCom = () => {
 
     setTodoDetailsTomorrow(updatedTodoDetails);
 
-    //변경된 상태를 저장한 후 api 요청 보내기기
+    //변경된 상태를 저장한 후 api 요청 보내기
     const changedItem = updatedTodoDetails.find(
       (item) => item.tdDetailId === id
     );
@@ -142,14 +149,6 @@ const TomorrowCom = () => {
       .catch((error) => {
         console.error("삭제 실패:", error);
       });
-  };
-
-  const handleCompleteClick = (id) => {
-    setTodoDetailsTomorrow((prev) =>
-      prev.map((item) =>
-        item.tdDetailId === id ? { ...item, tdDetailState: true } : item
-      )
-    );
   };
 
   const handleAddTask = async () => {
@@ -225,11 +224,17 @@ const TomorrowCom = () => {
             {todoDetailsTomorrow.map((item) => (
               <tr key={item.tdDetailId}>
                 <td>
-                  <input
-                    type="checkbox"
-                    checked={item.tdDetailState}
-                    onChange={() => handleCheckboxChange(item.tdDetailId)}
-                  />
+                  <div className="custom_checkbox">
+                    <input
+                      type="checkbox"
+                      id={`checkbox-${item.tdDetailId}`}
+                      checked={item.tdDetailState}
+                      onChange={() => handleCheckboxChange(item.tdDetailId)}
+                    />
+                    <label htmlFor={`checkbox-${item.tdDetailId}`}>
+                      <span className="checkmark"></span>
+                    </label>
+                  </div>
                 </td>
                 <td>
                   {editItem && editItem.tdDetailId === item.tdDetailId ? (
@@ -257,7 +262,7 @@ const TomorrowCom = () => {
                       }
                     />
                   ) : (
-                    item.tdDetailTime
+                    formatTime(item.tdDetailTime)
                   )}
                 </td>
                 <td>
@@ -272,11 +277,7 @@ const TomorrowCom = () => {
                       >
                         삭제
                       </button>
-                      <button
-                        onClick={() => handleCompleteClick(item.tdDetailId)}
-                      >
-                        완료
-                      </button>
+                      <button onClick={() => toggleDropdown(null)}>닫기</button>
                     </div>
                   )}
                 </td>
@@ -305,7 +306,12 @@ const TomorrowCom = () => {
                     <button onClick={handleAddTask}>완료</button>
                   </div>
                 ) : (
-                  <button onClick={() => setIsAdding(true)}>일정 추가</button>
+                  <button
+                    className="add_tdDetail"
+                    onClick={() => setIsAdding(true)}
+                  >
+                    <div className="plus_btn">+</div>
+                  </button>
                 )}
               </td>
             </tr>
@@ -326,12 +332,21 @@ const TomorrowCom = () => {
               <textarea
                 value={newMemo}
                 onChange={(e) => setNewMemo(e.target.value)}
+                className="tdMemo_textarea"
               />
-              <button onClick={handleSaveMemo}>저장</button>
-              <button onClick={() => setIsEditingMemo(false)}>취소</button>
+              <div className="tdMemo_btn_wrapper">
+                <button onClick={handleSaveMemo}>저장</button>
+                <button onClick={() => setIsEditingMemo(false)}>취소</button>
+              </div>
             </div>
           ) : (
-            <div onClick={() => setIsEditingMemo(true)} className="memomemo">
+            <div
+              onClick={() => {
+                setIsEditingMemo(true);
+                setNewMemo(memo);
+              }}
+              className="memomemo"
+            >
               {memo}
             </div>
           )}

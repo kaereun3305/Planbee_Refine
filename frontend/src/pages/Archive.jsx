@@ -254,34 +254,40 @@ const Archive = () => {
                 {archiveData && archiveData.length > 0 && (
                   <>
                     <div className="archive_left_content">
-                      <h2 className="archive_date">
+                      <div className="archive_date">
                         {formatDate(archiveData[0].archiveDate).replace(
                           /-/g,
                           "."
                         )}
-                      </h2>
+                      </div>
                       <ul className="archive_checklist">
                         {archiveData[0].archiveDetails.map((detail) => (
                           <li
                             key={detail.archDetailId}
                             className="archive_check_item"
                           >
-                            <input
-                              type="checkbox"
-                              checked={detail.archDetailState}
-                              readOnly
-                            />
-                            <span
-                              className={
-                                detail.archDetailState ? "checked" : ""
-                              }
-                              style={{ marginLeft: "8px", marginRight: "12px" }}
-                            >
-                              {detail.archDetail}
-                            </span>
-                            <span className="archive_time">
-                              {formatTime(detail.archDetailTime)}
-                            </span>
+                            <label className="custom_checkbox">
+                              <input
+                                type="checkbox"
+                                checked={detail.archDetailState}
+                                readOnly
+                              />
+                              <span className="checkmark"></span>
+                              <span
+                                className={`archive_text ${
+                                  detail.archDetailState ? "checked" : ""
+                                }`}
+                                style={{
+                                  marginLeft: "8px",
+                                  marginRight: "12px",
+                                }}
+                              >
+                                {detail.archDetail}
+                              </span>
+                              <span className="archive_time">
+                                {formatTime(detail.archDetailTime)}
+                              </span>
+                            </label>
                           </li>
                         ))}
                       </ul>
@@ -297,34 +303,40 @@ const Archive = () => {
                 {archiveData && archiveData.length > 1 && (
                   <>
                     <div className="archive_right_content">
-                      <h2 className="archive_date">
+                      <div className="archive_date">
                         {formatDate(archiveData[1].archiveDate).replace(
                           /-/g,
                           "."
                         )}
-                      </h2>
+                      </div>
                       <ul className="archive_checklist">
                         {archiveData[1].archiveDetails.map((detail) => (
                           <li
                             key={detail.archDetailId}
                             className="archive_check_item"
                           >
-                            <input
-                              type="checkbox"
-                              checked={detail.archDetailState}
-                              readOnly
-                            />
-                            <span
-                              className={
-                                detail.archDetailState ? "checked" : ""
-                              }
-                              style={{ marginLeft: "8px", marginRight: "12px" }}
-                            >
-                              {detail.archDetail}
-                            </span>
-                            <span className="archive_time">
-                              {formatTime(detail.archDetailTime)}
-                            </span>
+                            <label className="custom_checkbox">
+                              <input
+                                type="checkbox"
+                                checked={detail.archDetailState}
+                                readOnly
+                              />
+                              <span className="checkmark"></span>
+                              <span
+                                className={`archive_text ${
+                                  detail.archDetailState ? "checked" : ""
+                                }`}
+                                style={{
+                                  marginLeft: "8px",
+                                  marginRight: "12px",
+                                }}
+                              >
+                                {detail.archDetail}
+                              </span>
+                              <span className="archive_time">
+                                {formatTime(detail.archDetailTime)}
+                              </span>
+                            </label>
                           </li>
                         ))}
                       </ul>

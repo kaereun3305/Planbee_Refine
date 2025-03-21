@@ -2,12 +2,12 @@ import React, { Children } from "react";
 import "../css/PopUp.css";
 import { Icon } from "@iconify/react";
 
-const PopUp = ({ isOpen, onClose, children }) => {
+const PopUp = ({ isOpen, onClose, style, children }) => {
   if (!isOpen) return null;
 
   return (
     <div className="popup_overlay" onClick={onClose}>
-      <div className="popup" onClick={(e) => e.stopPropagation()}>
+      <div className="popup" style={style} onClick={(e) => e.stopPropagation()}>
         <button className="popup_close_btn" onClick={onClose}>
           <Icon
             icon="si:close-circle-fill"

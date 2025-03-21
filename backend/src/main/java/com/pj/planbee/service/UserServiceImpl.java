@@ -24,28 +24,28 @@ public class UserServiceImpl implements UserService{
 
 	    try {
 	        if (isUserIdExists(user.getTempUserId())) {
-	            return -1; // ÀÌ¹Ì °¡ÀÔµÈ ID
+	            return -1; // ì´ë¯¸ ê°€ìž…ëœ ID
 	        }
 	        if (isEmailExists(user.getTempUserEmail())) {
-	            return -2; // ÀÌ¹Ì °¡ÀÔµÈ ÀÌ¸ÞÀÏ
+	            return -2; // ì´ë¯¸ ê°€ìž…ëœ ì´ë©”ì¼
 	        }
 
-	        // ÀÎÁõ »óÅÂ È®ÀÎ
+	        // ì¸ì¦ ìƒíƒœ í™•ì¸
 	        int verifyStatus = tus.getVerifyStatus(user.getTempUserEmail());
 	        if (verifyStatus != 1) {
-	            return -4; // ÀÌ¸ÞÀÏ ÀÎÁõÀÌ ¿Ï·áµÇÁö ¾ÊÀ½
+	            return -4; // ì´ë©”ì¼ ì¸ì¦ì´ ì™„ë£Œë˜ì§€ ì•ŠìŒ
 	        }
 
-	        // ÀÎÁõ ÄÚµå È®ÀÎ
+	        // ì¸ì¦ ì½”ë“œ í™•ì¸
 	        String storedCode = tus.getTempUserCode(user.getTempUserEmail());
 	        if (storedCode == null || !storedCode.equals(user.getTempUserCode())) {
-	            return -3; // ÀÎÁõ ÄÚµå ºÒÀÏÄ¡
+	            return -3; // ì¸ì¦ ì½”ë“œ ë¶ˆì¼ì¹˜
 	        }
 
-	        // RealUser Å×ÀÌºí¿¡ ÀúÀå
+	        // RealUser í…Œì´ë¸”ì— ì €ìž¥
 	        result = mapper.insertUser(user);
 
-	        // È¸¿ø°¡ÀÔ ¼º°ø ½Ã TempUser »èÁ¦
+	        // íšŒì›ê°€ìž… ì„±ê³µ ì‹œ TempUser ì‚­ì œ
 	        if (result > 0) {
 	            tus.deleteTempUser(user.getTempUserEmail());
 	        }

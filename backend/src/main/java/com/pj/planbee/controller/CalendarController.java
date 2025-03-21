@@ -77,6 +77,7 @@ public class CalendarController {
          // 응답 데이터 구성
          Map<String, Object> response = new HashMap<>();
          response.put("curStreak", curStreak);
+         response.put("maxStreak", maxStreak);
 
          // 연속 달성일 상태 메시지 결정
          String message;

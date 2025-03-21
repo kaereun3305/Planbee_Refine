@@ -66,10 +66,5 @@
     
     <select id="checkExist">
     	select * from archive_detail where tododetail_id=#{tdDetailId}
-    </select>
-    
-    
-    
-  
-    
+    </select>   
 </mapper>

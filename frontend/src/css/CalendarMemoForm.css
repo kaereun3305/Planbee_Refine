@@ -1,17 +1,74 @@
 .memo_form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 300px;
+  width: 400px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  font-family: "Arial", sans-serif;
+}
+
+.memo_form h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
 }
 
 .memo_form textarea {
-  resize: none;
+  width: 100%;
   height: 60px;
+  padding: 10px;
+  resize: none;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
 }
 
-.memo_buttons {
+.memo_form textarea:focus {
+  outline: none;
+  border-color: #7caeff;
+}
+
+.memo_form div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.memo_form button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.memo_form button:hover {
+  opacity: 0.9;
+}
+
+.memo_form .memo_buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 15px;
+}
+
+.memo_form .memo_buttons button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.memo_form .memo_buttons button:last-child {
+  background-color: #f44336;
+}
+
+/* 삭제 버튼은 기본적으로 회색으로 */
+.memo_form div > button {
+  background-color: #bbb;
+  color: #fff;
 }

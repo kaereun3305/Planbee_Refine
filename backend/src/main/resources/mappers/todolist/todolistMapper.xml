@@ -58,7 +58,4 @@
         FROM ToDoList
         WHERE todo_date = #{calDate} AND user_id = #{userId}
     </select>
-    
-    
-    
 </mapper>

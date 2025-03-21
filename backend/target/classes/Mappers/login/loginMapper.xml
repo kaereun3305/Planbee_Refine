@@ -24,5 +24,10 @@
         WHERE user_id = #{userId} 
         AND user_pw = #{userPw}
     </select>
+    
+    <select id="countUserId" resultType="int">
+    	SELECT COUNT(*) FROM Real_User WHERE user_id = #{userId}
+	</select>
+    
 
 </mapper>

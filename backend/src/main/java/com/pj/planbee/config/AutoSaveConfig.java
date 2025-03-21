@@ -8,12 +8,12 @@ import com.pj.planbee.service.TodoListService;
 
 @Configuration
 @EnableScheduling
-public class PlanbeeConfig {
+public class AutoSaveConfig {
 	 
 	private final TodoListService ts; // 생성자 주입방식으로 변경함
 
-	    // ✅ 생성자 주입 방식으로 객체 주입
-	    public PlanbeeConfig(TodoListService ts) {
+	    // 생성자 주입 방식으로 객체 주입
+	    public AutoSaveConfig(TodoListService ts) {
 	        this.ts = ts;
 	    }
 	

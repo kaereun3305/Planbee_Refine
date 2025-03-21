@@ -18,4 +18,10 @@ public class LoginServiceImpl implements LoginService {
     public LoginDTO login(Map<String, Object> paramMap) {
         return mapper.login(paramMap); 
     }
+
+	@Override
+	public boolean isUserExists(String userId) {
+		return mapper.countUserId(userId) > 0;
+	}
+
 }

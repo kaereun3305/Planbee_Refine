@@ -1,6 +1,8 @@
 package com.pj.planbee.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +21,7 @@ import com.pj.planbee.service.GroupService;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders= "*", allowCredentials = "true")
-@RequestMapping("/group")
+@RequestMapping("/groups")
 public class GroupController {
 	
     @Autowired GroupService gs;
@@ -46,20 +47,24 @@ public class GroupController {
   		return (se.getAttribute("sessionId") != null) ? 1 : 0;  // 1: 로그인된 상태, 0: 로그인되지 않음
   	}
 
+  	// 주소 : http://localhost:8080/planbee/group
   	// 사용자가 가입한 그룹 확인 후 리다이렉트
   	@GetMapping(value="", produces = "application/json; charset=utf-8")
-  	public RedirectView checkUserGroup() {
-  		String userId = (String) se.getAttribute("sessionId");
-  		
-  		Integer groupId = gs.getUserGroupId(userId);
+  	public ResponseEntity<Map<String, Object>> checkUserGroup() {
+  	    String userId = (String) se.getAttribute("sessionId");
+  	    Integer groupId = gs.getUserGroupId(userId);
 
-  	    // 가입된 그룹이 없으면 그룹 목록 페이지로 이동
+  	    Map<String, Object> response = new HashMap<>();
+
   	    if (groupId == null || groupId == 0) {
-  	        return new RedirectView("http://localhost:8080/planbee/group/list");
+  	        response.put("redirectUrl", "/planbee/groups/list");
+  	        response.put("groupId", null);
+  	    } else {
+  	        response.put("redirectUrl", "/planbee/groups/" + groupId);
+  	        response.put("groupId", groupId);
   	    }
 
-  	    // 가입된 그룹이 있으면 해당 그룹의 게시판으로 이동
-  	    return new RedirectView("http://localhost:8080/planbee/group/" + groupId); // 그룹 게시판으로 이동
+  	    return ResponseEntity.ok(response);  // JSON 데이터 반환
   	}
   	
   	 // 모든 그룹 조회
@@ -68,29 +73,26 @@ public class GroupController {
         return gs.getAllGroups();
     }
 
-    // 그룹 가입 (가입 후 바로 그룹 게시판으로 이동)
+    // 그룹 가입 (가입 후 바로 그룹 게시판으로 이동
+    // http://localhost:8080/planbee/group/join?groupId={groupId}
     @PostMapping(value="/join", produces = "application/json; charset=utf-8")
-    public RedirectView joinGroup(@RequestParam int groupId) {
-    	String userId = (String) se.getAttribute("sessionId");
-       
+    public ResponseEntity<Map<String, Object>> joinGroup(@RequestParam int groupId) {
+        String userId = (String) se.getAttribute("sessionId");
         int success = gs.joinGroup(userId, groupId);
-        
-        if(success == 1) {
-        	return new RedirectView("http://localhost:8080/planbee/group/"+groupId);
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (success == 1) {
+            response.put("redirectUrl", "/planbee/groups/" + groupId);
+            response.put("groupId", groupId);
+            response.put("message", "그룹 가입 완료");
+        } else {
+            response.put("redirectUrl", "/planbee/groups/list");
+            response.put("groupId", null);
+            response.put("message", "그룹 가입 실패");
         }
-        
-        System.out.println("가입 실패");
-        return new RedirectView("http://localhost:8080/planbee/group/list");
+
+        return ResponseEntity.ok(response);
     }
-    
-    /*  
-    @GetMapping("/{groupId}")
-    public String groupPage(@PathVariable int groupId) {
-        return "groupPage"; // 해당 그룹의 게시판 페이지 반환 (ViewResolver 필요)
-    }
-    
-    @GetMapping(value="/{groupId}", produces="application/json; charset=utf-8")
-    public ResponseEntity<String> groupPage(@PathVariable int groupId) {
-        return ResponseEntity.ok("그룹 " + groupId + " 게시판 페이지가 아직 구현되지 않았습니다.");
-    }*/
+
 }

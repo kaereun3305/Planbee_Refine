@@ -33,14 +33,10 @@ public class ProgressController {
 
 	// http://localhost:8080/planbee/groups/1/boards
 
-	@Autowired
-	ProgressService ps;
-	@Autowired
-	BoardService bs;
-	@Autowired
-	GroupService gs;
-	@Autowired
-	HttpSession se;
+	@Autowired ProgressService ps;
+	@Autowired BoardService bs;
+	@Autowired GroupService gs;
+	@Autowired HttpSession se;
 
 	@PostMapping(value = "/{groupId}/boards/daily", produces = "application/json; charset=utf-8")
 	public int createDailyProgressPost(HttpSession session, @PathVariable int groupId,

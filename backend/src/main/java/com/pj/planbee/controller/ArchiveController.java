@@ -22,26 +22,6 @@ public class ArchiveController {
 
 	@Autowired ArchiveService as;
 	
-	//세션 생성 메소드(로그인 연결시 삭제 예정)
-	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8")
-	public String session(HttpSession se) {
-		se.setAttribute("sessionId", "admin");
-		return (String) se.getAttribute("sessionId");
-	}
-	
-	// 로그아웃(로그인 연결시 삭제 예정)
-    @PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
-    public int logout(HttpSession se) {
-        se.invalidate();
-        return 1; // 로그아웃 성공
-    }
-
-    // 로그인 상태 확인(로그인 연결시 삭제 예정)
-    @GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8")
-    public int checkSession(HttpSession se) {
-        return (se.getAttribute("sessionId") != null) ? 1 : 0;  // 1: 로그인된 상태, 0: 로그인되지 않음
-    }
-    
     // 페이징 기반으로 아카이브 데이터 조회
     @GetMapping(produces = "application/json; charset=utf-8")
     public List<ArchiveDTO> getPagedArchives(

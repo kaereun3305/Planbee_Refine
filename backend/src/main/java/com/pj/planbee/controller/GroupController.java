@@ -27,26 +27,6 @@ public class GroupController {
     @Autowired GroupService gs;
     @Autowired HttpSession se;
     
-    //세션 생성 메소드(로그인 연결시 삭제 예정)
-  	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8")
-  	public String session() {
-  		se.setAttribute("sessionId", "admin");
-  		return (String) se.getAttribute("sessionId");
-  	}
-  	
-  	// 로그아웃(로그인 연결시 삭제 예정)
-  	@PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
-  	public int logout() {
-  		se.invalidate();
-  		return 1; // 로그아웃 성공
-  	}
-  	
-  	// 로그인 상태 확인(로그인 연결시 삭제 예정)
-  	@GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8")
-  	public int checkSession() {
-  		return (se.getAttribute("sessionId") != null) ? 1 : 0;  // 1: 로그인된 상태, 0: 로그인되지 않음
-  	}
-
   	// 주소 : http://localhost:8080/planbee/group
   	// 사용자가 가입한 그룹 확인 후 리다이렉트
   	@GetMapping(value="", produces = "application/json; charset=utf-8")

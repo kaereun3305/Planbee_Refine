@@ -34,7 +34,7 @@ public class AutoMonthlyProgressConfig {
         try {
             List<GroupDTO> allGroups = groupService.getAllGroups(); // 그룹 리스트 가져오기
 
-            for (GroupDTO group : allGroups) { 
+            for (GroupDTO group : allGroups) { 	
                 String content = generateMonthlyRankingContent(group.getGroupId()); // 게시글 내용 생성
 
                 BoardDTO dto = new BoardDTO();

@@ -44,25 +44,14 @@ public class TodoListController {
 //      return list; 
 //
 //	}
-	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8") // 세션 설정 메소드
-	public String session(HttpSession se) {
-		se.setAttribute("sessionId", "coffeeNine");
-		System.out.println("ctrl mkSession: "+ se.getAttribute("sessionId"));
-		return (String) se.getAttribute("sessionId");
-
-	}
-
-	@GetMapping(value = "/checkSession", produces = "application/json; charset=utf-8") // 로그인 상태 확인
-	public int checkSession(HttpSession session) { // 세션체크
-		return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
-	}
-
+	
 	@GetMapping(value = "/getTodo/{tdDate}", produces = "application/json; charset=utf-8")
 	public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se) { // 오늘의 투두리스트를 가져오는 기능
 		// input값: yyMMdd 형식의 날짜 데이터
 		// sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
 
 		String sessionId = (String) se.getAttribute("sessionId");
+		
 		int todoId;
 		int result = ts.checkRow(tdDate, sessionId); // 열 있는지 찾아오기,
 		// System.out.println("result" + result);

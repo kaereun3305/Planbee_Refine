@@ -114,7 +114,7 @@ public class AuthController {
         }
 
         // 로그인 성공 → 세션 생성
-        session.setAttribute("user", user);
+        session.setAttribute("sessionId", userId);
         return 1; // 로그인 성공
     }
 
@@ -128,6 +128,6 @@ public class AuthController {
     // 로그인 상태 확인
     @GetMapping(value = "/session", produces = "application/json; charset=utf-8")
     public int checkSession(HttpSession session) {
-        return (session.getAttribute("user") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
+        return (session.getAttribute("sessionId") != null) ? 1 : 0; // 1: 로그인된 상태, 0: 로그인되지 않음
     }
 }

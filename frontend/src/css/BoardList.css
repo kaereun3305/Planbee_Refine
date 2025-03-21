@@ -69,15 +69,14 @@
     position: relative;
   
     /* 가로는 최대 1200px까지만, 그 이하는 화면에 맞춰 줄어듦 */
-    max-width: 1200px; 
-    width: 100%;     
-  
+    width: 1450px; 
+     
     /* 높이는 내용물에 따라 자동으로 잡히도록 지정 */
     /* 필요하다면 min-height 정도만 지정할 수 있음 */
     /* min-height: 600px; */
-    height: auto;
+    height: 700px;
   
-    margin: 10px auto; /* 화면 중앙 정렬 */
+    margin: 10px 0 0 50px; /* 화면 중앙 정렬 */
   }
   
   

@@ -233,39 +233,29 @@ const BoardListCom = ({ Info: infoFromProps }) => {
           </div>
         </div>
         <hr className="group_black_line" />
+        <div class="post_list">
         {/* 게시글 목록 */}
-        {board && board.length === 0 ? (
+        {board ?.length === 0 ? (
           <div style={{ textAlign: "center", padding: "50px", marginTop: "20px" }}>
             게시판에 글이 없습니다.
           </div>
         ) : (
-          board?.map((item) => (
-            <div
-              key={item.postId}
-              style={{
-                border: "1px solid #ccc",
-                padding: "10px",
-                margin: "10px",
-                height: "100px",
-                overflowY: "auto",
-              }}
-            >
-              <Link to={`/boardOne/${item.postId}`} state={thisGroupId} style={{ cursor: "pointer" }}>
-                {item.postTitle}
-              </Link>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div>
-                  <span>작성자 </span>
-                  <span>{item.userId}</span>
-                </div>
-                <div>
-                  <span>조회수 0 </span>
-                  <span>{item.postDate}</span>
-                </div>
-              </div>
+          <div className="post_list">
+            {board && board.map((item)=> (
+            <div key={item.postId} className="post_item">
+            <Link to={`/boardOne/${item.postId}`} state={{thisGroupId: thisGroupId}}>
+            <div className="post_text">{item.postTitle}</div></Link>
+            <div className="post_meta">
+            <span className="post_author">{item.userId}</span>
+            <span className="post_date">{item.postDate}</span>
+            <span className="post_views">조회수 {item.postHit}</span>
             </div>
-          ))
+          </div>
+          ))}
+          </div>
         )}
+
+        </div>
         {/* 글쓰기 아이콘 */}
         <div className="write_icon" onClick={() => writePost()}>
           <div>+</div>

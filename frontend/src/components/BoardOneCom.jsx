@@ -3,48 +3,59 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Banner from './Banner';
 import SideBar from './SideBar';
+import '../css/BoardOne.css'
 
-const BoardOneCom = () => {
+const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받아온 해당글번호와 그룹번호
+
+    console.log("boardOneCOm", thisPostId, thisGroupId)
     const sessionId = "팥붕"; //일단 하드코딩해둠
     const location = useLocation();
     const navigate = useNavigate(); 
     const {postId} = useParams(); //postId는 useParams에서 받아서 저장해둔다
-    const thisGroupId = location.state; //groupId를 저장해두자.
-    const [thisPost, setThisPost] = useState({});
+    const [thisPost, setThisPost] = useState([]);
     const [reply, setReply] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
 
-    const fetchThisPost = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${postId}`,
-          {
-            withCredentials:true,
-          }
-        )
-        console.log("글 하나 불러오기결과", response.data)
-      } catch (error) {
-        
+      const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수수
+        try {
+          const response = await axios.get(
+            `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}`,
+            {
+              withCredentials:true,
+            }
+          )
+          console.log("글 하나 불러오기결과", response.data.replies)
+          setThisPost(response.data.post);
+          setReply(response.data.replies);
+        } catch (error) {
+          console.log("BoardOneCom, 글 하나 가져오기 실패", error)
       }
     }
-    const handleHit = () =>{
+    const handleHit = () =>{ //조회수 올리는 함수
       try {
         axios.put(
-          `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${postId}/hit`,{
+          `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}/hit`,{
             withCredentials: true,
           }
         )
+        console.log("조회수 증가 성공?")
       } catch (error) {
         console.log("조회수 증가 실패", error)
-      }
-      
+      }   
     }
     
     useEffect(()=>{
       handleHit();
-
     },[])
+
+    useEffect(() => {
+      if (thisPostId && thisGroupId) {
+        fetchThisPost();
+      }
+    }, [thisPostId, thisGroupId]);
+
+    
     const handleGoBack = () => navigate(-1);
     const handleModify = () => setIsEditing(true);
     const handleChange = (e) => setEditedPost({ ...editedPost, [e.target.name]: e.target.value });
@@ -117,14 +128,22 @@ const BoardOneCom = () => {
         }
     }, [thisPost]); //thisPost가 변경될 때 실행
 
-    const commentView = reply.map(reply =>{ //코멘트 보여주는 기능
-      return(
-          <div class="comment">
-          <span class="username">{reply.userId}</span>
-          <span class="comment-text">{reply.content}</span>
-          <span class="time">{reply.date}</span>
-           </div>)
-      })
+    const renderReplies = (comments, indent = 0) => {
+      return comments.map(comment => (
+        <div key={comment.replyId} style={{ marginLeft: indent }}>
+          <div className="comment">
+            <span className="username">{comment.userId}</span>
+            <span className="comment-text">{comment.replyContent}</span>
+            <span className="time">{comment.replyDate}</span>
+          </div>
+          {/* replies 배열이 있으면 재귀적으로 렌더링 */}
+          {comment.replies && comment.replies.length > 0 && renderReplies(comment.replies, indent + 20)}
+        </div>
+      ));
+    };
+
+  const commentView = renderReplies(reply);
+
 
 
     return (

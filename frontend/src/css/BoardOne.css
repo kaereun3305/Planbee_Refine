@@ -1,0 +1,9 @@
+.comment {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .comment.reply {
+    background-color: #f9f9f9; /* 대댓글은 배경 살짝 다르게 */
+    border-left: 2px solid #ccc;
+  }

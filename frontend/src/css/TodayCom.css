@@ -86,6 +86,7 @@ td .dropdown-menu {
   border-radius: 30px;
   background-color: #efefef;
   padding: 20px;
+  white-space: pre-wrap;
 }
 .tdMemo_textarea {
   width: 530px;

@@ -63,7 +63,7 @@
 	</select>
 	
 	<select id="groupSearch">
-		select group_id from group_members where user_id=#{sessionId}
+		select group_id from Group_Members where user_id=#{sessionId}
 	</select>
 	
 	<select id="contentSearch" resultMap = "postList">
@@ -95,14 +95,14 @@
 	</select>
 	
 	<select id="getGroupMemberCount" resultType="int">
-    	SELECT COUNT(*) FROM group_members WHERE group_id = #{groupId}
+    	SELECT COUNT(*) FROM Group_Members WHERE group_id = #{groupId}
 	</select>
 	
 	<select id="getGroupNameWithUserId" resultType="String">
-		SELECT g.group_name FROM `group` g JOIN `group_members` gm ON g.group_id = gm.group_id WHERE gm.user_id = #{userId}
+		SELECT g.group_name FROM `group` g JOIN `Group_Members` gm ON g.group_id = gm.group_id WHERE gm.user_id = #{userId}
 	</select>
     
     <select id="getGroupMemberCountWithUserId" resultType="int">
-    	SELECT COUNT(*) FROM group_members WHERE group_id = (SELECT group_id FROM group_members WHERE user_id = #{userId})
+    	SELECT COUNT(*) FROM Group_Members WHERE group_id = (SELECT group_id FROM group_members WHERE user_id = #{userId})
     </select>
 </mapper>

@@ -30,7 +30,7 @@ public class GroupController {
     //세션 생성 메소드(로그인 연결시 삭제 예정)
   	@PostMapping(value = "/makeSession", produces = "application/json; charset=utf-8")
   	public String session() {
-  		se.setAttribute("sessionId", "슈붕");
+  		se.setAttribute("sessionId", "팥붕");
   		return (String) se.getAttribute("sessionId");
   	}
   	
@@ -53,7 +53,7 @@ public class GroupController {
   	public ResponseEntity<Map<String, Object>> checkUserGroup() {
   	    String userId = (String) se.getAttribute("sessionId");
   	    Integer groupId = gs.getUserGroupId(userId);
-
+  	    System.out.println("groupId"+ groupId);
   	    Map<String, Object> response = new HashMap<>();
 
   	    if (groupId == null || groupId == 0) {

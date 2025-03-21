@@ -23,10 +23,10 @@ const MaxStreak = () => {
     <div className="max_streak">
       <h3>최대 연속 달성일</h3>
       <div className="max_streak_days">
-        <span className="curStreak_data">
+        <span className="maxStreak_data">
           {maxStreak !== null ? maxStreak : "로딩 중..."}
         </span>
-        <span className="curStreak_days">days</span>
+        <span className="maxStreak_days">days</span>
       </div>
     </div>
   );

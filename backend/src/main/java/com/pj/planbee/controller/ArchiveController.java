@@ -30,9 +30,6 @@ public class ArchiveController {
             HttpSession session) {
 
         String userId = (String) session.getAttribute("sessionId");
-        if (userId == null) {
-            throw new RuntimeException("로그인이 필요합니다."); // 로그인 체크 추가
-        }
 
         int offset = page * limit;
         return as.getPagedArchives(userId, offset, limit);
@@ -47,10 +44,7 @@ public class ArchiveController {
             HttpSession session) {
 
         String userId = (String) session.getAttribute("sessionId");
-        if (userId == null) {
-            throw new RuntimeException("로그인이 필요합니다.");
-        }
-
+      
         if ("date".equalsIgnoreCase(searchType)) {
             return as.searchArchivesByDate(userId, query);
         } else if ("content".equalsIgnoreCase(searchType)) {

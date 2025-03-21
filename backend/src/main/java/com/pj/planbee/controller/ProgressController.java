@@ -81,7 +81,7 @@ public class ProgressController {
 		return bs.writePost(dto);
 	}
 
-	@PostMapping("/auto-post/{groupId}")
+	@PostMapping(value = "/auto-post/{groupId}")
 	public ResponseEntity<String> createAutoPost(@PathVariable int groupId) {
 	        String groupName = gs.getGroupName(groupId);
 	        String content = generateMonthlyRankingContent(groupId);
@@ -93,7 +93,7 @@ public class ProgressController {
 	        dto.setGroupId(groupId);
 
 	        bs.writePost(dto);
-	        return ResponseEntity.ok(groupName + " 그룹의 월간 순위 게시글이 자동으로 등록되었습니다.");
+	        return ResponseEntity.ok(groupName + "upload success");
 	    
 	}
 	

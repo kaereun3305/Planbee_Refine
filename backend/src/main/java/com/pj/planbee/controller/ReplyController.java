@@ -30,10 +30,6 @@ public class ReplyController {
     	
         String userId = (String) se.getAttribute("sessionId"); // 현재 로그인한 사용자의 ID 가져오기
         
-        if (userId == null) {
-            return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패 (0 반환)
-        }
-
         reply.setPostId(postId);
         reply.setUserId(userId); // 세션에서 가져온 userId 설정
 
@@ -46,10 +42,6 @@ public class ReplyController {
     public ResponseEntity<Integer> createReply(@PathVariable int postId, @PathVariable int repReplyId, @RequestBody ReplyDTO reply) {
 
         String userId = (String) se.getAttribute("sessionId"); // 현재 로그인한 사용자의 ID 가져오기
-        
-        if (userId == null) {
-            return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패 (0 반환)
-        }
 
         reply.setPostId(postId);
         reply.setUserId(userId);
@@ -65,9 +57,6 @@ public class ReplyController {
 
         String userId = (String) se.getAttribute("sessionId");
 
-        if (userId == null) {
-            return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패
-        }
 
         reply.setReplyId(replyId);
         reply.setPostId(postId);  // postId 설정 추가!
@@ -83,11 +72,7 @@ public class ReplyController {
     public ResponseEntity<Integer> deleteReply(@PathVariable int postId, @PathVariable int replyId) {
 
         String userId = (String) se.getAttribute("sessionId");
-      
-        if (userId == null) {
-            return ResponseEntity.ok(0); // 로그인되지 않은 사용자면 실패
-        }
-
+  
         int result = rs.deleteReply(replyId, postId, userId);  // postId와 userId 추가
 
         return ResponseEntity.ok(result);

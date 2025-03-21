@@ -110,7 +110,7 @@ const CalendarMemoForm = ({
 
   return (
     <div className="memo_form">
-      <h3>{dateKey} 메모</h3>
+      <h3>{dateKey} 일 메모</h3>
       <div>
         <textarea
           placeholder="메모 1"

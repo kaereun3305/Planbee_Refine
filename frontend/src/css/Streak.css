@@ -16,7 +16,21 @@
   height: 270px;
   width: 350px;
 }
+.maxStreak_data {
+  font-size: 77px;
+  color: #9a9a9a;
+  font-weight: 500;
+}
+.maxStreak_days {
+  font-size: 40px;
+  color: #9a9a9a;
+  font-weight: 500;
+}
 .max_streak_days {
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
+  padding: 20px 30px 20px 30px;
   background-color: #fefcfc;
   height: 125px;
   width: 350px;
@@ -31,15 +45,46 @@
   flex-direction: column;
   justify-content: space-around;
 }
+.curStreak_data {
+  font-size: 77px;
+  color: #2c2c2c;
+  font-weight: 500;
+}
+.curStreak_days {
+  font-size: 40px;
+  color: #2c2c2c;
+  font-weight: 500;
+}
 .current_streak_days {
+  position: relative;
+  z-index: 8;
+  display: flex;
+  justify-content: space-around;
+  align-items: end;
   background-color: #fefcfc;
   height: 225px;
   width: 350px;
   border-radius: 40px;
 }
 .current_streak_comment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 225px;
   height: 50px;
+  font-weight: 900;
+  color: white;
   border-radius: 28px;
-  background-color: #fefcfc;
+  background-color: #9e9e9e;
+}
+.progress_bar {
+  position: absolute;
+  left: 17px;
+  width: 90%;
+  border-radius: 40px;
+  z-index: 9;
+}
+.notion {
+  position: absolute;
+  z-index: 10;
 }

@@ -75,9 +75,52 @@
 
 /* 게시글 내용 */
 .post_content {
+  white-space: pre-wrap;
   font-size: 18px;
   line-height: 1.6;
   margin-bottom: 30px;
+}
+.post_title_input { /* 수정하는 제목 */
+  font-size: 24px;
+  font-weight: bold;
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #ddd; /* 원한다면 경계선 추가 */
+  border-radius: 5px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.post_content_input { /*수정하는 컨텐츠 */
+  font-size: 18px;
+  line-height: 1.6;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd; /* 입력 필드 테두리 */
+  border-radius: 5px;
+  outline: none;
+  margin-bottom: 30px;
+  resize: vertical; /* 세로로 크기 조정 가능하게 */
+}
+.edit_buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.edit_buttons button {
+  background: #f0f0f0;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.edit_buttons button:hover {
+  background: #e0e0e0;
 }
 
 /* 댓글 컨테이너 */

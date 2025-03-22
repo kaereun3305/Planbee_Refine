@@ -5,6 +5,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Banner from './Banner';
 import SideBar from './SideBar';
 import '../css/BoardOne.css'
+import ReplyInputCom from './ReplyInputCom';
 
 const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받아온 해당글번호와 그룹번호
 
@@ -15,12 +16,12 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     const {postId} = useParams(); //postId는 useParams에서 받아서 저장해둔다
     const [thisPost, setThisPost] = useState([]);
     const [reply, setReply] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(false); //글 보기상태인지 수정상태인지, 기초값은 글보기 false
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
     const [activeMenu, setActiveMenu] = useState(null);
     
     
-    const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수수
+    const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수
         try {
           const response = await axios.get(
             `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}`,
@@ -52,7 +53,7 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
       handleHit();
     },[])
 
-    useEffect(() => {
+    useEffect(() => { //글 수정해서 thisPostId와 thisGroupId가 변경될때마다 이 포스트를 새로 가져옴옴
       if (thisPostId && thisGroupId) {
         fetchThisPost();
       }
@@ -60,12 +61,15 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
 
     
     const handleGoBack = () => navigate(-1);
-    const handleModify = () => setIsEditing(true);
-    const handleChange = (e) => setEditedPost({ ...editedPost, [e.target.name]: e.target.value });
+    const handleModify = () => {
+      setIsEditing(true)
+    }
+    const handleChange = (e) => {
+      setEditedPost({ ...editedPost, [e.target.name]: e.target.value })}
     
-    const handleSave = () => {
+    const handleModifyingSave = () => { //게시글 수정함수
       axios.put(
-        `http://localhost:8080/planbee/board/boardModi/${postId}`,{
+        `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${thisPostId}`,{
           postTitle: editedPost.title,
           postContent: editedPost.contents,
         },
@@ -79,7 +83,6 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
           postTitle: editedPost.title,
           postContent: editedPost.contents
       });
-
       setIsEditing(false);
       }).catch(error => {
         console.log("게시글 수정 실패", error)
@@ -91,7 +94,7 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
       navigate(-1);
     }
 
-    const handleDel = async () => {
+    const handleDel = async () => { //삭제기능 구현완료료
       console.log("삭제버튼 클릭: thisPostId", thisPostId, "thisGroupId", thisGroupId)
         if (window.confirm("삭제하시겠습니까?")) {
           try {
@@ -119,24 +122,6 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     setActiveMenu(activeMenu === id ? null : id);
   };
     
-
-    // useEffect(() => {
-    //     const fetchThisPost = async () => {
-    //         try {
-    //             const response = await axios.get(
-    //                 `http://localhost:8080/planbee/board/${groupId}/viewOne/${id}`,
-    //                 { withCredentials: true }
-    //             );
-    //             setThisPost(response.data);
-    //             console.log("thisPost", response.data);
-    //         } catch (error) {
-    //             console.log("이 게시글 로딩 에러", error);
-    //         }
-    //     };
-
-    //     fetchThisPost(); // useEffect 내부에서 실행
-    // }, [id]);
-
     useEffect(() => {
         if (thisPost.postTitle && thisPost.postContent) { 
             setEditedPost({ title: thisPost.postTitle, contents: thisPost.postContent });
@@ -175,6 +160,73 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
 
     };
 
+    const renderEditMode = () => (
+      <div className="post_container">
+        <button className="back_button" onClick={() => setIsEditing(false)}>
+          <FaArrowLeft className="back_icon" />
+        </button>
+        <div className="post_header">
+          <input
+            type="text"
+            name="title"
+            value={editedPost.title}
+            onChange={handleChange}
+            className="post_title_input"
+          />
+        </div>
+        <hr className="post_divider" />
+        <div className="post_content">
+          <textarea
+            name="contents"
+            value={editedPost.contents}
+            onChange={handleChange}
+            className="post_content_input"
+            rows="10"
+          />
+        </div>
+        <div className="edit_buttons">
+          <button onClick={handleModifyingSave}>저장</button>
+          <button onClick={handleCancel}>취소</button>
+        </div>
+      </div>
+    );
+  
+    // 일반 보기 모드일 때 화면 JSX
+    const renderViewMode = () => (
+      <div className="post_container">
+        <button className="back_button" onClick={() => navigate(-1)}>
+          <FaArrowLeft className="back_icon" />
+        </button>
+        <div className="post_header">
+          <h2 className="post_title">{thisPost.postTitle}</h2>
+          {thisPost.userId === sessionId && (
+            <button className="options_button" onClick={() => toggleMenu("post")}>
+              <FaEllipsisV />
+            </button>
+          )}
+          {activeMenu === "post" && (
+            <div className="dropdown_menu post_dropdown">
+              <button onClick={handleModify}>수정</button>
+              <button onClick={handleDel}>삭제</button>
+            </div>
+          )}
+        </div>
+        <hr className="post_divider" />
+        <div className="post_info">
+          <span>{thisPost.userId}</span>
+          <span>조회수: {thisPost.postHit}</span>
+          <span>{thisPost.postDate}</span>
+        </div>
+        <div className="post_content">
+          {thisPost.postContent}
+        </div>
+        <div className="comment_section">
+          {renderReplies(reply)}
+        </div>
+      </div>
+    );
+  
+
 
 
     return (
@@ -183,49 +235,14 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
           <div className="sidebar_and_content">
             <SideBar />
             <div className="main_content">
-
-            <div className="post_container">
-              {/* 🔹 뒤로가기 버튼 */}
-              <button className="back_button" onClick={() => navigate(-1)}>
-                <FaArrowLeft className="back_icon" />
-              </button>
-  
-              {/* 🔹 게시글 제목 & 드롭다운 */}
-              <div className="post_header">
-                <h2 className="post_title">{thisPost.postTitle}</h2>
-                {thisPost.userId === sessionId && (
-                <button className="options_button" onClick={() => toggleMenu("post")}>
-                  <FaEllipsisV />
-                </button>
-                )}
-                {activeMenu === "post" && (
-                <div className="dropdown_menu post_dropdown">
-                  <button>수정</button>
-                  <button onClick={()=>{handleDel()}}>삭제</button>
-                </div>
-              )}
-              </div>
-  
-              {/* 🔹 밑줄 */}
-              <hr className="post_divider" />
-  
-              {/* 🔹 작성자 정보 */}
-              <div className="post_info">
-                <span>{thisPost.userId}</span>
-                <span>조회수: {thisPost.postHit}</span>
-                <span>{thisPost.postDate}</span>
-              </div>
-  
-              {/* 🔹 게시글 내용 */}
-              <div className="post_content">
-                {thisPost.postContent}
-              </div>
-  
-              {/* 🔹 댓글 섹션 */}
-              <div className="comment_section">
-                {renderReplies(reply)}
-              </div>
-            </div>
+              {isEditing? renderEditMode() : renderViewMode()}
+              {!isEditing && (
+          <ReplyInputCom 
+            commentText={commentText} 
+            setCommentText={setCommentText} 
+            handleSubmitComment={handleSubmitComment}
+          />
+        )}
             </div>
           </div>
         </div>

@@ -46,7 +46,23 @@ const BoardWriteCom = ({thisGroupId}) => {
         console.log("입력된 제목", postTitle);
         console.log("입력된 내용", postContent)
         //다 되면 글 하나 보는 장면으로 넘어가야함
-        navigate(`/boardOne/${thisGroupId.thisGroupId}`)
+        const redirectUrl = response.data.redirectUrl;
+        if(redirectUrl){
+          navigate(redirectUrl,{
+            state: {
+              thisGroupId: {thisGroupId: response.data.groupId},
+              thisPostId: {id: response.data.postId}
+            }
+          })
+        }else{
+          navigate(`/boardOne/${response.data.postId}`,{
+            state: {
+              thisGroupId: {thisGroupId: response.data.groupId},
+              thisPostId: {id: response.data.postId}
+            }
+          })
+        }
+        
       } catch (error) {
         console.log("글쓰기 실패",error)
       }

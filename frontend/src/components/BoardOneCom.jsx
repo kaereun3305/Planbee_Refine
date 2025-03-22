@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { FaArrowLeft, FaEllipsisV } from 'react-icons/fa';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Banner from './Banner';
 import SideBar from './SideBar';
@@ -16,8 +17,12 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     const [reply, setReply] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
-
-      const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수수
+    const [activeMenu, setActiveMenu] = useState(null);
+    const [sameWriter, setSameWriter] = useState(false);
+    const [sameReplier, setSameReplier] = useState(false);
+    
+    
+    const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수수
         try {
           const response = await axios.get(
             `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}`,
@@ -47,6 +52,12 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     
     useEffect(()=>{
       handleHit();
+      if(thisPost.userId === sessionId){
+        setSameWriter(true);
+      }
+      if(reply.userId === sessionId){
+        setSameReplier(true);
+      }
     },[])
 
     useEffect(() => {
@@ -102,7 +113,10 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
             console.log("삭제 취소");
         }
     };
-    
+     // 드롭다운 메뉴 토글 함수: 이미 활성화된 메뉴 클릭 시 닫고, 아니면 해당 메뉴를 활성화
+  const toggleMenu = (id) => {
+    setActiveMenu(activeMenu === id ? null : id);
+  };
     
 
     // useEffect(() => {
@@ -128,21 +142,37 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
         }
     }, [thisPost]); //thisPost가 변경될 때 실행
 
-    const renderReplies = (comments, indent = 0) => {
-      return comments.map(comment => (
-        <div key={comment.replyId} style={{ marginLeft: indent }}>
+    const renderReplies = (replies, indent = 0) => {
+      return replies.map(reply => (
+        <div key={reply.replyId} style={{ marginLeft: indent }}>
           <div className="comment">
-            <span className="username">{comment.userId}</span>
-            <span className="comment-text">{comment.replyContent}</span>
-            <span className="time">{comment.replyDate}</span>
+            <div className="comment_user">
+              <div className={`user_avatar ${reply.avatarClass || ""}`} />
+              <span className="user_name">{reply.userId}</span>
+              {/* 댓글 옵션 버튼: 댓글 작성자와 sessionId가 같을 때만 표시 */}
+              {reply.userId === sessionId && (
+                <button className="options_button" onClick={() => toggleMenu(reply.replyId)}>
+                  <FaEllipsisV />
+                </button>
+              )}
+              {activeMenu === reply.replyId && (
+                <div className="dropdown_menu comment_dropdown">
+                  <button>수정</button>
+                  <button>삭제</button>
+                </div>
+              )}
+            </div>
+            <div className="comment_text_box">
+              <p className="comment_text">{reply.replyContent}</p>
+              <span className="comment_time">{reply.replyDate}</span>
+            </div>
           </div>
-          {/* replies 배열이 있으면 재귀적으로 렌더링 */}
-          {comment.replies && comment.replies.length > 0 && renderReplies(comment.replies, indent + 20)}
+          {/* 자식 댓글이 있을 경우 재귀적으로 렌더링 */}
+          {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
         </div>
       ));
-    };
 
-  const commentView = renderReplies(reply);
+    };
 
 
 
@@ -152,55 +182,49 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
           <div className="sidebar_and_content">
             <SideBar />
             <div className="main_content">
-              <div className="boardOneView">
-                {isEditing ? (
-                  <>
-                    <input
-                      type="text"
-                      name="title"
-                      value={editedPost.title}
-                      onChange={handleChange}
-                      style={{ width: '100%', marginBottom: '10px' }}
-                    />
-                    <textarea
-                      name="contents"
-                      value={editedPost.contents}
-                      onChange={handleChange}
-                      rows="5"
-                      style={{ width: '100%' }}
-                    />
-                    <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleSave}>
-                      저장
-                    </a>
-                    <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleCancel}> 취소 </a>
-                  </>
-                ) : (
-                  <>
-                    <h2>{thisPost.postTitle}</h2>
-                    <hr />
-                    <div className="post-info">
-                      <span style={{ marginRight: '10px' }}>{thisPost?.userId}</span> 
-                      <span style={{ marginRight: '10px' }}>{thisPost?.postHit}</span> 
-                      <span>{thisPost?.postDate}</span>
-                    </div>
-                    <p>{thisPost.postContent}</p>
-                    <p style={{ textAlign: 'right' }}>
-                      <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={handleGoBack}>목록보기</a>
-                      {thisPost?.userId && thisPost.userId == {sessionId} && (
-                        <>
-                          <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={() => handleModify(thisPost.postId)}>수정</a>
-                          <a style={{ marginRight: '10px', cursor: 'pointer' }} onClick={() => handleDel(thisPost.postId)}>삭제</a>
-                        </>
-                      )}
-                    </p>
-                    <hr />
-                    <div className="comments">
-                      {!reply || reply.length ===0 ?
-                      (null) :commentView}
-                    </div>
-                  </>
+
+            <div className="post_container">
+              {/* 🔹 뒤로가기 버튼 */}
+              <button className="back_button" onClick={() => navigate(-1)}>
+                <FaArrowLeft className="back_icon" />
+              </button>
+  
+              {/* 🔹 게시글 제목 & 드롭다운 */}
+              <div className="post_header">
+                <h2 className="post_title">{thisPost.postTitle}</h2>
+                {thisPost.userId === sessionId && (
+                <button className="options_button" onClick={() => toggleMenu("post")}>
+                  <FaEllipsisV />
+                </button>
                 )}
+                {activeMenu === "post" && (
+                <div className="dropdown_menu post_dropdown">
+                  <button>수정</button>
+                  <button>삭제</button>
+                </div>
+              )}
               </div>
+  
+              {/* 🔹 밑줄 */}
+              <hr className="post_divider" />
+  
+              {/* 🔹 작성자 정보 */}
+              <div className="post_info">
+                <span>{thisPost.userId}</span>
+                <span>조회수: {thisPost.postHit}</span>
+                <span>{thisPost.postDate}</span>
+              </div>
+  
+              {/* 🔹 게시글 내용 */}
+              <div className="post_content">
+                {thisPost.postContent}
+              </div>
+  
+              {/* 🔹 댓글 섹션 */}
+              <div className="comment_section">
+                {renderReplies(reply)}
+              </div>
+            </div>
             </div>
           </div>
         </div>

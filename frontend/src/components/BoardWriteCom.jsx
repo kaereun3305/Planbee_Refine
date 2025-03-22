@@ -42,10 +42,6 @@ const BoardWriteCom = ({thisGroupId}) => {
     }
   }, [mode, postId])
   
-  if(mode === "create"){
-    handleAddPost();
-  }
-  
   // "Post" 버튼 클릭 (게시글 작성 후 이동)
   const handleAddPost = async () =>{
     try {
@@ -63,11 +59,14 @@ const BoardWriteCom = ({thisGroupId}) => {
         console.log("입력된 제목", postTitle);
         console.log("입력된 내용", postContent)
         //다 되면 글 하나 보는 장면으로 넘어가야함
-        navigate(`/boardOne/${postId}`)
+        //navigate(`/boardOne/${postId}`)
       } catch (error) {
         console.log("글쓰기 실패",error)
       }
 }
+  if(mode === "create"){
+  //handleAddPost();
+  }
 
 
   return (
@@ -87,8 +86,8 @@ const BoardWriteCom = ({thisGroupId}) => {
                   <input
                     type="text"
                     className="title-input-writeform"
-                    value={title}
-                    onChange={(e) => setPostTitle(e.target.value)}
+                    value={postTitle}
+                    onChange={(e) => {setPostTitle(e.target.value)}}
                   />
                 </div>
 
@@ -97,8 +96,8 @@ const BoardWriteCom = ({thisGroupId}) => {
                   <textarea
                     rows={5}
                     className="content-input-writeform"
-                    value={content}
-                    onChange={(e) => setPostContent(e.target.value)}
+                    value={postContent}
+                    onChange={(e) => {setPostContent(e.target.value)}}
                   />
                 </div>
 
@@ -196,7 +195,7 @@ const BoardWriteCom = ({thisGroupId}) => {
           <button onClick={handleHideProgress} className="close_button_writeform">
             닫기
           </button>
-          <button onClick={handleAddPost} className="post_button_writeform">
+          <button onClick={()=>handleAddPost()} className="post_button_writeform">
             Post
           </button>
         </div>

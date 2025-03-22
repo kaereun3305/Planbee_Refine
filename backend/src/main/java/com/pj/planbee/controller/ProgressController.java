@@ -62,16 +62,22 @@ public class ProgressController {
 	    dto.setPostTitle(sessionId + "님의 오늘 진척도");
 	    dto.setPostContent(progressHtml);
 
-	    int postId = bs.writePost(dto);
+	    int result = bs.writePost(dto);
 
-	    // 응답 JSON 구성
 	    Map<String, Object> response = new HashMap<>();
-	    response.put("redirectUrl", "/planbee/groups/" + groupId + "/boards/" + postId);
-	    response.put("postId", postId);
-	    response.put("message", "오늘의 진척도 공유 성공");
+
+	    if (result == 1) {
+	        int postId = bs.getLatestPostIdByUser(sessionId);
+	        response.put("redirectUrl", "/planbee/groups/" + groupId + "/boards/" + postId);
+	        response.put("postId", postId);
+	        response.put("message", "오늘의 진척도 공유 성공");
+	    } else {
+	        response.put("message", "오늘의 진척도 공유 실패");
+	    }
 
 	    return response;
 	}
+
 
 
 	// 주간 진척도 공유
@@ -87,16 +93,22 @@ public class ProgressController {
 	    dto.setPostTitle(sessionId + "님의 주간 진척도");
 	    dto.setPostContent(progressHtml);
 
-	    int postId = bs.writePost(dto);
+	    int result = bs.writePost(dto);
 
-	    // 응답 JSON 구성
 	    Map<String, Object> response = new HashMap<>();
-	    response.put("redirectUrl", "/planbee/groups/" + groupId + "/boards/" + postId);
-	    response.put("postId", postId);
-	    response.put("message", "주간 진척도 공유 성공");
+
+	    if (result == 1) {
+	        int postId = bs.getLatestPostIdByUser(sessionId);
+	        response.put("redirectUrl", "/planbee/groups/" + groupId + "/boards/" + postId);
+	        response.put("postId", postId);
+	        response.put("message", "주간 진척도 공유 성공");
+	    } else {
+	        response.put("message", "게시글 작성 실패");
+	    }
 
 	    return response;
 	}
+
 
 
 	// 그룹별 자동 정산

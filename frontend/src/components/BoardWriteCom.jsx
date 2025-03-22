@@ -5,11 +5,11 @@ import SideBar from "../components/SideBar";
 import "../css/WriteForm.css";
 import axios from "axios";
 
-const BoardWriteCom = ({thisGroupId}) => { 
+const BoardWriteCom = () => { 
   //BoardListCom-> BoardWriteCom을 거쳐 전달됨
   const navigate = useNavigate();
   const location = useLocation();
- 
+  const thisGroupId = location.state;
   const [showProgress, setShowProgress] = useState(false); // 진척도 표시 상태
   const [postTitle, setPostTitle] = useState(""); //제목 입력값
   const [postContent, setPostContent] = useState("");//내용 입력값
@@ -43,25 +43,15 @@ const BoardWriteCom = ({thisGroupId}) => {
           }
         )
         console.log("글 등록한 후 해당 글번호 받아오기", response.data)
-        console.log("입력된 제목", postTitle);
-        console.log("입력된 내용", postContent)
         //다 되면 글 하나 보는 장면으로 넘어가야함
         const redirectUrl = response.data.redirectUrl;
-        if(redirectUrl){
-          navigate(redirectUrl,{
-            state: {
-              thisGroupId: {thisGroupId: response.data.groupId},
-              thisPostId: {id: response.data.postId}
-            }
-          })
-        }else{
+        
           navigate(`/boardOne/${response.data.postId}`,{
             state: {
-              thisGroupId: {thisGroupId: response.data.groupId},
+              thisGroupId: thisGroupId,
               thisPostId: {id: response.data.postId}
             }
           })
-        }
         
       } catch (error) {
         console.log("글쓰기 실패",error)

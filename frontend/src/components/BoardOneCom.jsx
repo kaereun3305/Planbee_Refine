@@ -8,14 +8,15 @@ import '../css/BoardOne.css'
 import ReplyInputCom from './ReplyInputCom';
 
 const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받아온 해당글번호와 그룹번호
-
+    //thisGroupId.thisGroupId로 써야함함
     console.log("boardOneCom", thisPostId, thisGroupId)
     const sessionId = "팥붕"; //일단 하드코딩해둠
     const location = useLocation();
     const navigate = useNavigate(); 
     const {postId} = useParams(); //postId는 useParams에서 받아서 저장해둔다
     const [thisPost, setThisPost] = useState([]);
-    const [reply, setReply] = useState([]);
+    const [reply, setReply] = useState([]); //현재 쓰여있는 댓글관리: 배열
+    const [comment, setComment] = useState("") //새로쓰는 댓글 관리: String
     const [isEditing, setIsEditing] = useState(false); //글 보기상태인지 수정상태인지, 기초값은 글보기 false
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
     const [activeMenu, setActiveMenu] = useState(null);
@@ -69,7 +70,7 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     
     const handleModifyingSave = () => { //게시글 수정함수
       axios.put(
-        `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${thisPostId}`,{
+        `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}`,{
           postTitle: editedPost.title,
           postContent: editedPost.contents,
         },
@@ -91,7 +92,6 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     }
     const handleCancel = () => {
       setIsEditing(false);
-      navigate(-1);
     }
 
     const handleDel = async () => { //삭제기능 구현완료료
@@ -128,7 +128,33 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
         }
     }, [thisPost]); //thisPost가 변경될 때 실행
 
-    const renderReplies = (replies, indent = 0) => {
+    const handleAddReply = async () => { //댓글 등록 기능
+      try {
+          const response = await axios.post(
+              `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}/reply`,
+              {
+                  "replyContent" : comment
+              },{
+                  withCredentials: true,
+              }
+          )
+          console.log("댓글입력결과확인: ", response.data)
+          fetchThisPost();
+          setComment("");
+      } catch (error) {
+          console.log("댓글입력 에러", error)
+      }
+      const handleModifyReply = async () =>{
+        try {
+          const response = await axios.put
+        } catch (error) {
+          
+        }
+      }
+      
+  }
+
+    const renderReplies = (replies, indent = 0) => { //댓글과 대댓글을 뿌리는 기능
       return replies.map(reply => (
         <div key={reply.replyId} style={{ marginLeft: indent }}>
           <div className="comment">
@@ -222,6 +248,11 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
         </div>
         <div className="comment_section">
           {renderReplies(reply)}
+          <ReplyInputCom 
+              comment={comment} 
+              setComment={setComment} 
+              handleAddReply={handleAddReply}
+              fetchThisPost={fetchThisPost} />
         </div>
       </div>
     );
@@ -236,13 +267,6 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
             <SideBar />
             <div className="main_content">
               {isEditing? renderEditMode() : renderViewMode()}
-              {!isEditing && (
-          <ReplyInputCom 
-            commentText={commentText} 
-            setCommentText={setCommentText} 
-            handleSubmitComment={handleSubmitComment}
-          />
-        )}
             </div>
           </div>
         </div>

@@ -1,11 +1,13 @@
 import React from 'react'
+import '../css/BoardOne.css';
 
-const ReplyInputCom = ({commentText, setCommentText, handleSubmitComment}) => { //댓글입력에 대한 컴포넌트
+const ReplyInputCom = ({comment, setComment, handleAddReply, fetchThisPost}) => { //댓글입력에 대한 컴포넌트
   
-  
+    
+
     return (
     <div
-      className="comment_input_container"
+      className="reply_input_container"
       style={{
         marginTop: "15px",
         background: "#ffffff",
@@ -17,10 +19,10 @@ const ReplyInputCom = ({commentText, setCommentText, handleSubmitComment}) => { 
       }}
     >
       <textarea 
-        className="comment_input"
+        className="reply_input"
         placeholder="댓글을 입력하세요..."
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
         style={{
           width: "100%",
           padding: "10px",
@@ -32,7 +34,7 @@ const ReplyInputCom = ({commentText, setCommentText, handleSubmitComment}) => { 
         }}
       />
       <button 
-        className="comment_submit"
+        className="reply_submit"
         style={{
           alignSelf: "flex-end",
           padding: "8px 16px",
@@ -42,6 +44,7 @@ const ReplyInputCom = ({commentText, setCommentText, handleSubmitComment}) => { 
           cursor: "pointer",
           fontSize: "14px"
         }}
+        onClick={()=>handleAddReply()}
       >
         댓글 등록
       </button>

@@ -54,7 +54,7 @@ public class BoardController {
 
         // 3. DTO에 게시글과 댓글 + 대댓글 저장
         PostWithReplyDTO response = new PostWithReplyDTO(post, replies);
-
+        System.out.println("결과값" + response);
         return response;
     }
 

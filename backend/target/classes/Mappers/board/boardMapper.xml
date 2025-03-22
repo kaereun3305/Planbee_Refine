@@ -38,28 +38,28 @@
     </select>
     
     <insert id="writePost">
-    	insert into Posts (post_title, post_hit, post_content, user_id, group_id) values 
+    	insert into posts (post_title, post_hit, post_content, user_id, group_id) values 
     	(#{postTitle}, 0, #{postContent}, #{userId}, #{groupId})
     </insert>
 	
 	<update id="boardModify">
-		update Posts set post_title = #{postTitle}, post_content =#{postContent}, group_id= #{groupId} where post_id=#{postId}
+		update posts set post_title = #{postTitle}, post_content =#{postContent}, group_id= #{groupId} where post_id=#{postId}
 	</update>
 	
 	<delete id="boardDel">
-		delete from Posts where post_id=#{postId}
+		delete from posts where post_id=#{postId}
 	</delete>
 	
 	<update id="boardHit">
-		update Posts set post_hit=post_hit+1 where post_id=#{postId}
+		update posts set post_hit=post_hit+1 where post_id=#{postId}
 	</update>
 	
 	<select id="getWriter">
-		select user_id from Posts where post_id = #{postId}
+		select user_id from posts where post_id = #{postId}
 	</select>
 	
 	<select id="boardUser" resultMap="postList">
-		select post_id, post_title, post_hit, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id from Posts where user_id = #{userId}
+		select post_id, post_title, post_hit, date_format(post_date, '%Y-%m-%d %H:%i') as post_date, user_id from posts where user_id = #{userId}
 	</select>
 	
 	<select id="groupSearch">

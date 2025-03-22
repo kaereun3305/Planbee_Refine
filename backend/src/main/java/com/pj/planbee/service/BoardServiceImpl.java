@@ -304,24 +304,39 @@ public class BoardServiceImpl implements BoardService{
 	    int groupMemberCount = 0;
 
 	    try {
-	        // 검색 적용 (searchType과 query가 있을 경우)
-	        if ("content".equalsIgnoreCase(searchType)) {
-	            posts = btMap.contentSearch(groupId, query);
-	        } else if ("title".equalsIgnoreCase(searchType)) {
-	            posts = btMap.titleSearch(groupId, query);
-	        } else if ("title_content".equalsIgnoreCase(searchType)) {
-	            posts = btMap.titleAndContentSearch(groupId, query);
+	        // 검색 우선 처리
+	        if (searchType != null && query != null && !query.trim().isEmpty()) {
+	            switch (searchType.toLowerCase()) {
+	                case "content":
+	                    posts = btMap.contentSearch(groupId, query);
+	                    break;
+	                case "title":
+	                    posts = btMap.titleSearch(groupId, query);
+	                    break;
+	                case "title_content":
+	                    posts = btMap.titleAndContentSearch(groupId, query);
+	                    break;
+	                default:
+	                    posts = btMap.getAllPost(groupId); // fallback
+	            }
 	        } else {
-	            posts = btMap.getAllPost(groupId); // 전체 조회
+	            // 검색이 없는 경우 전체 게시글
+	            posts = btMap.getAllPost(groupId);
 	        }
 
-	        // 정렬 적용 (sort가 있을 경우)
-	        if ("hit".equalsIgnoreCase(sort)) {
-	            posts = btMap.maxHit(groupId);
-	        } else if ("newest".equalsIgnoreCase(sort)) {
-	            posts = btMap.newestSort(groupId);
-	        } else if ("oldest".equalsIgnoreCase(sort)) {
-	            posts = btMap.oldestSort(groupId);
+	        // 정렬은 검색된 결과에 대해 직접 정렬
+	        if (sort != null && !posts.isEmpty()) {
+	            switch (sort.toLowerCase()) {
+	                case "hit":
+	                    posts.sort((a, b) -> Integer.compare(b.getPostHit(), a.getPostHit())); // 조회수 내림차순
+	                    break;
+	                case "newest":
+	                    posts.sort((a, b) -> b.getPostDate().compareTo(a.getPostDate())); // 최신순
+	                    break;
+	                case "oldest":
+	                    posts.sort((a, b) -> a.getPostDate().compareTo(b.getPostDate())); // 오래된순
+	                    break;
+	            }
 	        }
 
 	        // 그룹 정보 조회
@@ -332,8 +347,13 @@ public class BoardServiceImpl implements BoardService{
 	        e.printStackTrace();
 	    }
 
-	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts == null ? new ArrayList<>() : posts);
 	}
 
-
+	
+	// 해당 유저가 작성한 가장 최신의 글
+	@Override
+    public int getLatestPostIdByUser(String userId) {
+        return btMap.getLatestPostIdByUser(userId);
+    }
 }

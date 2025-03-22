@@ -31,4 +31,5 @@ public interface BoardMapper {
 	public String getGroupNameWithUserId(String userId);
 	public int getGroupMemberCountWithUserId(String userId);
 	public int insertPost(BoardDTO dto);
+	public int getLatestPostIdByUser(String userId);
 }

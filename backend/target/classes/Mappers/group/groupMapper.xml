@@ -46,7 +46,8 @@
         SELECT group_id FROM Group_Members WHERE user_id = #{userId} LIMIT 1
     </select>
     
+    <!-- 그룹 이름 조회 (수정됨) -->
     <select id="getGroupName">
-    	SELECT group_name FROM `group` WHERE group_id = #{groupId}
+        SELECT group_name FROM `Group` WHERE group_id = #{groupId}
     </select>
 </mapper>

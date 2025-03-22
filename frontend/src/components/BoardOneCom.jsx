@@ -9,7 +9,7 @@ import ReplyInputCom from './ReplyInputCom';
 
 const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받아온 해당글번호와 그룹번호
     //thisGroupId.thisGroupId로 써야함함
-    console.log("boardOneCom", thisPostId, thisGroupId)
+    //console.log("boardOneCom", thisPostId, thisGroupId)
     const sessionId = "팥붕"; //일단 하드코딩해둠
     const location = useLocation();
     const navigate = useNavigate(); 
@@ -20,7 +20,8 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     const [isEditing, setIsEditing] = useState(false); //글 보기상태인지 수정상태인지, 기초값은 글보기 false
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
     const [activeMenu, setActiveMenu] = useState(null);
-    
+    const [editingReplyId, setEditingReplyId] = useState(null); //댓글 수정시, 댓글아이디 저장
+    const [editingReplyContent, setEditingReplyContent] = useState("");//댓글 수정시 그 내용 저장
     
     const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수
         try {
@@ -143,48 +144,109 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
           setComment("");
       } catch (error) {
           console.log("댓글입력 에러", error)
-      }
-      const handleModifyReply = async () =>{
-        try {
-          const response = await axios.put
-        } catch (error) {
-          
+      }      
+  }
+  const handleModifyReply = (replyId, currentContent) => { //댓글 수정상태로 만드는 함수
+    setEditingReplyId(replyId);
+    setEditingReplyContent(currentContent);
+    handleModiSaveReply();
+  };
+  const handleModiSaveReply = async (replyId) =>{ //수정한 댓글을 저장하는 함수 
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}/reply/${replyId}`,{
+          replyContent: editingReplyContent
+        },
+        {
+          withCredentials:true,
         }
-      }
+      )
+      console.log("댓글 수정 성공", response.data)
+      setEditingReplyId(null);
+    setEditingReplyContent("");
+      fetchThisPost();
       
+    } catch (error) {
+      console.log("댓글 수정 실패", error)
+    }
+  }
+  // 댓글 수정 취소 함수
+const handleCancelReply = () => {
+  setEditingReplyId(null);
+  setEditingReplyContent("");
+};
+  const handleDeleteReply = async (replyId) =>{
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}/reply/${replyId}`,
+        {
+          withCredentials:true,
+        }
+      )
+      console.log("댓글 삭제 실행결과", response.data)
+      fetchThisPost();
+    } catch (error) {
+      console.log("댓글 삭제 실패ㅠㅠ", error)
+    }
   }
 
-    const renderReplies = (replies, indent = 0) => { //댓글과 대댓글을 뿌리는 기능
-      return replies.map(reply => (
-        <div key={reply.replyId} style={{ marginLeft: indent }}>
-          <div className="comment">
-            <div className="comment_user">
-              <div className={`user_avatar ${reply.avatarClass || ""}`} />
-              <span className="user_name">{reply.userId}</span>
-              {/* 댓글 옵션 버튼: 댓글 작성자와 sessionId가 같을 때만 표시 */}
-              {reply.userId === sessionId && (
-                <button className="options_button" onClick={() => toggleMenu(reply.replyId)}>
-                  <FaEllipsisV />
-                </button>
-              )}
-              {activeMenu === reply.replyId && (
-                <div className="dropdown_menu comment_dropdown">
-                  <button>수정</button>
-                  <button>삭제</button>
-                </div>
-              )}
-            </div>
-            <div className="comment_text_box">
-              <p className="comment_text">{reply.replyContent}</p>
-              <span className="comment_time">{reply.replyDate}</span>
-            </div>
+  const renderReplies = (replies, indent = 0) => {
+    return replies.map((reply) => (
+      <div key={reply.replyId} style={{ marginLeft: indent }}>
+        <div className="comment">
+          <div className="comment_user">
+            <div className={`user_avatar ${reply.avatarClass || ""}`} />
+            <span className="user_name">{reply.userId}</span>
+            {/* 댓글 옵션 버튼은 수정 모드가 아닐 때만 표시 */}
+            {reply.userId === sessionId && (
+              <button className="options_button" onClick={() => toggleMenu(reply.replyId)}>
+                <FaEllipsisV />
+              </button>
+            )}
+            {/* 드롭다운 메뉴 (여기서는 간단히 수정/삭제 버튼으로 처리) */}
+            {activeMenu === reply.replyId &&  (
+              <div className="dropdown_menu comment_dropdown">
+                <button onClick={() => handleModifyReply(reply.replyId, reply.replyContent)}>수정</button>
+                <button onClick={() => handleDeleteReply(reply.replyId)}>삭제</button>
+              </div>
+            )}
           </div>
-          {/* 자식 댓글이 있을 경우 재귀적으로 렌더링 */}
-          {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
+          <div className="comment_text_box">
+            {editingReplyId === reply.replyId ? (
+              // 수정 모드인 댓글이면 textarea와 저장/취소 버튼을 보여줌
+              <>
+                <textarea
+                  value={editingReplyContent}
+                  onChange={(e) => setEditingReplyContent(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    border: "1px solid #ddd",
+                    borderRadius: "5px",
+                    resize: "vertical",
+                  }}
+                />
+                <div style={{ marginTop: "5px", textAlign: "right" }}>
+                  <button onClick={() => handleModiSaveReply(reply.replyId)} style={{ marginRight: "5px" }}>
+                    저장
+                  </button>
+                  <button onClick={handleCancelReply}>취소</button>
+                </div>
+              </>
+            ) : (
+              // 일반 모드
+              <>
+                <p className="comment_text">{reply.replyContent}</p>
+                <span className="comment_time">{reply.replyDate}</span>
+              </>
+            )}
+          </div>
         </div>
-      ));
-
-    };
+        {/* 자식 댓글 (대댓글)이 있을 경우 재귀적으로 렌더링 */}
+        {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
+      </div>
+    ));
+  };
 
     const renderEditMode = () => (
       <div className="post_container">

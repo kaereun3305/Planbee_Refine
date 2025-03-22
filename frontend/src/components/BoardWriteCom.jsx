@@ -7,40 +7,27 @@ import axios from "axios";
 
 const BoardWriteCom = ({thisGroupId}) => { 
   //BoardListCom-> BoardWriteCom을 거쳐 전달됨
-  const { postId } = useParams(); //List에서 글작성을 눌렀을 경우에 받아오는 글번호
-  const mode = postId? "edit" : "create"; //postId가 있으면 수정, 없으면 create
   const navigate = useNavigate();
   const location = useLocation();
-  const status = location.state; //수정인지 신규 글쓰기인지 상태를 받아옴
-  const [postStatus, setPostStatus] = useState(""); //위의 상태를 저장할 변수
  
-  const [title, setTitle] = useState(""); // 제목 입력값
-  const [content, setContent] = useState(""); // 내용 입력값
   const [showProgress, setShowProgress] = useState(false); // 진척도 표시 상태
-  const [postTitle, setPostTitle] = useState("");
-  const [postContent, setPostContent] = useState("");
+  const [postTitle, setPostTitle] = useState(""); //제목 입력값
+  const [postContent, setPostContent] = useState("");//내용 입력값
 
   // "진척도 가져오기" 버튼 클릭 → 제목/내용 & 버튼 사라지고 진척도 표시
-  const handleShowProgress = () => setShowProgress(true);
+  const handleShowProgress = () => {
+    setShowProgress(true);
+    try {
+
+    } catch (error) {
+      
+    }
+  }
 
   // "닫기" 버튼 클릭 → 진척도 사라지고 제목/내용 & 버튼 다시 표시
-  const handleHideProgress = () => setShowProgress(false);
-
-  useEffect(()=>{
-    if(mode === "edit"){ //수정모드인 경우에는 기존 글 내용을 불러옴
-        axios.get(
-        `http://localhost:8080/planbee/groups/${thisGroupId}/boards/${postId}`
-      )
-      .then(response =>{
-        const data = response.data;
-        setTitle(data.postTitle)
-        setContent(data.postContent)
-      })
-      .catch(error =>{
-        console.log("수정정보 가져오기 실패", error)
-      })
-    }
-  }, [mode, postId])
+  const handleHideProgress = () => {
+    setShowProgress(false)
+  }
   
   // "Post" 버튼 클릭 (게시글 작성 후 이동)
   const handleAddPost = async () =>{
@@ -59,14 +46,12 @@ const BoardWriteCom = ({thisGroupId}) => {
         console.log("입력된 제목", postTitle);
         console.log("입력된 내용", postContent)
         //다 되면 글 하나 보는 장면으로 넘어가야함
-        //navigate(`/boardOne/${postId}`)
+        navigate(`/boardOne/${thisGroupId.thisGroupId}`)
       } catch (error) {
         console.log("글쓰기 실패",error)
       }
 }
-  if(mode === "create"){
-  //handleAddPost();
-  }
+
 
 
   return (

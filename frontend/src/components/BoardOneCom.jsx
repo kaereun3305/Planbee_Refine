@@ -8,7 +8,7 @@ import '../css/BoardOne.css'
 
 const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받아온 해당글번호와 그룹번호
 
-    console.log("boardOneCOm", thisPostId, thisGroupId)
+    console.log("boardOneCom", thisPostId, thisGroupId)
     const sessionId = "팥붕"; //일단 하드코딩해둠
     const location = useLocation();
     const navigate = useNavigate(); 
@@ -18,8 +18,6 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({ postTitle: "", postContent: "" });
     const [activeMenu, setActiveMenu] = useState(null);
-    const [sameWriter, setSameWriter] = useState(false);
-    const [sameReplier, setSameReplier] = useState(false);
     
     
     const fetchThisPost = async () => { //이 글의 내용과 댓글을 불러오는 함수수
@@ -52,12 +50,6 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
     
     useEffect(()=>{
       handleHit();
-      if(thisPost.userId === sessionId){
-        setSameWriter(true);
-      }
-      if(reply.userId === sessionId){
-        setSameReplier(true);
-      }
     },[])
 
     useEffect(() => {
@@ -99,16 +91,25 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
       navigate(-1);
     }
 
-    const handleDel = (id) => {
-      console.log("삭제버튼 클릭: 번호", id)
+    const handleDel = async () => {
+      console.log("삭제버튼 클릭: thisPostId", thisPostId, "thisGroupId", thisGroupId)
         if (window.confirm("삭제하시겠습니까?")) {
-          axios.delete(`http://localhost:8080/planbee/groups/${thisGroupId}/${postId}`,{
-            withCredentials:true,
-            
-          })
-          setThisPost({});
-            console.log({postId}, "번 글 삭제되었습니다");
-           navigate(`/boardList/${thisGroupId}`);
+          try {
+            const response = await
+            axios.delete(`http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}`,{
+              withCredentials:true,
+              
+            })
+            setThisPost({});
+            console.log("삭제 실행결과:", response)
+            console.log({thisPostId}, "번 글 삭제되었고", {thisGroupId},"글을 호출합니다");
+            navigate(`/boardList/${thisGroupId.thisGroupId}`, 
+              {state: {groupId : thisGroupId.thisGroupId, redirectUrl: `/planbee/groups/${thisGroupId.thisGroupId}`}
+
+            });
+          } catch (error) {
+            console.log("삭제 실패", error)
+          }         
         } else {
             console.log("삭제 취소");
         }
@@ -200,7 +201,7 @@ const BoardOneCom = ({thisPostId, thisGroupId}) => { //BoardDetail.jsx에서 받
                 {activeMenu === "post" && (
                 <div className="dropdown_menu post_dropdown">
                   <button>수정</button>
-                  <button>삭제</button>
+                  <button onClick={()=>{handleDel()}}>삭제</button>
                 </div>
               )}
               </div>

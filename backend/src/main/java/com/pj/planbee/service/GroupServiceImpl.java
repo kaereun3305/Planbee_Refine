@@ -43,4 +43,9 @@ public class GroupServiceImpl implements GroupService {
 	    	 Integer groupId = mapper.getUserGroupId(userId);
 	    	 return (groupId != null) ? groupId : 0;
 	    }
+	    
+	    @Override
+	    public String getGroupName(int groupId) {
+	        return mapper.getGroupName(groupId);
+	    }
 }

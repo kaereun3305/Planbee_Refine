@@ -16,6 +16,7 @@ import com.pj.planbee.mapper.BoardMapper;
 public class BoardServiceImpl implements BoardService{
 	@Autowired BoardMapper btMap;
 
+	//모든 게시글 리스트
 	@Override
 	public List<BoardDTO> getAllList() {
 		List<BoardDTO> totalBoard = new ArrayList<BoardDTO>();
@@ -28,6 +29,7 @@ public class BoardServiceImpl implements BoardService{
 		return totalBoard;
 	}
 
+	//게시글 보기
 	@Override
 	public BoardDTO getView(int postId) {
 		
@@ -40,6 +42,7 @@ public class BoardServiceImpl implements BoardService{
 		return dto;
 	}
 
+	//게시글 작성
 	@Override
 	public int writePost(BoardDTO dto) {
 		int result = 0;
@@ -51,6 +54,7 @@ public class BoardServiceImpl implements BoardService{
 		return result;
 	}
 
+	//게시글 수정
 	@Override
 	public int boardModify(BoardDTO dto, String sessionId, int postId) {
 		int result = 0;
@@ -69,6 +73,7 @@ public class BoardServiceImpl implements BoardService{
 		return result;
 	}
 
+	// 게시글 삭제
 	@Override
 	public int boardDel(int postId, String sessionId) {
 		String writer = btMap.getWriter(postId);
@@ -85,6 +90,8 @@ public class BoardServiceImpl implements BoardService{
 		return result;
 	}
 
+	
+	// 조회수 증가
 	@Override
 	public int boardHit(int postId) {
 		int result = 0;
@@ -96,6 +103,7 @@ public class BoardServiceImpl implements BoardService{
 		return result;
 	}
 
+	// 게시글이랑 같이 보낼 그룹 정보
 	@Override
 	public GroupInfoDTO boardGroup(int groupId) {
 	    List<PostListDTO> posts = new ArrayList<>();
@@ -119,7 +127,7 @@ public class BoardServiceImpl implements BoardService{
 	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
-
+	// 내가 쓴 글 조회
 	@Override
 	public GroupInfoDTO boardUser(String userId) {
 		List<PostListDTO> posts = new ArrayList<>();
@@ -143,6 +151,7 @@ public class BoardServiceImpl implements BoardService{
 	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 	
+	// 조회 수 많은 순 정렬
 	@Override
 	public GroupInfoDTO maxHit(int groupId) {
 		 List<PostListDTO> posts = new ArrayList<>();
@@ -166,6 +175,7 @@ public class BoardServiceImpl implements BoardService{
 		    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 	
+	// 최신 순 정렬
 	@Override
 	public GroupInfoDTO newestSort(int groupId){
 		 List<PostListDTO> posts = new ArrayList<>();
@@ -189,6 +199,7 @@ public class BoardServiceImpl implements BoardService{
 		    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 	
+	// 오래된 순 정렬
 	@Override
 	public GroupInfoDTO oldestSort(int groupId){
 		 List<PostListDTO> posts = new ArrayList<>();
@@ -212,12 +223,14 @@ public class BoardServiceImpl implements BoardService{
 		    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
+	// 그룹 아이디 가져오기
 	@Override
 	public int groupSearch(String sessionId) {
 		int groupId = btMap.groupSearch(sessionId);
 		return groupId;
 	}
 
+	// 내용 검색
 	@Override
 	public GroupInfoDTO contentSearch(int groupId, String content) {
 		List<PostListDTO> posts = new ArrayList<>();
@@ -241,6 +254,7 @@ public class BoardServiceImpl implements BoardService{
 	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 
+	// 제목 검색
 	@Override
 	public GroupInfoDTO titleSearch(int groupId, String content) {
 		List<PostListDTO> posts = new ArrayList<>();
@@ -264,6 +278,25 @@ public class BoardServiceImpl implements BoardService{
 	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
 	}
 	
+	// 제목 + 내용 검색
+	@Override
+	public GroupInfoDTO titleAndContentSearch(int groupId, String content) {
+	    List<PostListDTO> posts = new ArrayList<>();
+	    String groupName = "";
+	    int groupMemberCount = 0;
+
+	    try {
+	        posts = btMap.titleAndContentSearch(groupId, content);
+	        groupName = btMap.getGroupName(groupId);
+	        groupMemberCount = btMap.getGroupMemberCount(groupId);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
+	}
+
+	
 	@Override
 	public GroupInfoDTO getSortedOrFilteredBoards(int groupId, String searchType, String query, String sort) {
 	    List<PostListDTO> posts = new ArrayList<>();
@@ -271,22 +304,39 @@ public class BoardServiceImpl implements BoardService{
 	    int groupMemberCount = 0;
 
 	    try {
-	        // 검색 적용 (searchType과 query가 있을 경우)
-	        if ("content".equalsIgnoreCase(searchType)) {
-	            posts = btMap.contentSearch(groupId, query);
-	        } else if ("title".equalsIgnoreCase(searchType)) {
-	            posts = btMap.titleSearch(groupId, query);
+	        // 검색 우선 처리
+	        if (searchType != null && query != null && !query.trim().isEmpty()) {
+	            switch (searchType.toLowerCase()) {
+	                case "content":
+	                    posts = btMap.contentSearch(groupId, query);
+	                    break;
+	                case "title":
+	                    posts = btMap.titleSearch(groupId, query);
+	                    break;
+	                case "title_content":
+	                    posts = btMap.titleAndContentSearch(groupId, query);
+	                    break;
+	                default:
+	                    posts = btMap.getAllPost(groupId); // fallback
+	            }
 	        } else {
-	            posts = btMap.getAllPost(groupId); // groupId 기반으로 전체 게시글 조회
+	            // 검색이 없는 경우 전체 게시글
+	            posts = btMap.getAllPost(groupId);
 	        }
 
-	        // 정렬 적용 (sort가 있을 경우)
-	        if ("hit".equalsIgnoreCase(sort)) {
-	            posts = btMap.maxHit(groupId);
-	        } else if ("newest".equalsIgnoreCase(sort)) {
-	            posts = btMap.newestSort(groupId);
-	        } else if ("oldest".equalsIgnoreCase(sort)) {
-	            posts = btMap.oldestSort(groupId);
+	        // 정렬은 검색된 결과에 대해 직접 정렬
+	        if (sort != null && !posts.isEmpty()) {
+	            switch (sort.toLowerCase()) {
+	                case "hit":
+	                    posts.sort((a, b) -> Integer.compare(b.getPostHit(), a.getPostHit())); // 조회수 내림차순
+	                    break;
+	                case "newest":
+	                    posts.sort((a, b) -> b.getPostDate().compareTo(a.getPostDate())); // 최신순
+	                    break;
+	                case "oldest":
+	                    posts.sort((a, b) -> a.getPostDate().compareTo(b.getPostDate())); // 오래된순
+	                    break;
+	            }
 	        }
 
 	        // 그룹 정보 조회
@@ -297,7 +347,13 @@ public class BoardServiceImpl implements BoardService{
 	        e.printStackTrace();
 	    }
 
-	    return new GroupInfoDTO(groupName, groupMemberCount, posts);
+	    return new GroupInfoDTO(groupName, groupMemberCount, posts == null ? new ArrayList<>() : posts);
 	}
 
+	
+	// 해당 유저가 작성한 가장 최신의 글
+	@Override
+    public int getLatestPostIdByUser(String userId) {
+        return btMap.getLatestPostIdByUser(userId);
+    }
 }

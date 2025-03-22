@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,16 +61,32 @@ public class BoardController {
 
 	
 	//  게시글 작성
-	@PostMapping(value="/{groupId}/boards", produces = "application/json; charset=utf-8")
-	public int createPost(@RequestBody BoardDTO dto) {
-		String sessionId = (String) se.getAttribute("sessionId");
-		dto.setUserId(sessionId);
-		int groupId = bs.groupSearch(sessionId);
-		dto.setGroupId(groupId);
-		
-		int result = bs.writePost(dto);
-		return result;
-	}
+    @PostMapping(value = "/{groupId}/boards", produces = "application/json; charset=utf-8")
+    public ResponseEntity<Map<String, Object>> createPost(@RequestBody BoardDTO dto) {
+        String sessionId = (String) se.getAttribute("sessionId");
+        dto.setUserId(sessionId);
+
+        int groupId = bs.groupSearch(sessionId);
+        dto.setGroupId(groupId);
+
+        int result = bs.writePost(dto); // 게시글 저장
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (result == 1) {
+            // 방금 작성된 postId 가져오기(FE에게 전달할 용도)
+            int postId = bs.getLatestPostIdByUser(sessionId);
+
+            response.put("message", "게시글 작성 성공");
+            response.put("redirectUrl", "/planbee/groups/" + groupId + "/boards/" + postId);
+            response.put("postId", postId);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "게시글 작성 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 
 	//  게시글 수정
 	@PutMapping(value="/{groupId}/boards/{postId}", produces = "application/json; charset=utf-8")

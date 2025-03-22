@@ -57,11 +57,11 @@ const BoardWriteCom = () => {
               }
             )
             console.log("오늘의 진척도 입력 성공", response.data)
-            // navigate(`/boardOne/${response.data.postId}`,{
-            //   state: {
-            //     thisGroupId: thisGroupId,
-            //     thisPostId: {id: response.data.postId}
-            //   }})
+            navigate(`/boardOne/${response.data.postId}`,{
+              state: {
+                thisGroupId: thisGroupId,
+                thisPostId: {id: response.data.postId}
+              }})
           } catch (error) {
             console.log("오늘의 진척도 입력 실패",error)
           }
@@ -76,11 +76,11 @@ const BoardWriteCom = () => {
               }
             )
             console.log("이번주 진척도 입력 성공", response.data)
-            // navigate(`/boardOne/${response.data.postId}`,{
-            //   state: {
-            //     thisGroupId: thisGroupId,
-            //     thisPostId: {id: response.data.postId}
-            //   }})
+            navigate(`/boardOne/${response.data.postId}`,{
+              state: {
+                thisGroupId: thisGroupId,
+                thisPostId: {id: response.data.postId}
+              }})
           } catch (error) {
             console.log("이번주 진척도 입력실패", error)
           }

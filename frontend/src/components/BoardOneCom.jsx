@@ -167,6 +167,7 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
             )}
             {activeMenu === reply.replyId &&  (
               <div className="dropdown_menu comment_dropdown">
+                <button>댓글쓰기</button>
                 <button onClick={() => handleModifyReply(reply.replyId, reply.replyContent)}>수정</button>
                 <button onClick={() => handleDeleteReply(reply.replyId)}>삭제</button>
               </div>
@@ -268,7 +269,7 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
         {activeMenu === "post" && (
           <div className="dropdown_menu post_dropdown">
             <button onClick={handleModify}>수정</button>
-            <button onClick={handleDel}>삭제</button>
+            <button onClick={()=>handleDel()}>삭제</button>
           </div>
         )}
       </div>
@@ -283,10 +284,11 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
         만약 진척도 카드라면 원본 HTML로 렌더링,
         아니라면 일반 텍스트(글자)로 렌더링 
       */}
-      <div className="post_content"
-      style={{display: 'flex', justifyContent:'center', alignItems:'center'}}>
+      <div className="post_content">
         {isProgressCard() ? (
-          <div dangerouslySetInnerHTML={{ __html: thisPost.postContent }} />
+          <div style={{display: 'flex', justifyContent:'center', alignItems:'center'}}>
+            <div dangerouslySetInnerHTML={{ __html: thisPost.postContent }} />
+            </div>
         ) : (
           <p>{thisPost.postContent}</p>
         )}

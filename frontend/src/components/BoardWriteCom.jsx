@@ -39,7 +39,8 @@ const BoardWriteCom = () => {
             state: {
               thisGroupId: thisGroupId,
               thisPostId: {id: response.data.postId}
-            }
+            },
+            replace:true //히스토리 스택에 남기지 않아 글쓰기 이후 뒤로가기 해도 글쓰기로 안돌아옴옴
           })
         
       } catch (error) {
@@ -61,7 +62,9 @@ const BoardWriteCom = () => {
               state: {
                 thisGroupId: thisGroupId,
                 thisPostId: {id: response.data.postId}
-              }})
+              },
+              replace:true //히스토리 스택에 남기지 않아 글쓰기 이후 뒤로가기 해도 글쓰기로 안돌아옴옴
+            })
           } catch (error) {
             console.log("오늘의 진척도 입력 실패",error)
           }
@@ -80,7 +83,9 @@ const BoardWriteCom = () => {
               state: {
                 thisGroupId: thisGroupId,
                 thisPostId: {id: response.data.postId}
-              }})
+              },
+              replace:true //히스토리 스택에 남기지 않아 글쓰기 이후 뒤로가기 해도 글쓰기로 안돌아옴옴
+            })
           } catch (error) {
             console.log("이번주 진척도 입력실패", error)
           }

@@ -202,9 +202,15 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
             )}
             {activeMenu === reply.replyId &&  (
               <div className="dropdown_menu comment_dropdown">
-                {/* 대댓글 쓰기 버튼 추가 */}
-                <button onClick={() => toggleNestedReply(reply.replyId)}>댓글쓰기</button>
-                <button onClick={() => handleModifyReply(reply.replyId, reply.replyContent)}>수정</button>
+                {/* 변경됨: 최상위 댓글(즉, indent가 0일 때)만 "댓글쓰기" 버튼을 표시 */}
+                {indent === 0 && (
+                  <button onClick={() => toggleNestedReply(reply.replyId)}>
+                    댓글쓰기
+                  </button>
+                )}
+                <button onClick={() => handleModifyReply(reply.replyId, reply.replyContent)}>
+                  수정
+                </button>
                 <button onClick={() => handleDeleteReply(reply.replyId)}>삭제</button>
               </div>
             )}
@@ -237,33 +243,44 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
               </>
             )}
           </div>
-
-          {/* 대댓글 입력란 (토글된 댓글에 대해 표시) */}
-          {activeNestedReplyId === reply.replyId && (
-            <div style={{ marginLeft: 20, marginTop: 10 }}>
-              <textarea
-                placeholder="댓글을 입력하세요..."
-                value={nestedReplyContent}
-                onChange={(e) => setNestedReplyContent(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  resize: "vertical",
-                }}
-              />
-              <div style={{ marginTop: "5px", textAlign: "right" }}>
-                <button onClick={() => handleAddNestedReply(reply.replyId)} style={{ marginRight: "5px" }}>
-                  등록
-                </button>
-                <button onClick={() => setActiveNestedReplyId(null)}>취소</button>
-              </div>
-            </div>
-          )}
-
+  
+          {/* 대댓글 입력란 (토글된 댓글에 대해 표시) - 여기서는 최상위 댓글일 때만 대댓글 입력란이 열릴 수 있음 */}
+          {activeNestedReplyId === reply.replyId && indent === 0 && (
+  <div
+    style={{
+      marginLeft: 20,
+      marginTop: 10,
+      backgroundColor: "white",          // 변경됨: 배경을 흰색으로 변경
+      padding: "10px",
+      border: "1px solid #ddd",          // 변경됨: 테두리를 연한 회색(#ddd)로 변경
+      borderRadius: "10px"
+    }}
+  >
+    <div style={{ marginBottom: "5px", fontSize: "0.9em", color: "gray" }}> {/* 변경됨: 글자색을 회색으로 */}
+      댓글 작성
+    </div>
+    <textarea
+      placeholder="대댓글을 입력하세요..."
+      value={nestedReplyContent}
+      onChange={(e) => setNestedReplyContent(e.target.value)}
+      style={{
+        width: "100%",
+        padding: "8px",
+        border: "1px solid #ddd",      // 변경됨: 테두리를 연한 회색(#ddd)로
+        borderRadius: "10px",
+        resize: "vertical",
+      }}
+    />
+    <div style={{ marginTop: "5px", textAlign: "right" }}>
+      <button onClick={() => handleAddNestedReply(reply.replyId)} style={{ marginRight: "5px" }}>
+        등록
+      </button>
+      <button onClick={() => setActiveNestedReplyId(null)}>취소</button>
+    </div>
+  </div>
+)}
+  
         </div>
-        {/* 만약 대댓글이 있는 경우 재귀적으로 렌더링 */}
         {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
       </div>
     ));

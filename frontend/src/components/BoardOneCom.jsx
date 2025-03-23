@@ -20,6 +20,10 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [editingReplyId, setEditingReplyId] = useState(null);
   const [editingReplyContent, setEditingReplyContent] = useState("");
+  
+  // 대댓글(댓글의 댓글) 관련 상태
+  const [activeNestedReplyId, setActiveNestedReplyId] = useState(null);
+  const [nestedReplyContent, setNestedReplyContent] = useState("");
 
   useEffect(() => {
     if (thisPostId && thisGroupId) {
@@ -91,7 +95,10 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
           { withCredentials: true }
         );
         navigate(`/boardList/${thisGroupId.thisGroupId}`, {
-          state: { groupId: thisGroupId.thisGroupId }
+          state: { 
+            groupId: thisGroupId.thisGroupId,
+            redirectUrl: `/planbee/groups/${thisGroupId.thisGroupId}`
+          }
         });
       } catch (error) {
         console.log("삭제 실패", error);
@@ -114,11 +121,27 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
     }
   };
 
+  // 대댓글 작성
+  const handleAddNestedReply = async (parentReplyId) => {
+    try {
+      await axios.post(
+        `http://localhost:8080/planbee/groups/${thisGroupId.thisGroupId}/boards/${thisPostId.id}/reply/${parentReplyId}`,
+        { replyContent: nestedReplyContent },
+        { withCredentials: true }
+      );
+      // 등록 후 입력란 초기화 및 닫기
+      setNestedReplyContent("");
+      setActiveNestedReplyId(null);
+      fetchThisPost();
+    } catch (error) {
+      console.log("대댓글 입력 에러", error);
+    }
+  };
+
   // 댓글 수정
   const handleModifyReply = (replyId, currentContent) => {
     setEditingReplyId(replyId);
     setEditingReplyContent(currentContent);
-    // 실제 수정 로직은 handleModiSaveReply에서
   };
   const handleModiSaveReply = async (replyId) => {
     try {
@@ -152,7 +175,19 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
     }
   };
 
-  // 댓글 렌더링
+  // 드롭다운 메뉴 토글
+  const toggleMenu = (id) => {
+    setActiveMenu(activeMenu === id ? null : id);
+  };
+
+  // 토글: 대댓글 입력란 보이기/숨기기
+  const toggleNestedReply = (replyId) => {
+    // 이미 열려있으면 닫고, 아니면 해당 댓글 id로 열기
+    setActiveNestedReplyId(activeNestedReplyId === replyId ? null : replyId);
+    setNestedReplyContent("");
+  };
+
+  // 댓글 렌더링 (대댓글 포함)
   const renderReplies = (replies, indent = 0) => {
     return replies.map((reply) => (
       <div key={reply.replyId} style={{ marginLeft: indent }}>
@@ -167,7 +202,8 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
             )}
             {activeMenu === reply.replyId &&  (
               <div className="dropdown_menu comment_dropdown">
-                <button>댓글쓰기</button>
+                {/* 대댓글 쓰기 버튼 추가 */}
+                <button onClick={() => toggleNestedReply(reply.replyId)}>댓글쓰기</button>
                 <button onClick={() => handleModifyReply(reply.replyId, reply.replyContent)}>수정</button>
                 <button onClick={() => handleDeleteReply(reply.replyId)}>삭제</button>
               </div>
@@ -201,18 +237,39 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
               </>
             )}
           </div>
+
+          {/* 대댓글 입력란 (토글된 댓글에 대해 표시) */}
+          {activeNestedReplyId === reply.replyId && (
+            <div style={{ marginLeft: 20, marginTop: 10 }}>
+              <textarea
+                placeholder="댓글을 입력하세요..."
+                value={nestedReplyContent}
+                onChange={(e) => setNestedReplyContent(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  border: "1px solid #ccc",
+                  borderRadius: "5px",
+                  resize: "vertical",
+                }}
+              />
+              <div style={{ marginTop: "5px", textAlign: "right" }}>
+                <button onClick={() => handleAddNestedReply(reply.replyId)} style={{ marginRight: "5px" }}>
+                  등록
+                </button>
+                <button onClick={() => setActiveNestedReplyId(null)}>취소</button>
+              </div>
+            </div>
+          )}
+
         </div>
+        {/* 만약 대댓글이 있는 경우 재귀적으로 렌더링 */}
         {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
       </div>
     ));
   };
 
-  // 드롭다운 메뉴 토글
-  const toggleMenu = (id) => {
-    setActiveMenu(activeMenu === id ? null : id);
-  };
-
-  // 수정 모드
+  // 수정 모드 렌더링
   const renderEditMode = () => (
     <div className="post_container">
       <button className="back_button" onClick={() => setIsEditing(false)}>
@@ -244,7 +301,7 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
     </div>
   );
 
-  // **판단 로직**: 이 글이 “진척도 카드 HTML”인지 여부
+  // 진척도 카드 여부 판단
   const isProgressCard = () => {
     const content = thisPost.postContent || "";
     return (
@@ -253,7 +310,7 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
     );
   };
 
-  // **글 보기 모드**  
+  // 글 보기 모드 렌더링
   const renderViewMode = () => (
     <div className="post_container">
       <button className="back_button" onClick={() => navigate(-1)}>
@@ -269,7 +326,7 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
         {activeMenu === "post" && (
           <div className="dropdown_menu post_dropdown">
             <button onClick={handleModify}>수정</button>
-            <button onClick={()=>handleDel()}>삭제</button>
+            <button onClick={() => handleDel()}>삭제</button>
           </div>
         )}
       </div>
@@ -279,21 +336,15 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
         <span>조회수: {thisPost.postHit}</span>
         <span>{thisPost.postDate}</span>
       </div>
-
-      {/* 
-        만약 진척도 카드라면 원본 HTML로 렌더링,
-        아니라면 일반 텍스트(글자)로 렌더링 
-      */}
       <div className="post_content">
         {isProgressCard() ? (
-          <div style={{display: 'flex', justifyContent:'center', alignItems:'center'}}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div dangerouslySetInnerHTML={{ __html: thisPost.postContent }} />
-            </div>
+          </div>
         ) : (
           <p>{thisPost.postContent}</p>
         )}
       </div>
-
       <div className="comment_section">
         {renderReplies(reply)}
         <ReplyInputCom
@@ -315,7 +366,6 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
 
   return (
     <div className="main_container">
-      {/* 배너와 사이드바가 필요하다면 유지, 필요없으면 제거 */}
       <Banner />
       <div className="sidebar_and_content">
         <SideBar />

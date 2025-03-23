@@ -94,6 +94,19 @@ const BoardWriteCom = () => {
     }
     
   } 
+  const handleMonthlyWinner = async () => { //월간 등수 자동 글쓰기기
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/planbee/groups/auto-post/${thisGroupId}`,
+        {
+          withCredentials:true,
+        }
+      )
+      console.log("월별 1등 글쓰기 성공", response.data)
+    } catch (error) {
+      console.log("자동글쓰기 실패", error)
+    }
+  }
 
   
   // "진척도 가져오기" 버튼 클릭 → 제목/내용 & 버튼 사라지고 진척도 표시
@@ -112,6 +125,7 @@ const BoardWriteCom = () => {
   const handleWeeklyChange = (e) => {
     setSelectedProgress(e.target.checked? "weekly": null);
   }
+
 
 
 

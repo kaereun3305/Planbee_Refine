@@ -187,104 +187,113 @@ const BoardOneCom = ({ thisPostId, thisGroupId }) => {
     setNestedReplyContent("");
   };
 
-  // 댓글 렌더링 (대댓글 포함)
-  const renderReplies = (replies, indent = 0) => {
-    return replies.map((reply) => (
-      <div key={reply.replyId} style={{ marginLeft: indent }}>
-        <div className="comment">
-          <div className="comment_user">
-            <div className={`user_avatar ${reply.avatarClass || ""}`} />
-            <span className="user_name">{reply.userId}</span>
-            {reply.userId === sessionId && (
-              <button className="options_button" onClick={() => toggleMenu(reply.replyId)}>
-                <FaEllipsisV />
+  // 댓글 렌더링 (대댓글 포함) - 수정됨: 옵션 드롭다운 내부에 "대댓글 작성" 옵션 추가
+const renderReplies = (replies, indent = 0) => {
+  return replies.map((reply) => (
+    <div key={reply.replyId} style={{ marginLeft: indent }}>
+      <div className="comment">
+        <div className="comment_user" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div className={`user_avatar ${reply.avatarClass || ""}`} />
+          <span className="user_name">{reply.userId}</span>
+          {/* 항상 옵션 버튼 표시 (작성자 여부와 상관없이) */}
+          <button
+            className="options_button"
+            onClick={() => toggleMenu(reply.replyId)}
+          >
+            <FaEllipsisV />
+          </button>
+        </div>
+        <div className="comment_text_box">
+          {editingReplyId === reply.replyId ? (
+            <>
+              <textarea
+                value={editingReplyContent}
+                onChange={(e) => setEditingReplyContent(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  border: "1px solid #ddd",
+                  borderRadius: "5px",
+                  resize: "vertical",
+                }}
+              />
+              <div style={{ marginTop: "5px", textAlign: "right" }}>
+                <button onClick={() => handleModiSaveReply(reply.replyId)} style={{ marginRight: "5px" }}>
+                  저장
+                </button>
+                <button onClick={handleCancelReply}>취소</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="comment_text">{reply.replyContent}</p>
+              <span className="comment_time">{reply.replyDate}</span>
+            </>
+          )}
+        </div>
+
+        {/* 옵션 드롭다운 메뉴 */}
+        {activeMenu === reply.replyId && (
+          <div className="dropdown_menu comment_dropdown">
+            {/* 최상위 댓글일 경우에만 "대댓글 작성" 옵션 표시 */}
+            {indent === 0 && (
+              <button onClick={() => toggleNestedReply(reply.replyId)}>
+                대댓글 작성
               </button>
             )}
-            {activeMenu === reply.replyId &&  (
-              <div className="dropdown_menu comment_dropdown">
-                {/* 변경됨: 최상위 댓글(즉, indent가 0일 때)만 "댓글쓰기" 버튼을 표시 */}
-                {indent === 0 && (
-                  <button onClick={() => toggleNestedReply(reply.replyId)}>
-                    댓글쓰기
-                  </button>
-                )}
+            {/* 내 댓글인 경우 수정/삭제 옵션 추가 */}
+            {reply.userId === sessionId && (
+              <>
                 <button onClick={() => handleModifyReply(reply.replyId, reply.replyContent)}>
                   수정
                 </button>
                 <button onClick={() => handleDeleteReply(reply.replyId)}>삭제</button>
-              </div>
-            )}
-          </div>
-          <div className="comment_text_box">
-            {editingReplyId === reply.replyId ? (
-              <>
-                <textarea
-                  value={editingReplyContent}
-                  onChange={(e) => setEditingReplyContent(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    border: "1px solid #ddd",
-                    borderRadius: "5px",
-                    resize: "vertical",
-                  }}
-                />
-                <div style={{ marginTop: "5px", textAlign: "right" }}>
-                  <button onClick={() => handleModiSaveReply(reply.replyId)} style={{ marginRight: "5px" }}>
-                    저장
-                  </button>
-                  <button onClick={handleCancelReply}>취소</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <p className="comment_text">{reply.replyContent}</p>
-                <span className="comment_time">{reply.replyDate}</span>
               </>
             )}
           </div>
-  
-          {/* 대댓글 입력란 (토글된 댓글에 대해 표시) - 여기서는 최상위 댓글일 때만 대댓글 입력란이 열릴 수 있음 */}
-          {activeNestedReplyId === reply.replyId && indent === 0 && (
-  <div
-    style={{
-      marginLeft: 20,
-      marginTop: 10,
-      backgroundColor: "white",          // 변경됨: 배경을 흰색으로 변경
-      padding: "10px",
-      border: "1px solid #ddd",          // 변경됨: 테두리를 연한 회색(#ddd)로 변경
-      borderRadius: "10px"
-    }}
-  >
-    <div style={{ marginBottom: "5px", fontSize: "0.9em", color: "gray" }}> {/* 변경됨: 글자색을 회색으로 */}
-      댓글 작성
-    </div>
-    <textarea
-      placeholder="대댓글을 입력하세요..."
-      value={nestedReplyContent}
-      onChange={(e) => setNestedReplyContent(e.target.value)}
-      style={{
-        width: "100%",
-        padding: "8px",
-        border: "1px solid #ddd",      // 변경됨: 테두리를 연한 회색(#ddd)로
-        borderRadius: "10px",
-        resize: "vertical",
-      }}
-    />
-    <div style={{ marginTop: "5px", textAlign: "right" }}>
-      <button onClick={() => handleAddNestedReply(reply.replyId)} style={{ marginRight: "5px" }}>
-        등록
-      </button>
-      <button onClick={() => setActiveNestedReplyId(null)}>취소</button>
-    </div>
-  </div>
-)}
-  
-        </div>
-        {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
+        )}
+
+        {/* 대댓글 입력란 (토글된 댓글에 대해 표시) - 최상위 댓글에만 적용 */}
+        {activeNestedReplyId === reply.replyId && indent === 0 && (
+          <div
+            style={{
+              marginLeft: 20,
+              marginTop: 10,
+              backgroundColor: "white",          
+              padding: "10px",
+              border: "1px solid #ddd",          
+              borderRadius: "10px"
+            }}
+          >
+            <div style={{ marginBottom: "5px", fontSize: "0.9em", color: "gray" }}>
+              대댓글 작성
+            </div>
+            <textarea
+              placeholder="대댓글을 입력하세요..."
+              value={nestedReplyContent}
+              onChange={(e) => setNestedReplyContent(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "8px",
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                resize: "vertical",
+              }}
+            />
+            <div style={{ marginTop: "5px", textAlign: "right" }}>
+              <button onClick={() => handleAddNestedReply(reply.replyId)} style={{ marginRight: "5px" }}>
+                등록
+              </button>
+              <button onClick={() => setActiveNestedReplyId(null)}>취소</button>
+            </div>
+          </div>
+        )}
       </div>
-    ));
-  };
+      {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, indent + 20)}
+    </div>
+  ));
+};
+
 
   // 수정 모드 렌더링
   const renderEditMode = () => (

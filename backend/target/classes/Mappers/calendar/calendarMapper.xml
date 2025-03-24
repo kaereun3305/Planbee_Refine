@@ -59,12 +59,6 @@
           AND c.user_id = #{sessionId}
     </select>
 
-    <!-- 메모 추가 -->
-    <insert id="addMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
-        INSERT INTO calendar (cal_date, user_id, cal_detail_1, cal_detail_2, cal_detail_3)
-        VALUES (#{calDate}, #{userId}, #{calDetail1}, #{calDetail2}, #{calDetail3})
-    </insert>
-
     <!-- 메모 수정 -->
     <update id="modiMemo" parameterType="com.pj.planbee.dto.CalendarDTO">
         UPDATE calendar

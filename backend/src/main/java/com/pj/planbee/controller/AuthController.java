@@ -153,4 +153,11 @@ public class AuthController {
     public int checkSession(@ApiIgnore HttpSession session) {
         return (session.getAttribute("sessionId") != null) ? 1 : 0;
     }
+    
+    @ApiOperation(value="유저 이름 가져오기", notes="헤더에 유저 이름 띄우는 용도(ex: ~님 환영합니다)")
+    @GetMapping(value="/getUserId", produces = "applicaiotn/json; charset=utf-8")
+    public String getUserId(HttpSession se) {
+    	String userId = (String) se.getAttribute("sessionId");
+    	return userId;
+    }
 }

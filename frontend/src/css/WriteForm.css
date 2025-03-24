@@ -2,8 +2,6 @@
 .main_content {
   flex: 1; /* 부모 컨테이너에서 남은 공간을 모두 차지하도록 설정 */
   overflow-y: auto; /* 세로 스크롤 허용 */
-  background-color: #f0f0f0; /* 배경 색상 설정 */
-  box-sizing: border-box; /* padding과 border를 포함한 크기 계산 */
   padding: 20px; /* 내부 여백 */
 }
 
@@ -14,7 +12,7 @@
   background-color: #fff; /* 흰색 배경 */
   border-radius: 8px; /* 모서리를 둥글게 */
   padding: 20px; /* 내부 여백 */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 그림자 효과 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   text-align: center; /* 내부 텍스트 중앙 정렬 */
   box-sizing: border-box; /* padding과 border 포함한 크기 */
 }
@@ -221,15 +219,15 @@
 
 /* 🌟 색상 설정 */
 .red {
-  background: #F35C41;
+  background: #f35c41;
 }
 
 .yellow {
-  background: #F4CC3A;
+  background: #f4cc3a;
 }
 
 .green {
-  background: #2BB51F;
+  background: #2bb51f;
 }
 
 /* 🌟 버튼을 감싸는 컨테이너 */

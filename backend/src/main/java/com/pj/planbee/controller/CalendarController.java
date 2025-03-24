@@ -135,8 +135,11 @@ public class CalendarController {
     @PutMapping("/modimemo/{calId}")
     public int modiMemo(@PathVariable int calId, @RequestBody CalendarDTO calendar) {
     	 // 수정할 메모의 식별자를 CalendarDTO에 설정
+    	System.out.println("memoPut: 요청들어옴");
     	 calendar.setCalId(calId);
+    	System.out.println("calID:" + calId);
     	int result = cs.modiMemo(calendar);
+    	System.out.println("결과값: "+ result);
     	return result;
     }
     

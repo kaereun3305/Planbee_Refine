@@ -24,7 +24,7 @@
     <!-- 날짜 확인해서 입력하는 기능 -->
    
     <insert id="dateWrite">
-     	insert into ToDoList (todo_date, todo_memo, todo_progress, user_id) values (#{tdDate}, "", "0.0", #{sessionId})
+     	insert ignore into ToDoList (todo_date, todo_memo, todo_progress, user_id) values (#{tdDate}, "", "0.0", #{sessionId})
     </insert>
     
 	<!-- 메모 가져오는 기능 -->

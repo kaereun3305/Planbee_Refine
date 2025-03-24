@@ -27,7 +27,11 @@ import com.pj.planbee.dto.TodoListDTO;
 import com.pj.planbee.dto.TodoListDTO.SubTodoListDTO;
 import com.pj.planbee.service.TodoListService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
+@Api(value="ToDoList API", description="투두리스트 관련 API")
 @RestController
 @RequestMapping("/todolist") // 순서 바꿈
 @CrossOrigin(origins = "*", allowedHeaders= "*", allowCredentials = "true")
@@ -44,9 +48,9 @@ public class TodoListController {
 //      return list; 
 //
 //	}
-
+	@ApiOperation(value="투두리스트 가져옴", notes="YYMMDD 형식의 날짜를 입력하면 오늘과 내일의 투두리스트 정보 가져옴")
 	@GetMapping(value = "/getTodo/{tdDate}", produces = "application/json; charset=utf-8")
-	public List<TDdetailDTO> getToday(@PathVariable String tdDate, HttpSession se) { // 오늘의 투두리스트를 가져오는 기능
+	public List<TDdetailDTO> getToday(@ApiParam(value="YYMMDD 형식의 날짜, String", required=true)@PathVariable String tdDate, HttpSession se) { // 오늘의 투두리스트를 가져오는 기능
 		// input값: yyMMdd 형식의 날짜 데이터
 		// sessionId 임의지정함, 추후 전역에서 세션 지정되면 세션파트는 지워도 될듯
 

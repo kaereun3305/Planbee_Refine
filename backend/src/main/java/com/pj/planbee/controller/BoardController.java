@@ -31,7 +31,7 @@ import com.pj.planbee.service.ReplyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import springfox.documentation.annotations.ApiIgnore;
+
 
 @Api(value = "Board API", description = "그룹 내 게시글 및 댓글 관련 API")
 @RestController
@@ -75,7 +75,7 @@ public class BoardController {
     @PostMapping(value = "/{groupId}/boards", produces = "application/json; charset=utf-8")
     public ResponseEntity<Map<String, Object>> createPost(
             @ApiParam(value = "게시글 작성 정보 (BoardDTO)", required = true) @RequestBody BoardDTO dto,
-            @ApiIgnore HttpSession session) {
+            HttpSession session) {
         String sessionId = (String) session.getAttribute("sessionId");
         dto.setUserId(sessionId);
 
@@ -103,7 +103,7 @@ public class BoardController {
     public int updatePost(
             @ApiParam(value = "수정할 게시글 정보 (BoardDTO)", required = true) @RequestBody BoardDTO dto,
             @ApiParam(value = "게시글 ID", required = true) @PathVariable int postId,
-            @ApiIgnore HttpSession session) {
+            HttpSession session) {
         String sessionId = (String) session.getAttribute("sessionId");
         dto.setUserId(sessionId);
         int groupId = bs.groupSearch(sessionId);
@@ -117,7 +117,7 @@ public class BoardController {
     @DeleteMapping(value = "/{groupId}/boards/{postId}", produces = "application/json; charset=utf-8")
     public int deletePost(
             @ApiParam(value = "게시글 ID", required = true) @PathVariable int postId,
-            @ApiIgnore HttpSession session) {
+            HttpSession session) {
         String sessionId = (String) session.getAttribute("sessionId");
         int result = bs.boardDel(postId, sessionId);
         return result;
@@ -157,7 +157,7 @@ public class BoardController {
     @PostMapping(value = "/{groupId}/leave", produces = "application/json; charset=utf-8")
     public ResponseEntity<Map<String, Object>> leaveGroup(
             @ApiParam(value = "그룹 ID", required = true) @PathVariable int groupId,
-            @ApiIgnore HttpSession session) {
+            HttpSession session) {
         String userId = (String) session.getAttribute("sessionId");
         int success = gs.leaveGroup(userId, groupId);
         

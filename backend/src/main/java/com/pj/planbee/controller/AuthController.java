@@ -29,7 +29,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Api(value = "Auth API", description = "회원가입, 로그인, 이메일 인증 등 인증 관련 API")
 @RestController
-@CrossOrigin(origins = "*") // CSR을 위한 CORS 허용
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -113,7 +113,7 @@ public class AuthController {
     @PostMapping(value = "/login", produces = "application/json; charset=utf-8")
     public int login(
             @ApiParam(value = "로그인 정보 (LoginDTO: userId, userPw)", required = true) @RequestBody LoginDTO loginDTO,
-            @ApiIgnore HttpSession session) {
+            HttpSession session) {
         String userId = loginDTO.getUserId();
         String userPw = loginDTO.getUserPw();
 
@@ -142,7 +142,7 @@ public class AuthController {
     @ApiOperation(value = "로그아웃", 
                   notes = "현재 세션을 무효화하여 로그아웃 처리합니다.")
     @PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
-    public int logout(@ApiIgnore HttpSession session) {
+    public int logout(HttpSession session) {
         session.invalidate();
         return 1;
     }
@@ -150,12 +150,12 @@ public class AuthController {
     @ApiOperation(value = "로그인 상태 확인", 
                   notes = "세션에 userId가 존재하는지 확인하여 로그인 상태를 반환합니다. (1: 로그인, 0: 미로그인)")
     @GetMapping(value = "/session", produces = "application/json; charset=utf-8")
-    public int checkSession(@ApiIgnore HttpSession session) {
+    public int checkSession(HttpSession session) {
         return (session.getAttribute("sessionId") != null) ? 1 : 0;
     }
     
     @ApiOperation(value="유저 이름 가져오기", notes="헤더에 유저 이름 띄우는 용도(ex: ~님 환영합니다)")
-    @GetMapping(value="/getUserId", produces = "applicaiotn/json; charset=utf-8")
+    @GetMapping(value="/getUserId", produces = "appliction/json; charset=utf-8")
     public String getUserId(HttpSession se) {
     	String userId = (String) se.getAttribute("sessionId");
     	return userId;

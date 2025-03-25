@@ -61,10 +61,14 @@
     <select id="todoDetailCheck" resultMap="todoDetail">
         SELECT * FROM ToDoList_Detail WHERE todo_id = #{tdIds}
     </select>
+    
+    <select id="getArchId">
+    	select archive_id from archive where archive_date= #{yesterday}
+    </select>
 
     <!-- archive_detail에 저장 -->
     <insert id="toArchiveDetail">
-        INSERT INTO archive_detail (archivedetail, archivedetail_state, archivedetail_deadline, archive_id, tododetail_id)
+        INSERT INTO archive_detail (archivedetail, archivedetail_state, archivedetail_time, archive_id, tododetail_id)
         VALUES (#{tdDetail}, #{tdDetailState}, #{tdDetailTime}, #{tdId}, #{tdDetailId})
     </insert>
 

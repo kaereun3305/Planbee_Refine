@@ -4,16 +4,15 @@ import ToDoList from "./pages/ToDoList";
 import Archive from "./pages/Archive";
 import Calendar from "./pages/Calendar";
 import Social from "./pages/Social";
-import Board from "./pages/Board"
-import BoardDetail from "./pages/BoardDetail"
+import Board from "./pages/Board";
+import BoardDetail from "./pages/BoardDetail";
 import BoardWrite from "./pages/BoardWrite";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/*<Route path="/" element={<SignIn />} />*/}
-        <Route path="/" element={<ToDoList />} />
+        <Route path="/" element={<SignIn />} />
         <Route path="/todolist" element={<ToDoList />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/calendar" element={<Calendar />} />

@@ -41,24 +41,6 @@
         AND user_id = #{sessionId}
     </select>
 
-    <!-- 특정 달 메모 조회 (JOIN) -->
-    <select id="getMemo" resultMap="proDTO">
-        SELECT
-            c.cal_id,
-            c.cal_detail_1,
-            c.cal_detail_2,
-            c.cal_detail_3,
-            c.cal_date,
-            c.user_id,
-            IFNULL(t.todo_progress, 0) AS todo_progress
-        FROM calendar c
-        LEFT JOIN ToDoList t
-            ON c.cal_date = t.todo_date
-            AND c.user_id = t.user_id
-        WHERE c.cal_date LIKE CONCAT(#{yyMM}, '%')
-          AND c.user_id = #{sessionId}
-    </select>
-
     <!-- 특정 달(yyMM) 메모 조회 (JOIN) -->
 	<select id="getMemo" resultMap="proDTO">
     SELECT

@@ -16,13 +16,6 @@ const TodayCom = () => {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [todayTdId, setTodayTdId] = useState(null);
   const [editItem, setEditItem] = useState(null);
-  const formatTime = (time) => {
-    const strTime = time.toString();
-    const hour = strTime.slice(0, -2);
-    const minute = strTime.slice(-2);
-
-    return `${hour}:${minute}`;
-  };
 
   useEffect(() => {
     //checklist 불러오는 함수 -> 세션연결 성공, 테스트완료
@@ -264,7 +257,7 @@ const TodayCom = () => {
                       }
                     />
                   ) : (
-                    formatTime(item.tdDetailTime)
+                    item.tdDetailTime
                   )}
                 </td>
                 <td>

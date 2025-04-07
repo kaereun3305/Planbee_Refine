@@ -10,12 +10,13 @@ import axios from "axios";
 
 const ToDoList = () => {
   const [progress, setProgress] = useState(null);
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchPercent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/progress/${getFormattedTodayYYMMDD()}`,
+          `${API_URL}/todolist/progress/${getFormattedTodayYYMMDD()}`,
           {
             withCredentials: true,
           }

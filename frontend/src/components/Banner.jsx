@@ -4,17 +4,15 @@ import "../css/Banner.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const Banner = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/auth/getUserId`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${API_URL}/auth/getUserId`, {
+          withCredentials: true,
+        });
         console.log("유저 아이디 fetch 성공", response.data);
         setUserId(response.data);
       } catch (error) {
@@ -27,11 +25,9 @@ const Banner = () => {
 
   const logout = async () => {
     try {
-      const response = await axios.post(
-        `http://localhost:8080/planbee/auth/logout`,
-        null,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${API_URL}/auth/logout`, null, {
+        withCredentials: true,
+      });
       console.log("로그아웃 완료: ", response.data);
       navigate("/");
     } catch (error) {

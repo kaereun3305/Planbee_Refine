@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import axios from "axios";
 
 const Archive = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [archiveData, setArchiveData] = useState(null);
   //페이징을 위한 데이터 캐싱 상태 정의
   const [cachedArchive, setCachedArchive] = useState([]);
@@ -60,7 +61,7 @@ const Archive = () => {
     const yymmdd = formatToYYMMDD(selectedDate);
     try {
       const response = await axios.get(
-        `http://localhost:8080/planbee/archive/searchDate/${yymmdd}`,
+        `${API_URL}/archive/searchDate/${yymmdd}`,
         { withCredentials: true }
       );
       const fetched = response.data;
@@ -85,13 +86,12 @@ const Archive = () => {
 
       if (selectedDate) {
         const yymmdd = formatToYYMMDD(selectedDate);
-        response = await axios.get(
-          `http://localhost:8080/planbee/archive/searchDate/${yymmdd}`,
-          { withCredentials: true }
-        );
+        response = await axios.get(`${API_URL}/archive/searchDate/${yymmdd}`, {
+          withCredentials: true,
+        });
       } else if (keyword) {
         response = await axios.get(
-          `http://localhost:8080/planbee/archive/searchKeyword/${keyword}`,
+          `${API_URL}/archive/searchKeyword/${keyword}`,
           { withCredentials: true }
         );
       }
@@ -125,10 +125,9 @@ const Archive = () => {
     const initialize = async () => {
       try {
         // 초기 데이터 6개 요청
-        const response = await axios.get(
-          `http://localhost:8080/planbee/archive?page=0&limit=6`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`${API_URL}/archive?page=0&limit=6`, {
+          withCredentials: true,
+        });
 
         const fetched = response.data;
         const visible = fetched.slice(0, 2).reverse();
@@ -163,7 +162,7 @@ const Archive = () => {
       try {
         const nextPage = fetchedPage + 1;
         const response = await axios.get(
-          `http://localhost:8080/planbee/archive?page=${nextPage}&limit=6`,
+          `${API_URL}/archive?page=${nextPage}&limit=6`,
           { withCredentials: true }
         );
         const fetched = response.data;

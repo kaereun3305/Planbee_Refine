@@ -8,6 +8,7 @@ import logoBlack from "../images/Logo_Black.png";
 import logoYellow from "../images/Logo_Yellow.png";
 
 const SignIn = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     tempUserId: "",
@@ -28,10 +29,7 @@ const SignIn = () => {
   const SendCode = async () => {
     try {
       console.log(userInfo);
-      const response = await axios.post(
-        `http://localhost:8080/planbee/auth/email/send`,
-        userInfo
-      );
+      const response = await axios.post(`${API_URL}/auth/email/send`, userInfo);
       console.log("인증코드 전송 성공!", response.data);
     } catch (error) {
       console.error("인증코드 전송 실패!", error);
@@ -42,7 +40,7 @@ const SignIn = () => {
       console.log(userInfo, userCode);
       const dataToSend = { ...userInfo, tempUserCode: userCode };
       const response = await axios.post(
-        `http://localhost:8080/planbee/auth/email/verify`,
+        `${API_URL}/auth/email/verify`,
         dataToSend
       );
       console.log("인증 완료!", response.data);
@@ -54,10 +52,7 @@ const SignIn = () => {
     try {
       console.log(userInfo, userCode);
       const dataToSend = { ...userInfo, tempUserCode: userCode };
-      const response = await axios.post(
-        `http://localhost:8080/planbee/auth/register`,
-        dataToSend
-      );
+      const response = await axios.post(`${API_URL}/auth/register`, dataToSend);
       console.log("회원가입 완료!", response.data);
       togglePopup();
     } catch (error) {
@@ -82,11 +77,9 @@ const SignIn = () => {
 
   const Login = async () => {
     try {
-      const response = await axios.post(
-        `http://localhost:8080/planbee/auth/login`,
-        loginData,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${API_URL}/auth/login`, loginData, {
+        withCredentials: true,
+      });
       console.log("로그인 완료!", response.data);
       navigate("/todolist");
       makeSession();
@@ -97,12 +90,9 @@ const SignIn = () => {
 
   const makeSession = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/planbee/auth/session`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${API_URL}/auth/session`, {
+        withCredentials: true,
+      });
       console.log("세션 요청 여부: ", response.data);
     } catch (error) {
       console.error("세션 fetching 실패", error);

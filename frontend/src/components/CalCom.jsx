@@ -9,6 +9,7 @@ import PopUp from "./PopUp";
 import CalendarMemoForm from "./CalendarMemoForm";
 
 const CalCom = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [calData, setCalData] = useState({});
   const [selectedDateKey, setSelectedDateKey] = useState(null);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -21,7 +22,7 @@ const CalCom = () => {
   const getMemo = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/planbee/calendar/memo/${getFormattedTodayYYMM()}`,
+        `${API_URL}/calendar/memo/${getFormattedTodayYYMM()}`,
         { withCredentials: true }
       );
       console.log("캘린더 데이터", response.data);

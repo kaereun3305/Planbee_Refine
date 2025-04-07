@@ -3,6 +3,7 @@ import { getFormattedTodayYYMM } from "./DateUtils";
 import axios from "axios";
 import "../css/CalendarMemoForm.css";
 
+const API_URL = process.env.REACT_APP_API_URL;
 const CalendarMemoForm = ({
   getMemo,
   dateKey,
@@ -36,12 +37,9 @@ const CalendarMemoForm = ({
   useEffect(() => {
     const getUserId = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/auth/getUserId`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${API_URL}/auth/getUserId`, {
+          withCredentials: true,
+        });
         console.log("유저 아이디 fetch 성공", response.data);
         setUserId(response.data);
       } catch (error) {
@@ -64,7 +62,7 @@ const CalendarMemoForm = ({
     try {
       // POST 요청으로 메모 추가
       const response = await axios.post(
-        `http://localhost:8080/planbee/calendar/addmemo/${calDate}`,
+        `${API_URL}/calendar/addmemo/${calDate}`,
         requestData,
         { withCredentials: true }
       );
@@ -93,7 +91,7 @@ const CalendarMemoForm = ({
     try {
       // PUT 요청으로 메모 수정
       const response = await axios.put(
-        `http://localhost:8080/planbee/calendar/modimemo/${calId}`,
+        `${API_URL}/calendar/modimemo/${calId}`,
         requestData,
         { withCredentials: true }
       );
@@ -114,10 +112,9 @@ const CalendarMemoForm = ({
     }
 
     try {
-      await axios.delete(
-        `http://localhost:8080/planbee/calendar/delmemo/${calId}/${fieldNo}`,
-        { withCredentials: true }
-      );
+      await axios.delete(`${API_URL}/calendar/delmemo/${calId}/${fieldNo}`, {
+        withCredentials: true,
+      });
       console.log(`${fieldNo}번 메모 삭제 성공`);
       onUpdate(null); // 메모 삭제 후 업데이트
       await getMemo();

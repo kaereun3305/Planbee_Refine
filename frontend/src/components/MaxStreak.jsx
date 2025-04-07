@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const MaxStreak = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [maxStreak, setMaxStreak] = useState(null);
   useEffect(() => {
     const fetchMaxStreak = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/calendar/maxStreak`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`${API_URL}/calendar/maxStreak`, {
+          withCredentials: true,
+        });
         console.log(response.data);
         setMaxStreak(response.data);
       } catch (error) {

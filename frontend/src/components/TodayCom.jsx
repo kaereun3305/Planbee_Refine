@@ -7,6 +7,7 @@ import axios from "axios";
 import "../css/TodayCom.css";
 
 const TodayCom = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [todoDetailsToday, setTodoDetailsToday] = useState([]);
   const [memo, setMemo] = useState("");
   const [isEditingMemo, setIsEditingMemo] = useState(false);
@@ -22,7 +23,7 @@ const TodayCom = () => {
     const fetchTodoDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/getTodo/${getFormattedTodayYYMMDD()}`,
+          `${API_URL}/todolist/getTodo/${getFormattedTodayYYMMDD()}`,
           {
             withCredentials: true,
           }
@@ -42,7 +43,7 @@ const TodayCom = () => {
     const fetchMemo = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/planbee/todolist/getMemo/${getFormattedTodayYYMMDD()}`,
+          `${API_URL}/todolist/getMemo/${getFormattedTodayYYMMDD()}`,
           {
             withCredentials: true,
           }
@@ -78,7 +79,7 @@ const TodayCom = () => {
     );
 
     try {
-      await axios.put("http://localhost:8080/planbee/todolist/state", {
+      await axios.put("${API_URL}/todolist/state", {
         tdDetailId: changedItem.tdDetailId,
         tdId: changedItem.tdId,
         tdDetail: changedItem.tdDetail,
@@ -105,7 +106,7 @@ const TodayCom = () => {
     };
     try {
       const response = await axios.put(
-        `http://localhost:8080/planbee/todolist/modify`,
+        `${API_URL}/todolist/modify`,
         requestData,
         { withCredentials: true }
       );
@@ -130,7 +131,7 @@ const TodayCom = () => {
   //todolist 삭제 함수 -> 세션연결 성공, 테스트 완료
   const handleDeleteClick = (id) => {
     axios
-      .delete(`http://localhost:8080/planbee/todolist/del`, {
+      .delete(`${API_URL}/todolist/del`, {
         data: { tdDetailId: id },
         withCredentials: true,
       })
@@ -158,7 +159,7 @@ const TodayCom = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/planbee/todolist/write/${getFormattedTodayYYMMDD()}`,
+        `${API_URL}/todolist/write/${getFormattedTodayYYMMDD()}`,
         newTaskData,
         { withCredentials: true }
       );
@@ -198,7 +199,7 @@ const TodayCom = () => {
     console.log("전송하는 데이터:", requestData);
 
     try {
-      await axios.put("http://localhost:8080/planbee/todolist/memoWrite", {
+      await axios.put("${API_URL}/todolist/memoWrite", {
         tdId: todayTdId,
         tdMemo: newMemo,
       });

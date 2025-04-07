@@ -7,18 +7,16 @@ import axios from "axios";
 import "../css/Main.css";
 
 const Social = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [data, setdata] = useState(null); //객체가 들어올 예정이라면 초기화는 null이나{빈객체}로 하는 것이 좋다고
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState("");
   useEffect(() => {
     const checkIsJoined = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/groups`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${API_URL}/groups`, {
+          withCredentials: true,
+        });
         console.log("Social jsx api 실행결과:", response.data.redirectUrl);
         setdata(response.data); //결과값을 저장함
       } catch (error) {

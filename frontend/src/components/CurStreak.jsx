@@ -3,18 +3,16 @@ import axios from "axios";
 import "../css/Streak.css";
 
 const CurStreak = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const [curStreak, setCurStreak] = useState(0);
   const [maxStreak, setMaxStreak] = useState(1);
   const [message, setMessage] = useState("");
   useEffect(() => {
     const fetchCurStreak = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/planbee/calendar/curStreak`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${API_URL}/calendar/curStreak`, {
+          withCredentials: true,
+        });
         const data = response.data;
         console.log(data);
         setCurStreak(data.curStreak);

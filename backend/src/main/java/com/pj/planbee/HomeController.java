@@ -15,15 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.pj.planbee.dto.TDdetailDTO;
-import com.pj.planbee.service.TodoListService;
-
 /**
  * Handles requests for the application home page.
  */
 @Controller
 public class HomeController {
-	@Autowired TodoListService ts;
+	// @Autowired TodoListService ts;
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
@@ -42,10 +39,11 @@ public class HomeController {
 		
 		return "home";
 	}
+	/*
 	@GetMapping("index")
 	public String index(Model model) {
 		List<TDdetailDTO> list = new ArrayList<TDdetailDTO>();
 		//list = ts.getList();
 		return "index";
-	}
+	}*/
 }

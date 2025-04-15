@@ -4,15 +4,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.pj.planbee.service.TodoListService;
 
 @Configuration
 @EnableScheduling
 public class AutoSaveConfig {
 
-	private final TodoListService ts; // 생성자 주입방식으로 변경함
+	//private final TodoListService ts; // 생성자 주입방식으로 변경함
 
-	// 생성자 주입 방식으로 객체 주입
+	/* 생성자 주입 방식으로 객체 주입
 	public AutoSaveConfig(TodoListService ts) {
 		this.ts = ts;
 	}
@@ -28,5 +27,5 @@ public class AutoSaveConfig {
 	public void saveDetailArchive() {
 		int result = ts.saveArchiveDetail();
 		System.out.println("아카이브 디테일 자동백업 실행결과: " + result);
-	}
+	}*/
 }

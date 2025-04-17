@@ -4,7 +4,7 @@
 
 <mapper namespace="com.pj.planbee.mapper.SaveArchiveMapper">
 
-    <resultMap type="com.pj.planbee.dto.TodoListDTO" id="todolist">
+    <resultMap type="com.pj.planbee.dto.TodoDTO" id="todolist">
         <id property="tdId" column="todo_id" />
         <result property="tdDate" column="todo_date" />
         <result property="tdMemo" column="todo_memo" />
@@ -12,7 +12,7 @@
         <result property="userId" column="user_id"/>
     </resultMap>
     
-    <resultMap type="com.pj.planbee.dto.TDdetailDTO" id="todoDetail">
+    <resultMap type="com.pj.planbee.dto.TodoDetailDTO" id="todoDetail">
         <id property="tdDetailId" column="tododetail_id" />
         <result property="tdDetail" column="tododetail" />
         <result property="tdDetailState" column="tododetail_state" />

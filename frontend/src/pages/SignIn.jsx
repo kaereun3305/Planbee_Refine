@@ -17,6 +17,7 @@ const SignIn = () => {
     tempUserPhone: "",
   });
   const [userCode, setUserCode] = useState("");
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo((prevInfo) => ({
@@ -24,7 +25,7 @@ const SignIn = () => {
       [name]: value,
     }));
   };
-
+  //인증 코드 전송
   const SendCode = async () => {
     try {
       console.log(userInfo);
@@ -37,6 +38,7 @@ const SignIn = () => {
       console.error("인증코드 전송 실패!", error);
     }
   };
+  //인증 코드 확인
   const VerifyCode = async () => {
     try {
       console.log(userInfo, userCode);
@@ -50,6 +52,7 @@ const SignIn = () => {
       console.error("인증 실패!", error);
     }
   };
+  //회원가입
   const SignUp = async () => {
     try {
       console.log(userInfo, userCode);
@@ -80,6 +83,7 @@ const SignIn = () => {
     userPw: userPw,
   };
 
+  //로그인
   const Login = async () => {
     try {
       const response = await axios.post(
@@ -88,6 +92,7 @@ const SignIn = () => {
         { withCredentials: true }
       );
       console.log("로그인 완료!", response.data);
+      checkTodo();
       navigate("/todolist");
       makeSession();
     } catch (error) {
@@ -95,6 +100,25 @@ const SignIn = () => {
     }
   };
 
+  //오늘과 내일의 todolist Table이 DB에 존재하는지 확인인
+  const checkTodo = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/planbee/todo/initialize/{userid}`,
+        { withCredentials: true }
+      );
+      if (response.data === 0) {
+        console.log("DB 테이블 모두 존재");
+      } else if (response.data === 1) {
+        console.log("내일 DB 생성");
+      } else {
+        console.log("오늘과 내일 DB 모두 생성됨됨");
+      }
+    } catch (error) {
+      console.error("메시지지, error");
+    }
+  };
+  //세션 생성
   const makeSession = async () => {
     try {
       const response = await axios.get(

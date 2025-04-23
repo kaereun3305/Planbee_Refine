@@ -31,6 +31,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(value = "Auth API", description = "회원가입, 로그인, 이메일 인증 등 인증 관련 API")
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "", allowedHeaders= "", allowCredentials = "true")
 public class AuthController {
 
     @Autowired 

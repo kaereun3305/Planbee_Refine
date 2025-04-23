@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pj.planbee.dto.TodoDTO;
@@ -19,23 +21,24 @@ import com.pj.planbee.service.TodoService;
 
 @RestController
 @RequestMapping("/todo")
+@CrossOrigin(origins = "", allowedHeaders= "", allowCredentials = "true")
 public class TodoController {
 
     @Autowired TodoService ts;
     
-    @GetMapping("/today/{userId}")
-    public ResponseEntity<TodoDTO> getToday(@PathVariable String userId) {
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
-        TodoDTO todo = ts.getTodoByDate(userId, today);
+    @GetMapping("/today")
+    public ResponseEntity<TodoDTO> getToday(@RequestParam String userId, @RequestParam String todoDate) {
+        TodoDTO todo = ts.getTodoByDate(userId, todoDate);
         return ResponseEntity.ok(todo);
     }
 
-    @GetMapping("/tomorrow/{userId}")
-    public ResponseEntity<TodoDTO> getTomorrow(@PathVariable String userId) {
-        String tomorrow = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyMMdd"));
-        TodoDTO todo = ts.getTodoByDate(userId, tomorrow);
+    @GetMapping("/tomorrow")
+    public ResponseEntity<TodoDTO> getTomorrow(@RequestParam String userId, @RequestParam String todoDate) {
+        TodoDTO todo = ts.getTodoByDate(userId, todoDate);
         return ResponseEntity.ok(todo);
     }
+
+
 
     @PostMapping("/initialize/{userId}")
     public ResponseEntity<Integer> initTodayTomorrow(@PathVariable String userId) {
